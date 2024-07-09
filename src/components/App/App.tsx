@@ -1,10 +1,11 @@
+import MainCanvas from '../MainCanvas/MainCanvas'
 import './App.css'
 
 function App() {
 
   return (
     <>
-      Hello World
+      <MainCanvas />
     </>
   )
 }
