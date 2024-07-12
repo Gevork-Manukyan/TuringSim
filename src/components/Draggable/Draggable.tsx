@@ -11,6 +11,12 @@ export function Draggable({ children, className, id }: DraggableProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
   });
+
+  const dragHandleProps = {
+    ...listeners,
+    ...attributes
+  }
+
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -18,14 +24,13 @@ export function Draggable({ children, className, id }: DraggableProps) {
     : undefined;
 
   return (
-    <div
+    <button
       ref={setNodeRef}
       className={`Draggable${className ? " " + className : ""}`}
       style={style}
-      {...listeners}
-      {...attributes}
+      {...dragHandleProps}
     >
       {children}
-    </div>
+    </button>
   );
 }

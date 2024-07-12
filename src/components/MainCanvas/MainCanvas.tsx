@@ -1,14 +1,13 @@
 import "./MainCanvas.css";
 import {useState} from 'react';
 import {DndContext} from '@dnd-kit/core';
-import {Droppable} from '../Droppable/Droppable';
-import {Draggable} from '../Draggable/Draggable';
+import { Droppable } from "../Droppable/Droppable";
+import { Draggable } from "../Draggable/Draggable";
+
 
 export default function MainCanvas() {
     const [isDropped, setIsDropped] = useState(false);
-    const draggableMarkup = (
-      <Draggable>Drag me</Draggable>
-    );
+
 
     function handleDragEnd(event) {
       if (event.over && event.over.id === 'droppable') {
@@ -18,9 +17,9 @@ export default function MainCanvas() {
 
     return (
       <DndContext onDragEnd={handleDragEnd}>
-        {!isDropped ? draggableMarkup : null}
-        <Droppable>
-          {isDropped ? draggableMarkup : 'Drop here'}
+        <Draggable id="myDragButton" className="myDragButton">Button</Draggable>
+        <Droppable id="area" className="myDropArea">
+          Drop Text Here
         </Droppable>
       </DndContext>
     );
