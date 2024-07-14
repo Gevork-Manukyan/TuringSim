@@ -8,8 +8,10 @@ interface Edge {
     to: string;
 }
 
-class DirectedGraph {
+export default class DirectedGraph {
     private nodes: Map<string, Node>;
+    // string: node id
+    // Edge[]: all edges going from this node out
     private adjacencyList: Map<string, Edge[]>;
 
     constructor() {
@@ -17,7 +19,6 @@ class DirectedGraph {
         this.adjacencyList = new Map();
     }
 
-    // Add node to 'nodes' if it doesn't exist already
     addNode(node: Node): void {
         if (!this.nodes.has(node.id)) {
             this.nodes.set(node.id, node);
@@ -25,22 +26,35 @@ class DirectedGraph {
         }
     }
 
-    removeNode() {
-        // TODO:
+    removeNode(nodeId: string) {
+        const isNodeDeleted = this.nodes.delete(nodeId);
+        if (!isNodeDeleted) throw new Error("Node must exist to be deleted")
+        
+        // Remove all edges going out of node
+        this.adjacencyList.delete(nodeId)
+
+        // Remove all edges going into node
+        for (const fromNodeId of this.adjacencyList.keys()) this.removeEdge(fromNodeId, nodeId);
     }
 
     addEdge(edge: Edge): void {
         const { from, to } = edge;
-
-        if (!this.nodes.has(from) || !this.nodes.has(to)) {
-            throw new Error("Both nodes must exist to make an edge")
-        }
-
+        this.doNodesExist(from, to);
         this.adjacencyList.get(from)!.push({ from, to });
     }
 
-    removeEdge() {
-        // TODO:
+    removeEdge(from: string, to: string) {
+        this.doNodesExist(from, to);
+        
+        const filteredEdges = this.adjacencyList.get(from)!.filter(edge => edge.to !== to);
+        this.adjacencyList.set(
+            from,
+            filteredEdges
+        )
     }
 
+    private doNodesExist(from: string, to: string): boolean {
+        if (!this.nodes.has(from) || !this.nodes.has(to)) throw new Error("Both nodes must exist to make an edge");
+        return true;
+    }
 }
