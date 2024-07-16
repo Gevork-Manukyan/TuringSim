@@ -1,9 +1,9 @@
-interface Node {
+export interface Node {
     id: string;
     value?: any;
 }
 
-interface Edge {
+export interface Edge {
     from: string;
     to: string;
 }

@@ -1,4 +1,5 @@
 import "./Draggable.css"
+import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 
 type DraggableProps = {
@@ -15,7 +16,7 @@ function generateRandomStringId(): string {
 }
 
 export function Draggable({ children, className, id }: DraggableProps) {
-  const draggableId = id ? id : generateRandomStringId();
+  const [draggableId, setDraggableId] = useState(id ? id : generateRandomStringId())
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: draggableId,

@@ -5,7 +5,9 @@ function App() {
 
   return (
     <>
+      <header></header>
       <MainCanvas />
+      <footer></footer>
     </>
   )
 }
