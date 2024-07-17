@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   DndContext,
   useDraggable,
@@ -12,6 +12,7 @@ import {
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import type { Coordinates } from "@dnd-kit/utilities";
 import { Axis, Draggable, Wrapper } from "..";
+import { generateRandomStringId } from "../utilities";
 
 const defaultCoordinates = {
   x: 0,
@@ -88,12 +89,13 @@ function DraggableItem({
   handle,
   buttonStyle,
 }: DraggableItemProps) {
+
+  const id = useMemo(() => generateRandomStringId(), [])
+
   const { attributes, isDragging, listeners, setNodeRef, transform } =
     useDraggable({
-      id: "draggable",
+      id: id,
     });
-
-    //TODO: generate random string id
 
   return (
     <Draggable
