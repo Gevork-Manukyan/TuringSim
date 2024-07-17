@@ -93,6 +93,8 @@ function DraggableItem({
       id: "draggable",
     });
 
+    //TODO: generate random string id
+
   return (
     <Draggable
       ref={setNodeRef}
