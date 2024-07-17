@@ -16,8 +16,8 @@
     outline: none;
     border: 0;
     padding: 8px 18px;
-    background-color: #181a22;
-    border-radius: 5px;
+    /* background-color: #181a22; */
+    border-radius: 100%;
     box-shadow: var(--box-shadow);
     transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
       scale(var(--scale, 1));
@@ -47,12 +47,6 @@
         margin-right: -10px;
       }
     }
-  }
-
-  img {
-    width: 140px;
-    user-select: none;
-    pointer-events: none;
   }
 
   label {

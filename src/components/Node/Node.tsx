@@ -21,15 +21,13 @@ const defaultCoordinates = {
 
 interface Props {
   activationConstraint?: PointerActivationConstraint;
-  handle?: boolean;
   buttonStyle?: React.CSSProperties;
   style?: React.CSSProperties;
   label?: string;
 }
 
-export default function Node({
+export function Node({
   activationConstraint,
-  handle,
   label = "",
   style,
   buttonStyle,
@@ -39,6 +37,13 @@ export default function Node({
   const touchSensor = useSensor(TouchSensor, { activationConstraint });
   const keyboardSensor = useSensor(KeyboardSensor, {});
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
+
+  const id = useMemo(() => generateRandomStringId(), []);
+
+  const { attributes, isDragging, listeners, setNodeRef, transform } =
+    useDraggable({
+      id: id,
+    });
 
   return (
     <DndContext
@@ -54,57 +59,19 @@ export default function Node({
       modifiers={[snapCenterToCursor]}
     >
       <Wrapper>
-        <DraggableItem
+        <Draggable
+          ref={setNodeRef}
+          dragging={isDragging}
           label={label}
-          handle={handle}
-          top={y}
-          left={x}
-          style={style}
+          listeners={listeners}
+          style={{ ...style, top: y, left: x }}
           buttonStyle={buttonStyle}
-        >Node</DraggableItem>
+          transform={transform}
+          {...attributes}
+        >
+          Node
+        </Draggable>
       </Wrapper>
     </DndContext>
-  );
-}
-
-interface DraggableItemProps {
-  children?: React.ReactNode;
-  label: string;
-  handle?: boolean;
-  style?: React.CSSProperties;
-  buttonStyle?: React.CSSProperties;
-  top?: number;
-  left?: number;
-}
-
-function DraggableItem({
-  children,
-  label,
-  style,
-  top,
-  left,
-  handle,
-  buttonStyle,
-}: DraggableItemProps) {
-
-  const id = useMemo(() => generateRandomStringId(), [])
-
-  const { attributes, isDragging, listeners, setNodeRef, transform } =
-    useDraggable({
-      id: id,
-    });
-
-  return (
-    <Draggable
-      ref={setNodeRef}
-      dragging={isDragging}
-      handle={handle}
-      label={label}
-      listeners={listeners}
-      style={{ ...style, top, left }}
-      buttonStyle={buttonStyle}
-      transform={transform}
-      {...attributes}
-    >{children}</Draggable>
   );
 }

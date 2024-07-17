@@ -2,14 +2,12 @@ import React, { forwardRef } from "react";
 import classNames from "classnames";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
-import { Handle } from "../Item/components/Handle";
 import styles from "./Draggable.module.css";
 
 interface Props {
   children?: React.ReactNode;
   dragOverlay?: boolean;
   dragging?: boolean;
-  handle?: boolean;
   label?: string;
   listeners?: DraggableSyntheticListeners;
   style?: React.CSSProperties;
@@ -23,7 +21,6 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
       children,
       dragOverlay,
       dragging,
-      handle,
       label,
       listeners,
       transform,
@@ -39,7 +36,6 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
           styles.Draggable,
           dragOverlay && styles.dragOverlay,
           dragging && styles.dragging,
-          handle && styles.handle
         )}
         style={
           {
@@ -53,13 +49,12 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
           {...props}
           aria-label="Draggable"
           data-cypress="draggable-item"
-          {...(handle ? {} : listeners)}
-          tabIndex={handle ? -1 : undefined}
+          {...listeners}
+          tabIndex={undefined}
           ref={ref}
           style={buttonStyle}
         >
           {children}
-          {handle ? <Handle {...(handle ? listeners : {})} /> : null}
         </button>
         {label ? <label>{label}</label> : null}
       </div>

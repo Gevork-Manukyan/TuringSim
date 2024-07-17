@@ -12,3 +12,4 @@ export {List} from './List';
 export {OverflowWrapper} from './OverflowWrapper';
 export {Wrapper} from './Wrapper';
 export {MainCanvas} from './MainCanvas';
+export {Node} from './Node'
