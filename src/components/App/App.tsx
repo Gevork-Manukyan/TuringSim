@@ -1,13 +1,10 @@
-import { SnapCenterToCursor } from '../../stories/1 - Core/Draggable/1-Draggable.story'
-import './App.css'
+import Node from "../../stories/components/Node/Node";
+import "./App.css";
 
 function App() {
-
-  return (
-    <>
-      {SnapCenterToCursor()}
-    </>
-  )
+  return <>
+    <Node />
+  </>;
 }
 
-export default App
+export default App;
