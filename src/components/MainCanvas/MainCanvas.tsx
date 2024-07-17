@@ -1,9 +1,6 @@
 import "./MainCanvas.css";
 import { useState } from "react";
 import { DndContext } from "@dnd-kit/core";
-import { Droppable } from "../Droppable/Droppable";
-import DirectedGraph, { Node, Edge } from "../../lib/directedGraph";
-import DefaultNode from "../Node/DefaultNode/DefaultNode";
 
 export function MainCanvas() {
   const [isDropped, setIsDropped] = useState(false);
@@ -18,9 +15,7 @@ export function MainCanvas() {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <Droppable id="area" className="myDropArea">
-        <DefaultNode />
-      </Droppable>
+
     </DndContext>
   );
 }
