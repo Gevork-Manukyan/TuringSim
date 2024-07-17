@@ -1,13 +1,11 @@
-import MainCanvas from '../MainCanvas/MainCanvas'
+import { SnapCenterToCursor } from '../../stories/1 - Core/Draggable/1-Draggable.story'
 import './App.css'
 
 function App() {
 
   return (
     <>
-      <header></header>
-      <MainCanvas />
-      <footer></footer>
+      {SnapCenterToCursor()}
     </>
   )
 }
