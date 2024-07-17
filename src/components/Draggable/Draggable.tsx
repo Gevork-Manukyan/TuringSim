@@ -1,49 +1,85 @@
-import "./Draggable.css";
-import { useMemo } from "react";
-import { useDraggable } from "@dnd-kit/core";
+import React, {forwardRef} from 'react';
+import classNames from 'classnames';
+import type {DraggableSyntheticListeners} from '@dnd-kit/core';
+import type {Transform} from '@dnd-kit/utilities';
 
-type DraggableProps = {
-  children?: React.ReactNode;
-  className?: string;
-  id?: string;
-};
+import {Handle} from '../Item/components/Handle';
 
-function generateRandomStringId(): string {
-  const length = 16;
-  const array = new Uint8Array(length / 2);
-  window.crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
-    ""
-  );
+import {
+  draggable,
+  draggableHorizontal,
+  draggableVertical,
+} from './draggable-svg';
+import styles from './Draggable.module.css';
+
+export enum Axis {
+  All,
+  Vertical,
+  Horizontal,
 }
 
-export function Draggable({ children, className, id }: DraggableProps) {
-  const draggableId = useMemo(() => (id ? id : generateRandomStringId()), [id]);
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: draggableId,
-  });
-  const dragHandleProps = {
-    ...listeners,
-    ...attributes,
-  };
+interface Props {
+  axis?: Axis;
+  dragOverlay?: boolean;
+  dragging?: boolean;
+  handle?: boolean;
+  label?: string;
+  listeners?: DraggableSyntheticListeners;
+  style?: React.CSSProperties;
+  buttonStyle?: React.CSSProperties;
+  transform?: Transform | null;
+}
 
-  const style = transform && {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  };
-
-  const handleClick = () => {
-    
+export const Draggable = forwardRef<HTMLButtonElement, Props>(
+  function Draggable(
+    {
+      axis,
+      dragOverlay,
+      dragging,
+      handle,
+      label,
+      listeners,
+      transform,
+      style,
+      buttonStyle,
+      ...props
+    },
+    ref
+  ) {
+    return (
+      <div
+        className={classNames(
+          styles.Draggable,
+          dragOverlay && styles.dragOverlay,
+          dragging && styles.dragging,
+          handle && styles.handle
+        )}
+        style={
+          {
+            ...style,
+            '--translate-x': `${transform?.x ?? 0}px`,
+            '--translate-y': `${transform?.y ?? 0}px`,
+          } as React.CSSProperties
+        }
+      >
+        <button
+          {...props}
+          aria-label="Draggable"
+          data-cypress="draggable-item"
+          {...(handle ? {} : listeners)}
+          tabIndex={handle ? -1 : undefined}
+          ref={ref}
+          style={buttonStyle}
+        >
+          {axis === Axis.Vertical
+            ? draggableVertical
+            : axis === Axis.Horizontal
+            ? draggableHorizontal
+            : draggable}
+          {handle ? <Handle {...(handle ? listeners : {})} /> : null}
+        </button>
+        {label ? <label>{label}</label> : null}
+      </div>
+    );
   }
-
-  return (
-    <button
-      ref={setNodeRef}
-      className={`Draggable${className ? " " + className : ""}`}
-      style={style}
-      {...dragHandleProps}
-      onClick={handleClick}
-    >
-      {children}
-    </button>
-  );
-}
+);

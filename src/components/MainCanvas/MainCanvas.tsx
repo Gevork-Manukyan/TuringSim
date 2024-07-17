@@ -5,7 +5,7 @@ import { Droppable } from "../Droppable/Droppable";
 import DirectedGraph, { Node, Edge } from "../../lib/directedGraph";
 import DefaultNode from "../Node/DefaultNode/DefaultNode";
 
-export default function MainCanvas() {
+export function MainCanvas() {
   const [isDropped, setIsDropped] = useState(false);
   const graph = new DirectedGraph();
 

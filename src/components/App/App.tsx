@@ -1,4 +1,4 @@
-import Node from "../../stories/components/Node/Node";
+import Node from "../Node/Node";
 import "./App.css";
 
 function App() {
