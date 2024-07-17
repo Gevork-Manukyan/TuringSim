@@ -11,7 +11,7 @@ import {
 } from "@dnd-kit/core";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import type { Coordinates } from "@dnd-kit/utilities";
-import { Axis, Draggable, Wrapper } from "..";
+import { Draggable, Wrapper } from "..";
 import { generateRandomStringId } from "../utilities";
 
 const defaultCoordinates = {
@@ -21,7 +21,6 @@ const defaultCoordinates = {
 
 interface Props {
   activationConstraint?: PointerActivationConstraint;
-  axis?: Axis;
   handle?: boolean;
   buttonStyle?: React.CSSProperties;
   style?: React.CSSProperties;
@@ -30,7 +29,6 @@ interface Props {
 
 export default function Node({
   activationConstraint,
-  axis,
   handle,
   label = "",
   style,
@@ -57,31 +55,30 @@ export default function Node({
     >
       <Wrapper>
         <DraggableItem
-          axis={axis}
           label={label}
           handle={handle}
           top={y}
           left={x}
           style={style}
           buttonStyle={buttonStyle}
-        />
+        >Node</DraggableItem>
       </Wrapper>
     </DndContext>
   );
 }
 
 interface DraggableItemProps {
+  children?: React.ReactNode;
   label: string;
   handle?: boolean;
   style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;
-  axis?: Axis;
   top?: number;
   left?: number;
 }
 
 function DraggableItem({
-  axis,
+  children,
   label,
   style,
   top,
@@ -107,8 +104,7 @@ function DraggableItem({
       style={{ ...style, top, left }}
       buttonStyle={buttonStyle}
       transform={transform}
-      axis={axis}
       {...attributes}
-    />
+    >{children}</Draggable>
   );
 }

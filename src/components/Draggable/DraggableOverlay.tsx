@@ -1,4 +1,3 @@
-import React, {ComponentProps} from 'react';
 import {createPortal} from 'react-dom';
 import {DragOverlay, useDndContext} from '@dnd-kit/core';
 import type {DropAnimation} from '@dnd-kit/core';
@@ -51,19 +50,17 @@ const dropAnimationConfig: DropAnimation = {
 };
 
 interface Props {
-  axis?: ComponentProps<typeof Draggable>['axis'];
   dropAnimation?: DropAnimation | null;
 }
 
 export function DraggableOverlay({
-  axis,
   dropAnimation = dropAnimationConfig,
 }: Props) {
   const {active} = useDndContext();
 
   return createPortal(
     <DragOverlay dropAnimation={dropAnimation}>
-      {active ? <Draggable axis={axis} dragging dragOverlay /> : null}
+      {active ? <Draggable dragging dragOverlay /> : null}
     </DragOverlay>,
     document.body
   );
