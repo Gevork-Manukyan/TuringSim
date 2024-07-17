@@ -1,10 +1,14 @@
-import { Draggable } from "../../Draggable/Draggable"
 import "./DefaultNode.css"
+import { Draggable } from "../../Draggable/Draggable"
 
-export default function DefaultNode() {
+type DefaultNodeProps = {
+    children?: React.ReactNode
+}
+
+export default function DefaultNode({ children }: DefaultNodeProps) {
     return (
         <Draggable className="DefaultNode">
-            Default Node
+            {children}
         </Draggable>
     )
 }

@@ -1,7 +1,4 @@
 .myDropArea {
     border: solid 1px black;
-}
-
-.myDragButton {
-    background-color: red;
+    height: 100vh;
 }

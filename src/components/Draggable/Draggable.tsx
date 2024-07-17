@@ -1,5 +1,5 @@
-import "./Draggable.css"
-import { useState } from "react";
+import "./Draggable.css";
+import { useMemo } from "react";
 import { useDraggable } from "@dnd-kit/core";
 
 type DraggableProps = {
@@ -12,26 +12,28 @@ function generateRandomStringId(): string {
   const length = 16;
   const array = new Uint8Array(length / 2);
   window.crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    ""
+  );
 }
 
 export function Draggable({ children, className, id }: DraggableProps) {
-  const [draggableId, setDraggableId] = useState(id ? id : generateRandomStringId())
-
+  const draggableId = useMemo(() => (id ? id : generateRandomStringId()), [id]);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: draggableId,
   });
-
   const dragHandleProps = {
     ...listeners,
-    ...attributes
-  }
+    ...attributes,
+  };
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
+  const style = transform && {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  };
+
+  const handleClick = () => {
+    
+  }
 
   return (
     <button
@@ -39,6 +41,7 @@ export function Draggable({ children, className, id }: DraggableProps) {
       className={`Draggable${className ? " " + className : ""}`}
       style={style}
       {...dragHandleProps}
+      onClick={handleClick}
     >
       {children}
     </button>
