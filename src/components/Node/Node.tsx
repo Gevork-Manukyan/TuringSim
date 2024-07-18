@@ -26,7 +26,7 @@ interface Props {
   label?: string;
 }
 
-export function Node({
+export default function Node({
   activationConstraint,
   label = "",
   style,
@@ -37,13 +37,6 @@ export function Node({
   const touchSensor = useSensor(TouchSensor, { activationConstraint });
   const keyboardSensor = useSensor(KeyboardSensor, {});
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
-
-  const id = useMemo(() => generateRandomStringId(), []);
-
-  const { attributes, isDragging, listeners, setNodeRef, transform } =
-    useDraggable({
-      id: id,
-    });
 
   return (
     <DndContext
@@ -59,19 +52,53 @@ export function Node({
       modifiers={[snapCenterToCursor]}
     >
       <Wrapper>
-        <Draggable
-          ref={setNodeRef}
-          dragging={isDragging}
+        <DraggableItem
           label={label}
-          listeners={listeners}
-          style={{ ...style, top: y, left: x }}
+          top={y}
+          left={x}
+          style={style}
           buttonStyle={buttonStyle}
-          transform={transform}
-          {...attributes}
-        >
-          Node
-        </Draggable>
+        >Node</DraggableItem>
       </Wrapper>
     </DndContext>
+  );
+}
+
+interface DraggableItemProps {
+  children?: React.ReactNode;
+  label: string;
+  style?: React.CSSProperties;
+  buttonStyle?: React.CSSProperties;
+  top?: number;
+  left?: number;
+}
+
+function DraggableItem({
+  children,
+  label,
+  style,
+  top,
+  left,
+  buttonStyle,
+}: DraggableItemProps) {
+
+  const id = useMemo(() => generateRandomStringId(), [])
+
+  const { attributes, isDragging, listeners, setNodeRef, transform } =
+    useDraggable({
+      id: id,
+    });
+
+  return (
+    <Draggable
+      ref={setNodeRef}
+      dragging={isDragging}
+      label={label}
+      listeners={listeners}
+      style={{ ...style, top, left }}
+      buttonStyle={buttonStyle}
+      transform={transform}
+      {...attributes}
+    >{children}</Draggable>
   );
 }
