@@ -6,6 +6,7 @@ import styles from "./Draggable.module.css";
 
 interface Props {
   children?: React.ReactNode;
+  className?: string;
   dragOverlay?: boolean;
   dragging?: boolean;
   label?: string;
@@ -19,6 +20,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
   function Draggable(
     {
       children,
+      className,
       dragOverlay,
       dragging,
       label,
@@ -32,11 +34,11 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
   ) {
     return (
       <div
-        className={classNames(
+        className={`${classNames(
           styles.Draggable,
           dragOverlay && styles.dragOverlay,
-          dragging && styles.dragging,
-        )}
+          dragging && styles.dragging
+        )}${className ? ` ${className}` : ''}`}
         style={
           {
             ...style,

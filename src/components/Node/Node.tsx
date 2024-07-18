@@ -1,3 +1,4 @@
+import "./Node.css";
 import React, { useMemo, useState } from "react";
 import {
   DndContext,
@@ -26,7 +27,7 @@ interface Props {
   label?: string;
 }
 
-export default function Node({
+export function Node({
   activationConstraint,
   label = "",
   style,
@@ -58,14 +59,13 @@ export default function Node({
           left={x}
           style={style}
           buttonStyle={buttonStyle}
-        >Node</DraggableItem>
+        />
       </Wrapper>
     </DndContext>
   );
 }
 
 interface DraggableItemProps {
-  children?: React.ReactNode;
   label: string;
   style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;
@@ -74,7 +74,6 @@ interface DraggableItemProps {
 }
 
 function DraggableItem({
-  children,
   label,
   style,
   top,
@@ -91,6 +90,7 @@ function DraggableItem({
 
   return (
     <Draggable
+      className="Node"
       ref={setNodeRef}
       dragging={isDragging}
       label={label}
@@ -99,6 +99,6 @@ function DraggableItem({
       buttonStyle={buttonStyle}
       transform={transform}
       {...attributes}
-    >{children}</Draggable>
+    >Node</Draggable>
   );
 }
