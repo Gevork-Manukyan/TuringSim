@@ -4,6 +4,11 @@ import "./App.css";
 function App() {
   return <>
     <Node />
+    <Node />
+    <Node />
+    <Node />
+    <Node />
+    <Node />
   </>;
 }
 

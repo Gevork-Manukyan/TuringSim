@@ -38,7 +38,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
           styles.Draggable,
           dragOverlay && styles.dragOverlay,
           dragging && styles.dragging
-        )}${className ? ` ${className}` : ''}`}
+        )}`}
         style={
           {
             ...style,
@@ -48,6 +48,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
         }
       >
         <button
+          className={className ? ` ${className}` : ''}
           {...props}
           aria-label="Draggable"
           data-cypress="draggable-item"
