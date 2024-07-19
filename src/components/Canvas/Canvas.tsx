@@ -1,6 +1,6 @@
 import './Canvas.scss'
 import Node from '../Nodes/Node/Node'
-import StartNode from '../Nodes/StartNode/StartNode'
+import StartNode from '../Nodes/EndNode/EndNode'
 
 export default function Canvas() {
   return (
