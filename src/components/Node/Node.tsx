@@ -1,4 +1,4 @@
-import './Node.css'
+import './Node.scss'
 
 export default function Node() {
   return (

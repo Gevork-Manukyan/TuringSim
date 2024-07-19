@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 import Canvas from "../Canvas/Canvas";
 import Navbar from "../Navbar/Navbar";
 
