@@ -9,4 +9,10 @@
     border-radius: 100%;
     border-width: 3px;
     cursor: pointer;
+
+    &:hover {
+        box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+        transition: box-shadow 300ms ease;
+    }
 }
