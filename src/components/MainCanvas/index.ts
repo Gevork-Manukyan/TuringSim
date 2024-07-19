@@ -1,1 +1,0 @@
-export {MainCanvas} from './MainCanvas';

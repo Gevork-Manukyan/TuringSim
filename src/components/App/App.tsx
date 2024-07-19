@@ -1,10 +1,7 @@
-import { Node } from "..";
 import "./App.css";
 
 function App() {
-  return <>
-    <Node />
-  </>;
+  return <></>;
 }
 
 export default App;
