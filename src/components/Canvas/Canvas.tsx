@@ -4,6 +4,7 @@ import StartNode from '../Nodes/EndNode/EndNode'
 
 export default function Canvas() {
 
+  
 
   return (
     <section id='Canvas'>
