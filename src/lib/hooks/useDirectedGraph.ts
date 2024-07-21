@@ -85,13 +85,13 @@ function doNodesExist(from: string, to: string, nodes: Map<string, Node>): boole
   return true;
 }
 
-export const useDirectedGraph = create((set, get) => ({
+export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   nodes: new Map<string, Node>(),
   adjacencyList: new Map<string, Edge[]>(),
   getGraph: () => {
     return {
       nodes: get().nodes,
-
+      adjacencyList: get().adjacencyList
     }
   },
   addNode: (node: Node) => {
