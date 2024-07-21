@@ -13,7 +13,6 @@ type Edge = {
 type TUseDirectedGraph = {
   nodes: Map<string, Node>;
   adjacencyList: Map<string, Edge[]>;
-  getGraph: () => { nodes: Map<string, Node>, adjacencyList: Map<string, Edge[]> };
   addNode: (node: Node) => void;
   removeNode: (nodeId: string) => void;
   addEdge: (edge: Edge) => void;
@@ -30,7 +29,7 @@ function generateRandomStringId(): string {
 }
 
 function addNode(state: TUseDirectedGraph, node: Node) {
-  if (state.nodes.has(node.id)) {
+  if (!state.nodes.has(node.id)) {
     const newNodes = new Map(state.nodes);
     newNodes.set(node.id, node);
 
@@ -85,15 +84,9 @@ function doNodesExist(from: string, to: string, nodes: Map<string, Node>): boole
   return true;
 }
 
-export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
+export const useDirectedGraph = create<TUseDirectedGraph>((set) => ({
   nodes: new Map<string, Node>(),
   adjacencyList: new Map<string, Edge[]>(),
-  getGraph: () => {
-    return {
-      nodes: get().nodes,
-      adjacencyList: get().adjacencyList
-    }
-  },
   addNode: (node: Node) => {
     set((state: TUseDirectedGraph) => addNode(state, node));
   },
