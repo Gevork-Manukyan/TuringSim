@@ -13,7 +13,10 @@ type Edge = {
 type TUseDirectedGraph = {
   nodes: Map<string, Node>;
   adjacencyList: Map<string, Edge[]>;
-  addNode: (node: Node) => TUseDirectedGraph | void;
+  addNode: (node: Node) => void;
+  removeNode: (nodeId: string) => void;
+  addEdge: (edge: Edge) => void;
+  removeEdge: (from: string, to: string) => void;
 }
 
 function generateRandomStringId(): string {
@@ -39,7 +42,45 @@ function addNode(state: TUseDirectedGraph, node: Node) {
 
 function removeNode(state: TUseDirectedGraph, nodeId: string) {
   const newNodes = new Map(state.nodes);
+  const isNodeDeleted = newNodes.delete(nodeId);
+  if (!isNodeDeleted) throw new Error("Node must exist to be deleted")
+
+  // Remove all edges going out of node
+  let newAdjacencyList = new Map(state.adjacencyList);
+  newAdjacencyList.delete(nodeId)
+
+  // Remove all edges going into node
+  for (const fromNodeId of newAdjacencyList.keys()) newAdjacencyList = (removeEdge(fromNodeId, nodeId, newNodes, newAdjacencyList)).adjacencyList;
+
+  return { nodes: newNodes, adjacencyList: newAdjacencyList }
+}
+
+function addEdge(state: TUseDirectedGraph, edge: Edge) {
+  const { from, to } = edge;
+  doNodesExist(from, to, state.nodes);
+
+  const newAdjacencyList = new Map(state.adjacencyList);
+  newAdjacencyList.get(from)!.push({ from, to });
   
+  return { adjacencyList: newAdjacencyList };
+}
+
+function removeEdge(from: string, to: string, nodes: Map<string, Node>, adjacencyList: Map<string, Edge[]>) {
+  const newAdjacencyList = new Map(adjacencyList);
+  doNodesExist(from, to, nodes);
+        
+  const filteredEdges = newAdjacencyList.get(from)!.filter(edge => edge.to !== to);
+  newAdjacencyList.set(
+      from,
+      filteredEdges
+  )
+
+  return { adjacencyList: newAdjacencyList };
+}
+
+function doNodesExist(from: string, to: string, nodes: Map<string, Node>): boolean {
+  if (!nodes.has(from) || !nodes.has(to)) throw new Error("Both nodes must exist to make an edge");
+  return true;
 }
 
 export const useDirectedGraph = create((set) => ({
@@ -50,5 +91,11 @@ export const useDirectedGraph = create((set) => ({
   },
   removeNode: (nodeId: string) => {
     set((state: TUseDirectedGraph) => removeNode(state, nodeId));
+  },
+  addEdge: (edge: Edge) => {
+    set((state: TUseDirectedGraph) => addEdge(state, edge));
+  },
+  removeEdge: (from: string, to: string) => {
+    set((state: TUseDirectedGraph) => removeEdge(from, to, state.nodes, state.adjacencyList));
   }
 }));
