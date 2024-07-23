@@ -32,7 +32,7 @@ function addNewNode(state: TUseDirectedGraph, nodeValue: Node['value']) {
   let id;
   do {
     id = generateRandomStringId()
-  } while (!state.nodes.has(id))
+  } while (state.nodes.has(id))
   const newId = id;
 
   const newNodes = new Map(state.nodes);
