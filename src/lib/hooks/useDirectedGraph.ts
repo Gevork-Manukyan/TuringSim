@@ -3,6 +3,7 @@ import { create } from "zustand";
 type Node = {
   id: string;
   value: string | number;
+  isEndNode: boolean;
   edges: string[];
 }
 
@@ -13,10 +14,11 @@ type Edge = {
 
 type TUseDirectedGraph = {
   nodes: Map<string, Node>;
-  addNewNode: (value: Node['value']) => void;
+  addNode: (value: Node['value'], isEndNode?: boolean) => void;
   removeNode: (nodeId: string) => void;
   addEdge: (edge: Edge) => void;
   removeEdge: (from: string, to: string) => void;
+  isEmpty: () => boolean;
 }
 
 function generateRandomStringId(): string {
@@ -28,7 +30,7 @@ function generateRandomStringId(): string {
   );
 }
 
-function addNewNode(state: TUseDirectedGraph, nodeValue: Node['value']) {
+function addNode(state: TUseDirectedGraph, nodeValue: Node['value'], isEndNode: boolean) {
   let id;
   do {
     id = generateRandomStringId()
@@ -39,11 +41,11 @@ function addNewNode(state: TUseDirectedGraph, nodeValue: Node['value']) {
   newNodes.set(newId, {
     id: newId,
     value: nodeValue,
+    isEndNode: isEndNode,
     edges: []
   });
 
   return { nodes: newNodes }
- 
 }
 
 function removeNode(state: TUseDirectedGraph, nodeId: string) {
@@ -90,10 +92,10 @@ function doNodesExist(from: string, to: string, nodes: Map<string, Node>): boole
   return true;
 }
 
-export const useDirectedGraph = create<TUseDirectedGraph>((set) => ({
+export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   nodes: new Map<string, Node>(),
-  addNewNode: (value) => {
-    set((state: TUseDirectedGraph) => addNewNode(state, value));
+  addNode: (value, isEndNode=false) => {
+    set((state: TUseDirectedGraph) => addNode(state, value, isEndNode));
   },
   removeNode: (nodeId) => {
     set((state: TUseDirectedGraph) => removeNode(state, nodeId));
@@ -103,5 +105,8 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set) => ({
   },
   removeEdge: (from, to) => {
     set((state: TUseDirectedGraph) => removeEdge(state, from, to));
+  },
+  isEmpty: () => {
+    return get().nodes.size === 0;
   }
 }));
