@@ -14,7 +14,7 @@
     z-index: 1;
     box-sizing: border-box;
 
-    &:hover {
+    &--clicked {
         box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
         0px 15px 15px 0 rgba(34, 33, 81, 0.25);
         transition: box-shadow 300ms ease;
@@ -22,14 +22,48 @@
 
     &__wrapper {
         position: relative;
+        user-select: none;
     }
 
+    $plusBtnTransition: all 0.5s ease;;
     &__plus_btn {
         $position: calc($size / 2);
         position: absolute;
         left: $position;
         top: $position;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        line-height: 0px;
+        $size: 30px;
+        height: $size;
+        width: $size;
+        border: solid black 1px;
+        border-radius: 100%;
         transform: translate(-50%, -50%);
+        transition: $plusBtnTransition;
+        cursor: pointer;    
         z-index: 0;
-    }
+    }  
+
+    &--clicked ~ &__plus_btn {
+        transition: $plusBtnTransition;
+
+        &--1 {
+            transform: translate(-50%, -110px);
+        }
+
+        &--2 {
+            transform: translate(calc(110px - $size), -50%);
+        }
+
+        &--3 {
+            transform: translate(-50%, calc(110px - $size));
+        }
+
+        &--4 {
+            transform: translate(-110px, -50%);
+        }
+    }  
 }
