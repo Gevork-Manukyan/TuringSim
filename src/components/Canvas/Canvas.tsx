@@ -11,9 +11,9 @@ export default function Canvas() {
 
   return (
     <section id="Canvas">
-      {isGraphEmpty() && <AddNodeButton value={1}>+</AddNodeButton>}
+      {isGraphEmpty() && <AddNodeButton>+</AddNodeButton>}
       {Array.from(graphNodes.entries()).map(([key, node]) => {
-        return <Node key={key}>{node.value}</Node>
+        return <Node key={key} node={node} />
       })}
     </section>
   );

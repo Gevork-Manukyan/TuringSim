@@ -1,27 +1,27 @@
 import { create } from "zustand";
 
-type Node = {
+export type TNode = {
   id: string;
-  value: string | number;
+  value: string | number | null;
   isEndNode: boolean;
   edges: string[];
 }
 
-type Edge = {
-  to: string;
+export type TEdge = {
   from: string;
+  to: string;
 }
 
 type TUseDirectedGraph = {
-  nodes: Map<string, Node>;
-  addNode: (value: Node['value'], isEndNode?: boolean) => void;
+  nodes: Map<string, TNode>;
+  addNode: (value: TNode['value'], isEndNode?: boolean) => string;
   removeNode: (nodeId: string) => void;
-  addEdge: (edge: Edge) => void;
+  addEdge: (edge: TEdge) => void;
   removeEdge: (from: string, to: string) => void;
   isEmpty: () => boolean;
 }
 
-function generateRandomStringId(): string {
+function generateRandomString(): string {
   const length = 16;
   const array = new Uint8Array(length / 2);
   window.crypto.getRandomValues(array);
@@ -30,16 +30,18 @@ function generateRandomStringId(): string {
   );
 }
 
-function addNode(state: TUseDirectedGraph, nodeValue: Node['value'], isEndNode: boolean) {
+function generateRandomId(state: TUseDirectedGraph) {
   let id;
   do {
-    id = generateRandomStringId()
+    id = generateRandomString()
   } while (state.nodes.has(id))
-  const newId = id;
+  return id;
+}
 
+function addNode(state: TUseDirectedGraph, nodeValue: TNode['value'], nodeId: string, isEndNode: boolean) {
   const newNodes = new Map(state.nodes);
-  newNodes.set(newId, {
-    id: newId,
+  newNodes.set(nodeId, {
+    id: nodeId,
     value: nodeValue,
     isEndNode: isEndNode,
     edges: []
@@ -66,7 +68,7 @@ function removeNode(state: TUseDirectedGraph, nodeId: string) {
   return { nodes: newNodes }
 }
 
-function addEdge(state: TUseDirectedGraph, edge: Edge) {
+function addEdge(state: TUseDirectedGraph, edge: TEdge) {
   const { from, to } = edge;
   doNodesExist(from, to, state.nodes);
 
@@ -87,15 +89,20 @@ function removeEdge(state: TUseDirectedGraph, from: string, to: string) {
   return { nodes: newNodes };
 }
 
-function doNodesExist(from: string, to: string, nodes: Map<string, Node>): boolean {
+function doNodesExist(from: string, to: string, nodes: Map<string, TNode>): boolean {
   if (!nodes.has(from) || !nodes.has(to)) throw new Error("Both nodes must exist to make an edge");
   return true;
 }
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
-  nodes: new Map<string, Node>(),
+  nodes: new Map<string, TNode>(),
   addNode: (value, isEndNode=false) => {
-    set((state: TUseDirectedGraph) => addNode(state, value, isEndNode));
+    let nodeId = '';
+    set((state: TUseDirectedGraph) => {
+      nodeId = generateRandomId(state);
+      return addNode(state, value, nodeId, isEndNode);
+    });
+    return nodeId;
   },
   removeNode: (nodeId) => {
     set((state: TUseDirectedGraph) => removeNode(state, nodeId));

@@ -3,10 +3,10 @@ import './AddNodeButton.scss'
 
 type AddNodeButtonProps = {
     children?: React.ReactNode;
-    value: string | number;
+    value?: string | number | null;
 }
 
-export default function AddNodeButton({ children, value }: AddNodeButtonProps) {
+export default function AddNodeButton({ children, value=null }: AddNodeButtonProps) {
     const addNode = useDirectedGraph(state => state.addNode)
     
     return (
