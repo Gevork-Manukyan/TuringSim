@@ -1,6 +1,7 @@
 import './Node.scss'
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDirectedGraph, TNode } from '../../../lib/hooks/useDirectedGraph';
+import { Point } from '../../Arrow/Arrow';
 
 type NodeProps = {
   className?: string;
@@ -9,13 +10,22 @@ type NodeProps = {
 
 export default function Node({ className, node }: NodeProps) {
   const [isClicked, setIsClicked] = useState(false);
+  const [coordinates, setCoordinates] = useState<Point>({x: 0, y: 0})
+  const ref: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
   
   const handleClick = () => {
     setIsClicked(prev => !prev)
   }
 
+  useEffect(() => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setCoordinates({ x: rect.x, y: rect.y })
+    }
+  }, [])
+
   return (
-    <div className='Node__wrapper'>
+    <div className='Node__wrapper' ref={ref}>
       <button 
         className={`Node${className ? ` ${className}` : ''}${isClicked ? ' Node--clicked': ''}`} 
         onClick={handleClick}
@@ -31,6 +41,8 @@ export default function Node({ className, node }: NodeProps) {
   )
 }
 
+
+
 type PlusButtonProps = {
   className: string;
   nodeId: string;
@@ -44,11 +56,7 @@ function PlusButton({ className, nodeId, setIsClicked }: PlusButtonProps) {
 
   const handleClick = () => {
     const newNodeId = addNode(null);
-    addEdge({
-      from: nodeId,
-      to: newNodeId
-    })
-
+    addEdge({ from: nodeId, to: newNodeId })
     setIsClicked(false)    
   }
 
