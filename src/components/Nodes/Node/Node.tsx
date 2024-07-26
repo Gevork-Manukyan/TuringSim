@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDirectedGraph, TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { Transform } from '@dnd-kit/utilities';
+import { Draggable } from '../../Draggable/Draggable';
 
 
 function getStyles(transform: Transform | null) {
@@ -21,7 +22,7 @@ export default function Node({ className, node }: NodeProps) {
   /* VARIABLES */
   const [isClicked, setIsClicked] = useState(false);
   const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
-    id: 'draggable',
+    id: node.id,
   });
   const style = getStyles(transform)
 
@@ -29,14 +30,14 @@ export default function Node({ className, node }: NodeProps) {
   /* FUNCTIONS */
   useEffect(() => { isDragging ? setIsClicked(false) : null }, [isDragging])
 
-  const handleRightClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
     setIsClicked(prev => !prev)
   }
 
   return (
-    <div className='Node__wrapper' style={style}>
-      <button 
+    <div className='Node__wrapper'>
+      {/* <button 
         className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
         ref={setNodeRef}
         {...attributes}
@@ -44,12 +45,25 @@ export default function Node({ className, node }: NodeProps) {
         onContextMenu={handleRightClick}
       >
         {node.value ? node.value : "Node"}
-      </button>
+      </button> */}
 
-      <PlusButton className='Node__plus_btn--1' nodeId={node.id} setIsClicked={setIsClicked} />
-      <PlusButton className='Node__plus_btn--2' nodeId={node.id} setIsClicked={setIsClicked} />
-      <PlusButton className='Node__plus_btn--3' nodeId={node.id} setIsClicked={setIsClicked} />
-      <PlusButton className='Node__plus_btn--4' nodeId={node.id} setIsClicked={setIsClicked} />
+      <Draggable
+        className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
+        ref={setNodeRef}
+        dragging={isDragging}  
+        listeners={listeners}
+        onContextMenu={handleRightClick}
+        style={style}
+        transform={transform}
+        {...attributes}
+      >
+        {node.value ? node.value : "Node"}
+
+        <PlusButton className='Node__plus_btn--1' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plus_btn--2' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plus_btn--3' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plus_btn--4' nodeId={node.id} setIsClicked={setIsClicked} />
+      </Draggable>
     </div>
   )
 }

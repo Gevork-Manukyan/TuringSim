@@ -4,9 +4,12 @@ import type {DraggableSyntheticListeners} from '@dnd-kit/core';
 import type {Transform} from '@dnd-kit/utilities';
 
 interface Props {
+    children?: React.ReactNode;
+    className?: string;
     dragging?: boolean;
     label?: string;
     listeners?: DraggableSyntheticListeners;
+    onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     style?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
     transform?: Transform | null;
@@ -14,9 +17,12 @@ interface Props {
 
 export const Draggable = forwardRef<HTMLButtonElement, Props>(
     function Draggable({
+        children,
+        className,
         dragging,
         label,
         listeners,
+        onContextMenu,
         transform,
         style,
         buttonStyle,
@@ -24,7 +30,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
     }, ref) {
         return (
             <div
-                className={`Draggable${dragging ? ` dragging` : ''}`}
+                className={`Draggable${dragging ? ` dragging` : ''}${className ? ` ${className}` : ``}`}
                 style={
                     {
                         ...style,
@@ -32,6 +38,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
                         '--translate-y': `${transform?.y ?? 0}px`,
                     } as React.CSSProperties
                 }
+                onContextMenu={onContextMenu}
             >
                 <button
                     {...props}
@@ -41,6 +48,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
                     ref={ref}
                     style={buttonStyle}
                 >
+                    {children}
                 </button>
                 {label ? <label>{label}</label> : null}
             </div>

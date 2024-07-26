@@ -11,7 +11,7 @@
     border-radius: 100%;
     border-width: 3px;
     cursor: pointer;
-    z-index: 1;
+    z-index: 10;
     box-sizing: border-box;
 
     &--clicked {
@@ -47,7 +47,7 @@
         z-index: 0;
     }  
 
-    &--clicked ~ &__plus_btn {
+    &--clicked button &__plus_btn {
         transition: $plusBtnTransition;
 
         &--1 {
