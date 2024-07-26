@@ -1,28 +1,23 @@
 .Node {
-    $size: 100px;
-    width: $size;
-    height: $size;
     position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    border: solid 1px black;
-    border-radius: 100%;
-    border-width: 3px;
-    cursor: pointer;
-    z-index: 10;
-    box-sizing: border-box;
-
-    &--clicked {
-        box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-        transition: box-shadow 300ms ease;
-    }
-
-    &__wrapper {
+    user-select: none;
+    
+    $size: 100px;
+    $radius: 100%;
+    &__content {
+        width: $size;
+        height: $size;
         position: relative;
-        user-select: none;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        border: solid 1px black;
+        border-radius: $radius;
+        border-width: 3px;
+        cursor: pointer;
+        z-index: 10;
+        box-sizing: border-box;
     }
 
     $plusBtnTransition: all 0.5s ease;;
@@ -47,23 +42,33 @@
         z-index: 0;
     }  
 
-    &--clicked button &__plus_btn {
-        transition: $plusBtnTransition;
+    &__draggable {
+        border-radius: $radius;
 
-        &--1 {
-            transform: translate(-50%, -110px);
+        &--clicked {
+            box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+            0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+            transition: box-shadow 300ms ease;
         }
 
-        &--2 {
-            transform: translate(calc(110px - $size), -50%);
-        }
+        &--clicked button .Node__plus_btn {
+            transition: $plusBtnTransition;
 
-        &--3 {
-            transform: translate(-50%, calc(110px - $size));
-        }
+            &--1 {
+                transform: translate(-50%, -110px);
+            }
 
-        &--4 {
-            transform: translate(-110px, -50%);
-        }
-    }  
+            &--2 {
+                transform: translate(calc(110px - $size), -50%);
+            }
+
+            &--3 {
+                transform: translate(-50%, calc(110px - $size));
+            }
+
+            &--4 {
+                transform: translate(-110px, -50%);
+            }
+        }  
+    }
 }

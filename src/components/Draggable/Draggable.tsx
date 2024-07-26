@@ -30,7 +30,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
     }, ref) {
         return (
             <div
-                className={`Draggable${dragging ? ` dragging` : ''}${className ? ` ${className}` : ``}`}
+                className={`${className ? `${className}` : `Draggable`}${dragging ? ` dragging` : ''}`}
                 style={
                     {
                         ...style,

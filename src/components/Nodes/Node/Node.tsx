@@ -36,19 +36,9 @@ export default function Node({ className, node }: NodeProps) {
   }
 
   return (
-    <div className='Node__wrapper'>
-      {/* <button 
-        className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
-        ref={setNodeRef}
-        {...attributes}
-        {...listeners}
-        onContextMenu={handleRightClick}
-      >
-        {node.value ? node.value : "Node"}
-      </button> */}
-
+    <div className='Node'>
       <Draggable
-        className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
+        className={`Node__draggable${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node__draggable--clicked': ''}`} 
         ref={setNodeRef}
         dragging={isDragging}  
         listeners={listeners}
@@ -57,7 +47,9 @@ export default function Node({ className, node }: NodeProps) {
         transform={transform}
         {...attributes}
       >
-        {node.value ? node.value : "Node"}
+        <div className="Node__content">
+          {node.value ? node.value : "Node"}
+        </div>
 
         <PlusButton className='Node__plus_btn--1' nodeId={node.id} setIsClicked={setIsClicked} />
         <PlusButton className='Node__plus_btn--2' nodeId={node.id} setIsClicked={setIsClicked} />
