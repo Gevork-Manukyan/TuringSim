@@ -10,6 +10,7 @@ export default function Canvas() {
   const graphNodes = useDirectedGraph((state) => state.nodes)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
 
+  
 
   return (
     <DndContext>
