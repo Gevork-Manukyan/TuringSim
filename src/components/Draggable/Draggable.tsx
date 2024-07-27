@@ -11,7 +11,6 @@ interface Props {
     listeners?: DraggableSyntheticListeners;
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     style?: React.CSSProperties;
-    buttonStyle?: React.CSSProperties;
     transform?: Transform | null;
   }
 
@@ -25,7 +24,6 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
         onContextMenu,
         transform,
         style,
-        buttonStyle,
         ...props
     }, ref) {
         return (
@@ -46,7 +44,6 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
                     data-cypress="draggable-item"
                     {...listeners}
                     ref={ref}
-                    style={buttonStyle}
                 >
                     {children}
                 </button>
