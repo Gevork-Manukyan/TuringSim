@@ -4,7 +4,8 @@ export type TNode = {
   id: string;
   value: string | number | null;
   isEndNode: boolean;
-  edges: string[];
+  incomingEdges: string[];
+  outgoingEdges: string[];
 }
 
 export type TEdge = {
@@ -44,7 +45,8 @@ function addNode(state: TUseDirectedGraph, nodeValue: TNode['value'], nodeId: st
     id: nodeId,
     value: nodeValue,
     isEndNode: isEndNode,
-    edges: []
+    incomingEdges: [],
+    outgoingEdges: []
   });
 
   return { nodes: newNodes }
@@ -56,13 +58,13 @@ function removeNode(state: TUseDirectedGraph, nodeId: string) {
   if (!isNodeDeleted) throw new Error("Node must exist to be deleted")
 
   // Remove all edges going out of node
-  newNodes.get(nodeId)!.edges = []
+  newNodes.get(nodeId)!.outgoingEdges = []
 
   // Remove all edges going into node
   for (const id of newNodes.keys()) {
     const node = newNodes.get(id)
-    const filteredEdges = node!.edges.filter(edge => edge === nodeId)
-    newNodes.set(id, { ...node!, edges: filteredEdges })
+    const filteredEdges = node!.outgoingEdges.filter(edge => edge === nodeId)
+    newNodes.set(id, { ...node!, outgoingEdges: filteredEdges })
   }
 
   return { nodes: newNodes }
@@ -73,7 +75,8 @@ function addEdge(state: TUseDirectedGraph, edge: TEdge) {
   doNodesExist(from, to, state.nodes);
 
   const newNodes = new Map(state.nodes);
-  newNodes.get(from)!.edges.push(to);
+  newNodes.get(from)!.outgoingEdges.push(to);
+  newNodes.get(to)!.incomingEdges.push(from);
   
   return { nodes: newNodes };
 }
@@ -82,9 +85,14 @@ function removeEdge(state: TUseDirectedGraph, from: string, to: string) {
   const newNodes = new Map(state.nodes);
   doNodesExist(from, to, state.nodes);
   
-  const node = newNodes.get(from)
-  const filteredEdges = node!.edges.filter(edge => edge !== to);
-  newNodes.set(from, { ...node!, edges: filteredEdges })
+  const fromNode = newNodes.get(from)
+  const toNode = newNodes.get(to)
+
+  const fromFilteredEdges = fromNode!.outgoingEdges.filter(edge => edge !== to);
+  const toFilteredEdges = toNode!.incomingEdges.filter(edge => edge !== from);
+
+  newNodes.set(from, { ...fromNode!, outgoingEdges: fromFilteredEdges })
+  newNodes.set(to, { ...toNode!, incomingEdges: toFilteredEdges })
 
   return { nodes: newNodes };
 }
