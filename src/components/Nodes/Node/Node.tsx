@@ -1,8 +1,10 @@
 import './Node.scss'
-import { useEffect, useState } from 'react';
-import { useDirectedGraph, TNode } from '../../../lib/hooks/useDirectedGraph';
+import { useState } from 'react';
+import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { Transform } from '@dnd-kit/utilities';
+import { useNode } from './useNode';
+import PlusButton from './PlusButton';
 
 
 function getStyles(transform: Transform | null) {
@@ -14,38 +16,34 @@ function getStyles(transform: Transform | null) {
 type NodeProps = {
   className?: string;
   node: TNode;
-  onCoordsChange?: ({id, x, y}: {id: string; x: number; y: number}) => void;
+  onCoordsChange?: ({ id, x, y }: TonCoordsChange) => void;
 }
 
-
+export type TonCoordsChange = {
+  id: string;
+  x: number;
+  y: number;
+}
 
 export default function Node({ className, node, onCoordsChange }: NodeProps) {
   
-  /* VARIABLES */
   const [isClicked, setIsClicked] = useState(false);
-  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
-    id: node.id,
-  });
+  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({ id: node.id });
   const style = getStyles(transform)
-
-  /* FUNCTIONS */
-  useEffect(() => { isDragging ? setIsClicked(false) : null }, [isDragging])
-
-  useEffect(() => {
-    if (onCoordsChange) onCoordsChange({ id: node.id, x: transform?.x ?? 0, y: transform?.y ?? 0 })
-  }, [transform])
-
-  const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault()
-    setIsClicked(prev => !prev)
-  }
+  const { handleRightClick } = useNode({ isDragging, transform, node, setIsClicked, onCoordsChange })
 
   return (
     <div 
       className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
-      style={style}
       ref={setNodeRef}
       onContextMenu={handleRightClick}
+      style={
+        {
+          'top': node.coords.x,
+          'left': node.coords.y,
+          ...style,
+        } as React.CSSProperties
+      }
     >
         <button 
           className="Node__content"         
@@ -60,36 +58,5 @@ export default function Node({ className, node, onCoordsChange }: NodeProps) {
         <PlusButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked} />
         <PlusButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked} />
       </div>
-  )
-}
-
-
-
-type PlusButtonProps = {
-  className: string;
-  style?: React.CSSProperties;
-  nodeId: string;
-  setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function PlusButton({ className, style, nodeId, setIsClicked }: PlusButtonProps) {
-
-  const addNode = useDirectedGraph(state => state.addNode)
-  const addEdge = useDirectedGraph(state => state.addEdge)
-
-  const handleClick = () => {
-    const newNodeId = addNode(null);
-    addEdge({ from: nodeId, to: newNodeId })
-    setIsClicked(false)    
-  }
-
-  return (
-    <span 
-      className={`Node__plusBtn${className ? ` ${className}`: ''}`}
-      style={style}
-      onClick={handleClick}
-      >
-      +
-    </span>
   )
 }
