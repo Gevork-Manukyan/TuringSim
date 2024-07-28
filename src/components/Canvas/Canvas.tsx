@@ -17,12 +17,17 @@ const defaultCoordinates = {
 export default function Canvas() {
   const graphNodes = useDirectedGraph((state) => state.nodes)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
+  
 
   const [{x, y}, setCoordinates] = useState<Coordinates>(defaultCoordinates);
   const mouseSensor = useSensor(MouseSensor)
   const touchSensor = useSensor(TouchSensor)
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
+
+  const handleCoordsChange = (e) => {
+    
+  }
 
   return (
     <DndContext
@@ -40,7 +45,7 @@ export default function Canvas() {
         {/* <Arrow startPoint={{x: 0, y: 0}} endPoint={{x: 382, y: 418}} /> */}
         {isGraphEmpty() && <AddNodeButton>+</AddNodeButton>}
         {Array.from(graphNodes.entries()).map(([key, node]) => {
-          return <Node key={key} node={node} />
+          return <Node key={key} node={node} onCoordsChange={handleCoordsChange} />
         })}
       </section>
     </DndContext>

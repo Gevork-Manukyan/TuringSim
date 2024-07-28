@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useDirectedGraph, TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { Transform } from '@dnd-kit/utilities';
-import { Draggable } from '../../Draggable/Draggable';
 
 
 function getStyles(transform: Transform | null) {
@@ -15,9 +14,12 @@ function getStyles(transform: Transform | null) {
 type NodeProps = {
   className?: string;
   node: TNode;
+  onCoordsChange?: ({id, x, y}: {id: string; x: number; y: number}) => void;
 }
 
-export default function Node({ className, node }: NodeProps) {
+
+
+export default function Node({ className, node, onCoordsChange }: NodeProps) {
   
   /* VARIABLES */
   const [isClicked, setIsClicked] = useState(false);
@@ -26,9 +28,12 @@ export default function Node({ className, node }: NodeProps) {
   });
   const style = getStyles(transform)
 
-
   /* FUNCTIONS */
   useEffect(() => { isDragging ? setIsClicked(false) : null }, [isDragging])
+
+  useEffect(() => {
+    if (onCoordsChange) onCoordsChange({ id: node.id, x: transform?.x ?? 0, y: transform?.y ?? 0 })
+  }, [transform])
 
   const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
