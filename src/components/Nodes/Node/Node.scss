@@ -21,7 +21,7 @@
     }
 
     $plusBtnTransition: all 0.5s ease;;
-    &__plus_btn {
+    &__plusBtn {
         $position: calc($size / 2);
         position: absolute;
         left: $position;
@@ -51,7 +51,7 @@
             transition: box-shadow 300ms ease;
         }
 
-        &--clicked button .Node__plus_btn {
+        &--clicked .Node__plusBtn {
             transition: $plusBtnTransition;
 
             &--1 {

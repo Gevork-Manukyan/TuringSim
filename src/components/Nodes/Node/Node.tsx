@@ -37,25 +37,25 @@ export default function Node({ className, node }: NodeProps) {
 
   return (
     <div className='Node'>
-      <Draggable
+      <div
         className={`Node__draggable${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node__draggable--clicked': ''}`} 
         ref={setNodeRef}
-        dragging={isDragging}  
-        listeners={listeners}
         onContextMenu={handleRightClick}
         style={style}
-        transform={transform}
-        {...attributes}
       >
-        <div className="Node__content">
+        <button 
+          className="Node__content"         
+          {...listeners}
+          {...attributes}
+        >
           {node.value ? node.value : "Node"}
-        </div>
+        </button>
 
-        <PlusButton className='Node__plus_btn--1' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plus_btn--2' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plus_btn--3' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plus_btn--4' nodeId={node.id} setIsClicked={setIsClicked} />
-      </Draggable>
+        <PlusButton className='Node__plusBtn--1' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plusBtn--2' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked} />
+        <PlusButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked} />
+      </div>
     </div>
   )
 }
@@ -64,11 +64,12 @@ export default function Node({ className, node }: NodeProps) {
 
 type PlusButtonProps = {
   className: string;
+  style?: React.CSSProperties;
   nodeId: string;
   setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function PlusButton({ className, nodeId, setIsClicked }: PlusButtonProps) {
+function PlusButton({ className, style, nodeId, setIsClicked }: PlusButtonProps) {
 
   const addNode = useDirectedGraph(state => state.addNode)
   const addEdge = useDirectedGraph(state => state.addEdge)
@@ -81,9 +82,10 @@ function PlusButton({ className, nodeId, setIsClicked }: PlusButtonProps) {
 
   return (
     <span 
-      className={`Node__plus_btn${className ? ` ${className}`: ''}`}
+      className={`Node__plusBtn${className ? ` ${className}`: ''}`}
+      style={style}
       onClick={handleClick}
-    >
+      >
       +
     </span>
   )
