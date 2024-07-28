@@ -1,8 +1,14 @@
 import { create } from "zustand";
 
+type Coords = {
+  x: number,
+  y: number
+}
+
 export type TNode = {
   id: string;
   value: string | number | null;
+  coords: Coords;
   isEndNode: boolean;
   incomingEdges: string[];
   outgoingEdges: string[];
@@ -19,6 +25,7 @@ type TUseDirectedGraph = {
   removeNode: (nodeId: string) => void;
   addEdge: (edge: TEdge) => void;
   removeEdge: (from: string, to: string) => void;
+  updateCoords: (nodeId: string, x: number, y: number) => void;
   isEmpty: () => boolean;
 }
 
@@ -44,6 +51,7 @@ function addNode(state: TUseDirectedGraph, nodeValue: TNode['value'], nodeId: st
   newNodes.set(nodeId, {
     id: nodeId,
     value: nodeValue,
+    coords: { x: 0, y: 0 },
     isEndNode: isEndNode,
     incomingEdges: [],
     outgoingEdges: []
@@ -97,6 +105,21 @@ function removeEdge(state: TUseDirectedGraph, from: string, to: string) {
   return { nodes: newNodes };
 }
 
+function updateCoords(state: TUseDirectedGraph, nodeId: string, x: number, y: number) {
+  if (!state.nodes.has(nodeId)) {
+    throw new Error(`Node with id ${nodeId} does not exist`);
+  }
+  
+  const newNodes = new Map(state.nodes)
+  const node = newNodes.get(nodeId)
+  newNodes.set(nodeId, {
+    ...node!,
+    coords: { x, y }
+  })
+  
+  return { nodes: newNodes };
+}
+
 function doNodesExist(from: string, to: string, nodes: Map<string, TNode>): boolean {
   if (!nodes.has(from) || !nodes.has(to)) throw new Error("Both nodes must exist to make an edge");
   return true;
@@ -120,6 +143,9 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   removeEdge: (from, to) => {
     set((state: TUseDirectedGraph) => removeEdge(state, from, to));
+  },
+  updateCoords: (nodeId: string, x: number, y: number) => {
+    set((state: TUseDirectedGraph) => updateCoords(state, nodeId, x, y));
   },
   isEmpty: () => {
     return get().nodes.size === 0;

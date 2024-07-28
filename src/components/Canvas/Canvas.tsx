@@ -1,9 +1,9 @@
 import "./Canvas.scss";
 import { useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
-import { useState } from "react";
-import { DndContext, KeyboardSensor, MouseSensor, PointerActivationConstraint, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { act, useState } from "react";
+import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { Coordinates } from "@dnd-kit/core/dist/types";
-import Node from "../Nodes/Node/Node";
+import Node, { TonCoordsChange } from "../Nodes/Node/Node";
 import EndNode from "../Nodes/EndNode/EndNode";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
@@ -17,28 +17,24 @@ const defaultCoordinates = {
 export default function Canvas() {
   const graphNodes = useDirectedGraph((state) => state.nodes)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
-  
+  const updateCoords = useDirectedGraph(state => state.updateCoords)
 
-  const [{x, y}, setCoordinates] = useState<Coordinates>(defaultCoordinates);
+  // const [{x, y}, setCoordinates] = useState<Coordinates>(defaultCoordinates);
   const mouseSensor = useSensor(MouseSensor)
   const touchSensor = useSensor(TouchSensor)
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-  const handleCoordsChange = (e) => {
-    
+  const handleCoordsChange = (event: TonCoordsChange) => {
+    const { id, x, y } = event;
+    updateCoords(id, x, y)
   }
 
   return (
     <DndContext
       sensors={sensors}
       onDragEnd={({active, delta}) => {
-        setCoordinates(({x, y}) => {
-          return {
-            x: x + delta.x,
-            y: y + delta.y
-          }
-        })
+        
       }}
     >
       <section id="Canvas">
