@@ -25,6 +25,7 @@ type TUseDirectedGraph = {
   removeNode: (nodeId: string) => void;
   addEdge: (edge: TEdge) => void;
   removeEdge: (from: string, to: string) => void;
+  getCoords: (nodeId: string) => Coords;
   updateCoords: (nodeId: string, x: number, y: number) => void;
   isEmpty: () => boolean;
 }
@@ -143,6 +144,11 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   removeEdge: (from, to) => {
     set((state: TUseDirectedGraph) => removeEdge(state, from, to));
+  },
+  getCoords: (nodeId: string) => {
+    const coords = get().nodes.get(nodeId)?.coords;
+    if (coords) return coords;
+    else throw Error("Invalid Node Id for getCoords");
   },
   updateCoords: (nodeId: string, x: number, y: number) => {
     set((state: TUseDirectedGraph) => updateCoords(state, nodeId, x, y));

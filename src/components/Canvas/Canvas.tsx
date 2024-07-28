@@ -1,6 +1,6 @@
 import "./Canvas.scss";
 import { useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
-import { act, useState } from "react";
+import { useState } from "react";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { Coordinates } from "@dnd-kit/core/dist/types";
 import Node, { TonCoordsChange } from "../Nodes/Node/Node";
@@ -18,6 +18,7 @@ export default function Canvas() {
   const graphNodes = useDirectedGraph((state) => state.nodes)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
   const updateCoords = useDirectedGraph(state => state.updateCoords)
+  const getCoords = useDirectedGraph(state => state.getCoords)
 
   // const [{x, y}, setCoordinates] = useState<Coordinates>(defaultCoordinates);
   const mouseSensor = useSensor(MouseSensor)
@@ -27,14 +28,16 @@ export default function Canvas() {
 
   const handleCoordsChange = (event: TonCoordsChange) => {
     const { id, x, y } = event;
-    updateCoords(id, x, y)
+    // updateCoords(id, x, y)
   }
 
   return (
     <DndContext
       sensors={sensors}
       onDragEnd={({active, delta}) => {
-        
+        const id = active.id.toString()
+        const { x, y } = getCoords(id)
+        updateCoords(id, x + delta.x, y + delta.y)
       }}
     >
       <section id="Canvas">

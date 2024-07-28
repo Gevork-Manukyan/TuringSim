@@ -2,16 +2,9 @@ import './Node.scss'
 import { useState } from 'react';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
-import { Transform } from '@dnd-kit/utilities';
 import { useNode } from './useNode';
 import PlusButton from './PlusButton';
 
-
-function getStyles(transform: Transform | null) {
-  return transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
-}
 
 type NodeProps = {
   className?: string;
@@ -29,21 +22,20 @@ export default function Node({ className, node, onCoordsChange }: NodeProps) {
   
   const [isClicked, setIsClicked] = useState(false);
   const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({ id: node.id });
-  const style = getStyles(transform)
   const { handleRightClick } = useNode({ isDragging, transform, node, setIsClicked, onCoordsChange })
+  
+  const style = {
+        top: `${node.coords.y}px`,
+        left: `${node.coords.x}px`,
+        transform: `translate(${transform?.x ?? 0}px, ${transform?.y ?? 0}px)`,
+  } as React.CSSProperties
 
   return (
     <div 
       className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
       ref={setNodeRef}
       onContextMenu={handleRightClick}
-      style={
-        {
-          'top': node.coords.x,
-          'left': node.coords.y,
-          ...style,
-        } as React.CSSProperties
-      }
+      style={style}
     >
         <button 
           className="Node__content"         
