@@ -1,9 +1,10 @@
 .Node {
-    position: relative;
-    user-select: none;
-    
     $size: 100px;
     $radius: 100%;
+    position: relative;
+    user-select: none;
+    border-radius: $radius;
+
     &__content {
         width: $size;
         height: $size;
@@ -42,33 +43,29 @@
         z-index: 0;
     }  
 
-    &__draggable {
-        border-radius: $radius;
+    &--clicked {
+        box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+        transition: box-shadow 300ms ease;
+    }
 
-        &--clicked {
-            box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-            0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-            transition: box-shadow 300ms ease;
+    &--clicked &__plusBtn {
+        transition: $plusBtnTransition;
+
+        &--1 {
+            transform: translate(-50%, -110px);
         }
 
-        &--clicked .Node__plusBtn {
-            transition: $plusBtnTransition;
+        &--2 {
+            transform: translate(calc(110px - $size), -50%);
+        }
 
-            &--1 {
-                transform: translate(-50%, -110px);
-            }
+        &--3 {
+            transform: translate(-50%, calc(110px - $size));
+        }
 
-            &--2 {
-                transform: translate(calc(110px - $size), -50%);
-            }
-
-            &--3 {
-                transform: translate(-50%, calc(110px - $size));
-            }
-
-            &--4 {
-                transform: translate(-110px, -50%);
-            }
-        }  
-    }
+        &--4 {
+            transform: translate(-110px, -50%);
+        }
+    }  
 }

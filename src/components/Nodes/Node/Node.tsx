@@ -36,13 +36,12 @@ export default function Node({ className, node }: NodeProps) {
   }
 
   return (
-    <div className='Node'>
-      <div
-        className={`Node__draggable${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node__draggable--clicked': ''}`} 
-        ref={setNodeRef}
-        onContextMenu={handleRightClick}
-        style={style}
-      >
+    <div 
+      className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
+      style={style}
+      ref={setNodeRef}
+      onContextMenu={handleRightClick}
+    >
         <button 
           className="Node__content"         
           {...listeners}
@@ -56,7 +55,6 @@ export default function Node({ className, node }: NodeProps) {
         <PlusButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked} />
         <PlusButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked} />
       </div>
-    </div>
   )
 }
 
