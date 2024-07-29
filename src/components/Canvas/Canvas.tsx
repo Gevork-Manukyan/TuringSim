@@ -1,11 +1,10 @@
 import "./Canvas.scss";
 import { useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
-import { useState } from "react";
+import Node, { TonChange } from "../Nodes/Node/Node";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { Coordinates } from "@dnd-kit/core/dist/types";
-import Node, { TonCoordsChange } from "../Nodes/Node/Node";
-import EndNode from "../Nodes/EndNode/EndNode";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
+import { Coordinates } from "@dnd-kit/core/dist/types";
+import EndNode from "../Nodes/EndNode/EndNode";
 import Arrow from "../Arrow/Arrow";
 
 const defaultCoordinates = {
@@ -26,9 +25,10 @@ export default function Canvas() {
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-  const handleCoordsChange = (event: TonCoordsChange) => {
-    const { id, x, y } = event;
-    // updateCoords(id, x, y)
+  // TODO: Canvas needs to track all the arrows between nodes. Use the handleChange function to update the arrows of a node (incoming/outgoing) when the node is changed
+  const handleChange = (event: TonChange) => {
+    const { node, x, y } = event;
+
   }
 
   return (
@@ -44,7 +44,7 @@ export default function Canvas() {
         {/* <Arrow startPoint={{x: 0, y: 0}} endPoint={{x: 382, y: 418}} /> */}
         {isGraphEmpty() && <AddNodeButton>+</AddNodeButton>}
         {Array.from(graphNodes.entries()).map(([key, node]) => {
-          return <Node key={key} node={node} onCoordsChange={handleCoordsChange} />
+          return <Node key={key} node={node} onChange={handleChange} />
         })}
       </section>
     </DndContext>

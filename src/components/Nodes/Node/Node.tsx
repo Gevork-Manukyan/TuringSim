@@ -9,20 +9,20 @@ import PlusButton from './PlusButton';
 type NodeProps = {
   className?: string;
   node: TNode;
-  onCoordsChange?: ({ id, x, y }: TonCoordsChange) => void;
+  onChange?: ({ node, x, y }: TonChange) => void;
 }
 
-export type TonCoordsChange = {
-  id: string;
+export type TonChange = {
+  node: TNode;
   x: number;
   y: number;
 }
 
-export default function Node({ className, node, onCoordsChange }: NodeProps) {
+export default function Node({ className, node, onChange: onChange }: NodeProps) {
   
   const [isClicked, setIsClicked] = useState(false);
   const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({ id: node.id });
-  const { handleRightClick } = useNode({ isDragging, transform, node, setIsClicked, onCoordsChange })
+  const { handleRightClick } = useNode({ isDragging, transform, node, setIsClicked, onChange })
   
   const style = {
         top: `${node.coords.y}px`,

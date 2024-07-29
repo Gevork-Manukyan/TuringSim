@@ -1,7 +1,7 @@
 .Node {
     $size: 100px;
     $radius: 100%;
-    position: relative;
+    position: absolute;
     user-select: none;
     border-radius: $radius;
 
