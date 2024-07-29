@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Coords = {
+export type Coords = {
   x: number,
   y: number
 }

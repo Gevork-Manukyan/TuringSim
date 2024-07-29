@@ -1,17 +1,22 @@
 import "./Canvas.scss";
-import { useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
+import { Coords, useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
 import Node, { TonChange } from "../Nodes/Node/Node";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import { Coordinates } from "@dnd-kit/core/dist/types";
 import EndNode from "../Nodes/EndNode/EndNode";
 import Arrow from "../Arrow/Arrow";
+import { useMemo } from "react";
+
+type ArrowData = { 
+  startCoords: Coords, 
+  endCoords: Coords 
+}
 
 const defaultCoordinates = {
   x: 0,
   y: 0,
 };
-
 
 export default function Canvas() {
   const graphNodes = useDirectedGraph((state) => state.nodes)
@@ -31,6 +36,18 @@ export default function Canvas() {
 
   }
 
+  const arrows: ArrowData[] = useMemo(() => {
+    const arrowList: ArrowData[] = [];
+    graphNodes.forEach((node, nodeId) => {
+      node.outgoingEdges.forEach(targetId => {
+        const startCoords = getCoords(nodeId);
+        const endCoords = getCoords(targetId);
+        arrowList.push({ startCoords, endCoords });
+      });
+    });
+    return arrowList;
+  }, [graphNodes, getCoords]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -41,11 +58,13 @@ export default function Canvas() {
       }}
     >
       <section id="Canvas">
-        {/* <Arrow startPoint={{x: 0, y: 0}} endPoint={{x: 382, y: 418}} /> */}
         {isGraphEmpty() && <AddNodeButton>+</AddNodeButton>}
         {Array.from(graphNodes.entries()).map(([key, node]) => {
           return <Node key={key} node={node} onChange={handleChange} />
         })}
+        {arrows.map((arrow, index) => (
+          <Arrow key={index} startPoint={arrow.startCoords} endPoint={arrow.endCoords} />
+        ))}
       </section>
     </DndContext>
   );

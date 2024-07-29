@@ -1,10 +1,6 @@
 import './Arrow.scss'
+import { Coords } from '../../lib/hooks/useDirectedGraph';
 import { Arrow as SvgArrow } from 'react-absolute-svg-arrows';
-
-export type Point = {
-    x: number;
-    y: number;
-};
 
 type ArrowConfig = {
     arrowColor?: string;
@@ -20,8 +16,8 @@ type ArrowConfig = {
   
 type ArrowProps = {
     className?: string;
-    startPoint: Point;
-    endPoint: Point;
+    startPoint: Coords;
+    endPoint: Coords;
     isHighlighted?: boolean;
     showDebugGuideLines?: boolean;
     onMouseEnter?: (e: React.MouseEvent) => void;
