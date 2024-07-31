@@ -1,10 +1,9 @@
 import "./Canvas.scss";
 import { Coords, useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
-import Node, { TonDrag } from "../Nodes/Node/Node";
+import Node from "../Nodes/Node/Node";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
-import { Coordinates, DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
-import EndNode from "../Nodes/EndNode/EndNode";
+import { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import Arrow from "../Arrow/Arrow";
 import { useMemo, useState } from "react";
 
@@ -13,10 +12,11 @@ type ArrowData = {
   endCoords: Coords 
 }
 
-const defaultCoordinates = {
-  x: 0,
-  y: 0,
-};
+type TDraggingNode = {
+  nodeId: string;
+  incomingEdges: string[];
+  outgoingEdges: string[];
+}
 
 export default function Canvas() {
   const graphNodes = useDirectedGraph(state => state.nodes)
@@ -31,27 +31,8 @@ export default function Canvas() {
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-  // const arrows: ArrowData[] = useMemo(() => {
-  //   const arrowList: ArrowData[] = [];
-  //   graphNodes.forEach((node, nodeId) => {
-  //     node.outgoingEdges.forEach(targetId => {
-  //       const startCoords = getCoords(nodeId);
-  //       const endCoords = getCoords(targetId);
-  //       arrowList.push({ startCoords, endCoords });
-  //     });
-  //   });
-  //   return arrowList;
-  // }, [graphNodes, getCoords]);
 
-  // The endpoint of the outgoing edge will be the same
-  // The startpoint of the incoming edge will be the same
-
-  type TDraggingNode = {
-    nodeId: string;
-    incomingEdges: string[];
-    outgoingEdges: string[];
-  }
-
+  
   const [isDragging, setIsDragging] = useState(false);
   const [draggingNode, setDraggingNode] = useState<TDraggingNode | null>(null)
   const [draggingNodeCoords, setDraggingNodeCoords] = useState<Coords | null>(null)

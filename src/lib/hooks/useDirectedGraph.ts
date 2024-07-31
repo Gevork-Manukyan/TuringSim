@@ -150,13 +150,6 @@ type TUseDirectedGraph = {
   isEmpty: () => boolean;
 }
 
-// TODO: remove the edge references from the nodes 
-// there should be a global dictionary that tracks all connections between nodes
-// Incoming: key is the end node, value is an array of all nodes that end at end node
-// Outgoing: key is the start node, value is an array of all nodes that start at the start node
-// Onmousedown on node, you get the incoming start nodes once and outgoing end nodes once since these dont change.
-// generate arrows using this data
-// Don't worry about dropping the node yet
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   nodes: new Map<string, TNode>(),
   incomingEdges: new Map<string, string[]>(),
