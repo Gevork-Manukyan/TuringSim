@@ -15,7 +15,7 @@ export default function PlusButton({ className, style, nodeId, setIsClicked }: P
 
   const handleClick = () => {
     const newNodeId = addNode(null);
-    addEdge({ from: nodeId, to: newNodeId })
+    addEdge(nodeId, newNodeId)
     setIsClicked(false)    
   }
 
