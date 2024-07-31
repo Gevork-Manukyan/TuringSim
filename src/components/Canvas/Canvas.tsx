@@ -1,16 +1,12 @@
 import "./Canvas.scss";
-import { Coords, useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
-import Node from "../Nodes/Node/Node";
-import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
-import { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
-import Arrow from "../Arrow/Arrow";
 import { useMemo, useState } from "react";
+import { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
+import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { Coords, TEdgeCoords, useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
+import Node from "../Nodes/Node/Node";
+import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
+import Arrow from "../Arrow/Arrow";
 
-type ArrowData = { 
-  startCoords: Coords, 
-  endCoords: Coords 
-}
 
 type TDraggingNode = {
   nodeId: string;
@@ -20,6 +16,7 @@ type TDraggingNode = {
 
 export default function Canvas() {
   const graphNodes = useDirectedGraph(state => state.nodes)
+  const getAllOutgoingEdgesCoords = useDirectedGraph(state => state.getAllOutgoingEdgesCoords)
   const getIncomingEdges = useDirectedGraph(state => state.getIncomingEdges)
   const getOutgoingEdges = useDirectedGraph(state => state.getOutgoingEdges)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
@@ -63,11 +60,11 @@ export default function Canvas() {
     setIsDragging(false)
   }
 
-  const arrows: ArrowData[] = useMemo(() => {
-    if (!isDragging) return [];
-    if (!draggingNodeCoords) throw Error ("Cannot access dragging node's coords")
+  const arrows: TEdgeCoords[] = useMemo(() => {
+    // if (!isDragging) return [];
+    if (!draggingNodeCoords) return [];
 
-    const arrowList: ArrowData[] = [];
+    const arrowList: TEdgeCoords[] = [];
 
     draggingNode?.incomingEdges.forEach(targetId => {
       const targetCoords = getCoords(targetId)
@@ -81,6 +78,7 @@ export default function Canvas() {
 
     return arrowList;
   }, [isDragging, draggingNode, draggingNodeCoords, getCoords]);
+ 
 
   return (
     <DndContext
@@ -96,6 +94,9 @@ export default function Canvas() {
         })}
         {arrows.map((arrow, index) => (
           <Arrow key={index} startPoint={arrow.startCoords} endPoint={arrow.endCoords} />
+        ))}
+        {getAllOutgoingEdgesCoords().map((edge, index) => (
+          <Arrow key={index} startPoint={edge.startCoords} endPoint={edge.endCoords} />
         ))}
       </section>
     </DndContext>

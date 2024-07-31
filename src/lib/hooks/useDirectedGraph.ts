@@ -12,16 +12,10 @@ export type TNode = {
   isEndNode: boolean;
 }
 
-// export type TEdge = {
-//   start: {
-//     id: string;
-//     coords: Coords;
-//   },
-//   end: {
-//     id: string;
-//     coords: Coords;
-//   }
-// }
+export type TEdgeCoords = {
+  startCoords: Coords,
+  endCoords: Coords
+}
 
 function generateRandomString(): string {
   const length = 16;
@@ -144,6 +138,7 @@ type TUseDirectedGraph = {
   addEdge: (from: string, to: string) => void;
   removeEdge: (from: string, to: string) => void;
   getCoords: (nodeId: string) => Coords;
+  getAllOutgoingEdgesCoords: () => TEdgeCoords[];
   getIncomingEdges: (nodeId: string) => string[];
   getOutgoingEdges: (nodeId: string) => string[];
   updateCoords: (nodeId: string, x: number, y: number) => void;
@@ -175,6 +170,21 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     const coords = get().nodes.get(nodeId)?.coords;
     if (coords) return coords;
     else throw Error("Invalid Node ID");
+  },
+  getAllOutgoingEdgesCoords: () => {
+    const allEdges: TEdgeCoords[] = []
+    const entries = get().outgoingEdges.entries()
+    const nodes = get().nodes
+
+    for (const [nodeId, edges] of entries) {
+      const startCoords = nodes.get(nodeId)!.coords
+      edges.forEach(targetId => {
+        const endCoords = nodes.get(targetId)!.coords
+        allEdges.push({ startCoords, endCoords })
+      })
+    }
+    
+    return allEdges;
   },
   getIncomingEdges: (nodeId: string) => {
     const nodeEdges = get().incomingEdges.get(nodeId)
