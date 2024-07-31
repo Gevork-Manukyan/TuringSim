@@ -24,17 +24,10 @@ export default function Canvas() {
   const updateCoords = useDirectedGraph(state => state.updateCoords)
   const getCoords = useDirectedGraph(state => state.getCoords)
 
-  // const [{x, y}, setCoordinates] = useState<Coordinates>(defaultCoordinates);
   const mouseSensor = useSensor(MouseSensor)
   const touchSensor = useSensor(TouchSensor)
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
-
-  // TODO: Canvas needs to track all the arrows between nodes. Use the handleChange function to update the arrows of a node (incoming/outgoing) when the node is changed
-  const handleChange = (event: TonChange) => {
-    const { node, x, y } = event;
-
-  }
 
   const arrows: ArrowData[] = useMemo(() => {
     const arrowList: ArrowData[] = [];
@@ -47,6 +40,14 @@ export default function Canvas() {
     });
     return arrowList;
   }, [graphNodes, getCoords]);
+
+
+  // The endpoint of the outgoing edge will be the same
+  // The startpoint of the incoming edge will be the same
+  const handleChange = (event: TonChange) => {
+    const { node, x, y } = event;
+
+  }
 
   return (
     <DndContext
