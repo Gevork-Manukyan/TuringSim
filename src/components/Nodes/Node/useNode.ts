@@ -1,11 +1,7 @@
 import { useEffect } from "react"
-import { Transform } from '@dnd-kit/utilities';
-import { TNode } from "../../../lib/hooks/useDirectedGraph";
 
 type useNodeProps = {
     isDragging: boolean;
-    transform: Transform | null;
-    node: TNode; 
     setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

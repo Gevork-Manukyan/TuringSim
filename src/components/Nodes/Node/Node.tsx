@@ -15,13 +15,12 @@ type NodeProps = {
 export default function Node({ className, node }: NodeProps) {
   
   const [isClicked, setIsClicked] = useState(false);
-  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({ id: node.id });
-  const { handleRightClick } = useNode({ isDragging, transform, node, setIsClicked })
+  const {attributes, listeners, setNodeRef, isDragging} = useDraggable({ id: node.id });
+  const { handleRightClick } = useNode({ isDragging, setIsClicked })
   
   const style = {
         top: `${node.coords.y}px`,
         left: `${node.coords.x}px`,
-        transform: `translate(${transform?.x ?? 0}px, ${transform?.y ?? 0}px)`,
   } as React.CSSProperties
 
   return (
