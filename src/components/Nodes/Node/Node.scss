@@ -1,13 +1,13 @@
 .Node {
-    $size: 100px;
+    $nodeSize: 100px;
     $radius: 100%;
     position: absolute;
     user-select: none;
     border-radius: $radius;
 
     &__content {
-        width: $size;
-        height: $size;
+        width: $nodeSize;
+        height: $nodeSize;
         position: relative;
         display: inline-flex;
         justify-content: center;
@@ -21,9 +21,11 @@
         box-sizing: border-box;
     }
 
-    $plusBtnTransition: all 0.5s ease;;
+    $plusBtnTransition: transform 0.5s ease;;
+    $plusButtonSize: 50px;
     &__plusBtn {
-        $position: calc($size / 2);
+        $position: calc($nodeSize / 2);
+        
         position: absolute;
         left: $position;
         top: $position;
@@ -32,15 +34,20 @@
         justify-content: center;
         
         line-height: 0px;
-        $size: 30px;
-        height: $size;
-        width: $size;
+        height: $plusButtonSize;
+        width: $plusButtonSize;
         border: solid black 1px;
         border-radius: 100%;
         transform: translate(-50%, -50%);
         transition: $plusBtnTransition;
+        box-sizing: border-box;
         cursor: pointer;    
         z-index: 0;
+
+        &:hover {
+            background-color: rgba(211, 211, 211, 0.692);
+            border: solid 2px;
+        }
     }  
 
     &--clicked {
@@ -50,22 +57,46 @@
     }
 
     &--clicked &__plusBtn {
+        $transition-distance: calc($nodeSize / 1.2);
+        $hover-shift: $nodeSize - $transition-distance;
+        $hover-transition: transform 0.3s ease;
+
         transition: $plusBtnTransition;
 
         &--1 {
-            transform: translate(-50%, -110px);
+            transform: translate(-50%, -$transition-distance);
+
+            &:hover {
+                transition: $hover-transition;
+                transform: translate(-50%, -$transition-distance - $hover-shift);
+            }
         }
 
         &--2 {
-            transform: translate(calc(110px - $size), -50%);
+            transform: translate(calc($transition-distance - $plusButtonSize), -50%);
+            
+            &:hover {
+                transition: $hover-transition;
+                transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
+            }
         }
 
         &--3 {
-            transform: translate(-50%, calc(110px - $size));
+            transform: translate(-50%, calc($transition-distance - $plusButtonSize));
+            
+            &:hover {
+                transition: $hover-transition;
+                transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
+            }
         }
 
         &--4 {
-            transform: translate(-110px, -50%);
+            transform: translate(-$transition-distance, -50%);
+            
+            &:hover {
+                transition: $hover-transition;
+                transform: translate(-$transition-distance - $hover-shift, -50%);
+            }
         }
     }  
 }

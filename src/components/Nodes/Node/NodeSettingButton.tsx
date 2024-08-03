@@ -1,14 +1,15 @@
 import './Node.scss'
 import { useDirectedGraph } from '../../../lib/hooks/useDirectedGraph';
 
-type PlusButtonProps = {
+type NodeSettingButtonProps = {
+  children?: React.ReactNode;
   className: string;
   style?: React.CSSProperties;
   nodeId: string;
   setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
   
-export default function PlusButton({ className, style, nodeId, setIsClicked }: PlusButtonProps) {
+export default function NodeSettingButton({ children, className, style, nodeId, setIsClicked }: NodeSettingButtonProps) {
 
   const addNode = useDirectedGraph(state => state.addNode)
   const addEdge = useDirectedGraph(state => state.addEdge)
@@ -25,7 +26,7 @@ export default function PlusButton({ className, style, nodeId, setIsClicked }: P
       style={style}
       onClick={handleClick}
       >
-      +
+      {children}
     </span>
   )
 }

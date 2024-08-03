@@ -1,10 +1,10 @@
 import './Node.scss'
+import NodeSettingButton from './NodeSettingButton';
 import { useState } from 'react';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
-import PlusButton from './PlusButton';
-
+import { Settings, CirclePlus, Trash2, ArrowRightFromLine } from 'lucide-react';
 
 
 type NodeProps = {
@@ -38,10 +38,18 @@ export default function Node({ className, node }: NodeProps) {
           {node.value ? node.value : "Node"}
         </button>
 
-        <PlusButton className='Node__plusBtn--1' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plusBtn--2' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked} />
-        <PlusButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked} />
+        <NodeSettingButton className='Node__plusBtn--1' nodeId={node.id} setIsClicked={setIsClicked}>
+          <CirclePlus size={27} />
+        </NodeSettingButton>
+        <NodeSettingButton className='Node__plusBtn--2' nodeId={node.id} setIsClicked={setIsClicked}>
+          <ArrowRightFromLine size={27} />
+        </NodeSettingButton>
+        <NodeSettingButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked}>
+          <Trash2 size={27} />
+        </NodeSettingButton>
+        <NodeSettingButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked}>
+          <Settings />
+        </NodeSettingButton>
       </div>
   )
 }

@@ -13,6 +13,7 @@
     "@dnd-kit/core": "^6.1.0",
     "@dnd-kit/modifiers": "^7.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "lucide-react": "^0.424.0",
     "react": "^18.2.0",
     "react-absolute-svg-arrows": "^0.1.6",
     "react-dom": "^18.2.0",
