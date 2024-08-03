@@ -22,7 +22,7 @@ export default function NodeSettingButton({ children, className, style, nodeId, 
 
   return (
     <span 
-      className={`Node__plusBtn${className ? ` ${className}`: ''}`}
+      className={`Node__settingBtn${className ? ` ${className}`: ''}`}
       style={style}
       onClick={handleClick}
       >

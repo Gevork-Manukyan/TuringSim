@@ -1,9 +1,70 @@
 .Node {
     $nodeSize: 100px;
     $radius: 100%;
+    $plusBtnTransition: transform 0.5s ease;;
+    $plusButtonSize: 50px;
+
     position: absolute;
     user-select: none;
     border-radius: $radius;
+
+    &:hover {
+        
+    }
+
+    &--dragging {
+        // box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+        // 0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+        // transition: box-shadow 300ms ease;
+    }
+
+    &--clicked {
+        
+    }
+
+    &--clicked &__settingBtn {
+        $transition-distance: calc($nodeSize / 1.2);
+        $hover-shift: $nodeSize - $transition-distance;
+        $hover-transition: transform 0.3s ease;
+
+        transition: $plusBtnTransition;
+
+        &--1 {
+            transform: translate(-50%, -$transition-distance);
+
+            &:hover {
+                transform: translate(-50%, -$transition-distance - $hover-shift);
+            }
+        }
+
+        &--2 {
+            transform: translate(calc($transition-distance - $plusButtonSize), -50%);
+            
+            &:hover {
+                transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
+            }
+        }
+
+        &--3 {
+            transform: translate(-50%, calc($transition-distance - $plusButtonSize));
+            
+            &:hover {
+                transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
+            }
+        }
+
+        &--4 {
+            transform: translate(-$transition-distance, -50%);
+            
+            &:hover {
+                transform: translate(-$transition-distance - $hover-shift, -50%);
+            }
+        }
+
+        &:hover {
+            transition: $hover-transition;
+        }
+    }  
 
     &__content {
         width: $nodeSize;
@@ -21,9 +82,7 @@
         box-sizing: border-box;
     }
 
-    $plusBtnTransition: transform 0.5s ease;;
-    $plusButtonSize: 50px;
-    &__plusBtn {
+    &__settingBtn {
         $position: calc($nodeSize / 2);
         
         position: absolute;
@@ -48,55 +107,5 @@
             background-color: rgba(211, 211, 211, 0.692);
             border: solid 2px;
         }
-    }  
-
-    &--clicked {
-        box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-        transition: box-shadow 300ms ease;
     }
-
-    &--clicked &__plusBtn {
-        $transition-distance: calc($nodeSize / 1.2);
-        $hover-shift: $nodeSize - $transition-distance;
-        $hover-transition: transform 0.3s ease;
-
-        transition: $plusBtnTransition;
-
-        &--1 {
-            transform: translate(-50%, -$transition-distance);
-
-            &:hover {
-                transition: $hover-transition;
-                transform: translate(-50%, -$transition-distance - $hover-shift);
-            }
-        }
-
-        &--2 {
-            transform: translate(calc($transition-distance - $plusButtonSize), -50%);
-            
-            &:hover {
-                transition: $hover-transition;
-                transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
-            }
-        }
-
-        &--3 {
-            transform: translate(-50%, calc($transition-distance - $plusButtonSize));
-            
-            &:hover {
-                transition: $hover-transition;
-                transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
-            }
-        }
-
-        &--4 {
-            transform: translate(-$transition-distance, -50%);
-            
-            &:hover {
-                transition: $hover-transition;
-                transform: translate(-$transition-distance - $hover-shift, -50%);
-            }
-        }
-    }  
 }

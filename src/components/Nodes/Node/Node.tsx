@@ -16,7 +16,7 @@ export default function Node({ className, node }: NodeProps) {
   
   const [isClicked, setIsClicked] = useState(false);
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({ id: node.id });
-  const { handleRightClick } = useNode({ isDragging, setIsClicked })
+  const { handleRightClick, handleBlur } = useNode({ isDragging, setIsClicked })
   
   const style = {
         top: `${node.coords.y}px`,
@@ -28,26 +28,27 @@ export default function Node({ className, node }: NodeProps) {
       className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
       ref={setNodeRef}
       onContextMenu={handleRightClick}
+      onBlur={handleBlur}
       style={style}
     >
         <button 
-          className="Node__content"         
+          className="Node__content"  
           {...listeners}
           {...attributes}
         >
           {node.value ? node.value : "Node"}
         </button>
 
-        <NodeSettingButton className='Node__plusBtn--1' nodeId={node.id} setIsClicked={setIsClicked}>
+        <NodeSettingButton className='Node__settingBtn--1' nodeId={node.id} setIsClicked={setIsClicked}>
           <CirclePlus size={27} />
         </NodeSettingButton>
-        <NodeSettingButton className='Node__plusBtn--2' nodeId={node.id} setIsClicked={setIsClicked}>
+        <NodeSettingButton className='Node__settingBtn--2' nodeId={node.id} setIsClicked={setIsClicked}>
           <ArrowRightFromLine size={27} />
         </NodeSettingButton>
-        <NodeSettingButton className='Node__plusBtn--3' nodeId={node.id} setIsClicked={setIsClicked}>
+        <NodeSettingButton className='Node__settingBtn--3' nodeId={node.id} setIsClicked={setIsClicked}>
           <Trash2 size={27} />
         </NodeSettingButton>
-        <NodeSettingButton className='Node__plusBtn--4' nodeId={node.id} setIsClicked={setIsClicked}>
+        <NodeSettingButton className='Node__settingBtn--4' nodeId={node.id} setIsClicked={setIsClicked}>
           <Settings />
         </NodeSettingButton>
       </div>

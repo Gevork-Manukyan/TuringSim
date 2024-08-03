@@ -13,7 +13,12 @@ export function useNode({ isDragging, setIsClicked }: useNodeProps) {
     setIsClicked(prev => !prev)
   }
 
+  const handleBlur = () => {
+    setIsClicked(false);
+  }
+
   return {
-    handleRightClick
+    handleRightClick,
+    handleBlur
   }
 }
