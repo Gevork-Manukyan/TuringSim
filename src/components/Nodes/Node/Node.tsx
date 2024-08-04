@@ -3,7 +3,7 @@ import NodeSettingButton from './NodeSettingButton';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
-import { Settings, CirclePlus, Trash2, ArrowRightFromLine } from 'lucide-react';
+import { Settings, CirclePlus, Trash2, ArrowRightFromLine, TextCursorInput } from 'lucide-react';
 
 
 type NodeProps = {
@@ -104,7 +104,7 @@ export default function Node({ className, node }: NodeProps) {
         <NodeSettingButton 
           className='Node__settingBtn--8'
         >
-          
+          <TextCursorInput />
         </NodeSettingButton>
       </div>
   )
