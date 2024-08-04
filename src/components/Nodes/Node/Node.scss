@@ -22,6 +22,49 @@
         
     }
 
+    &__content {
+        width: $nodeSize;
+        height: $nodeSize;
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        border: solid 1px black;
+        border-radius: $radius;
+        border-width: 3px;
+        cursor: pointer;
+        z-index: 10;
+        box-sizing: border-box;
+    }
+
+    &__settingBtn {
+        $position: calc($nodeSize / 2);
+        
+        position: absolute;
+        left: $position;
+        top: $position;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        line-height: 0px;
+        height: $plusButtonSize;
+        width: $plusButtonSize;
+        border: solid black 1px;
+        border-radius: 100%;
+        transform: translate(-50%, -50%);
+        transition: $plusBtnTransition;
+        box-sizing: border-box;
+        cursor: pointer;    
+        z-index: 0;
+
+        &:hover {
+            background-color: rgba(211, 211, 211, 0.692);
+            border: solid 2px;
+        }
+    }
+
     &--clicked &__settingBtn {
         $transition-distance: calc($nodeSize / 1.2);
         $hover-shift: $nodeSize - $transition-distance;
@@ -65,47 +108,4 @@
             transition: $hover-transition;
         }
     }  
-
-    &__content {
-        width: $nodeSize;
-        height: $nodeSize;
-        position: relative;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        background-color: white;
-        border: solid 1px black;
-        border-radius: $radius;
-        border-width: 3px;
-        cursor: pointer;
-        z-index: 10;
-        box-sizing: border-box;
-    }
-
-    &__settingBtn {
-        $position: calc($nodeSize / 2);
-        
-        position: absolute;
-        left: $position;
-        top: $position;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        line-height: 0px;
-        height: $plusButtonSize;
-        width: $plusButtonSize;
-        border: solid black 1px;
-        border-radius: 100%;
-        transform: translate(-50%, -50%);
-        transition: $plusBtnTransition;
-        box-sizing: border-box;
-        cursor: pointer;    
-        z-index: 0;
-
-        &:hover {
-            background-color: rgba(211, 211, 211, 0.692);
-            border: solid 2px;
-        }
-    }
 }

@@ -59,7 +59,7 @@ export default function Node({ className, node }: NodeProps) {
           className='Node__settingBtn--1' 
           nodeId={node.id} 
           setIsClicked={setIsClicked}
-          // onClick={}
+          onClick={handleAddNode}
         >
           <CirclePlus size={27} />
         </NodeSettingButton>
@@ -68,7 +68,7 @@ export default function Node({ className, node }: NodeProps) {
           className='Node__settingBtn--2' 
           nodeId={node.id} 
           setIsClicked={setIsClicked}
-          onClick={handleAddNode}
+          // onClick={}
         >
           <ArrowRightFromLine size={27} />
         </NodeSettingButton>
