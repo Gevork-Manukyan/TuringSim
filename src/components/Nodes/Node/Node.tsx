@@ -25,7 +25,7 @@ export default function Node({ className, node }: NodeProps) {
 
   return (
     <div 
-      className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}`} 
+      className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}${isDragging ? ' Node--dragging' : ''}`} 
       ref={setNodeRef}
       onContextMenu={handleRightClick}
       onBlur={handleBlur}
