@@ -1,7 +1,6 @@
 import './Node.scss'
 import NodeSettingButton from './NodeSettingButton';
-import { useState } from 'react';
-import { TNode, useDirectedGraph } from '../../../lib/hooks/useDirectedGraph';
+import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
 import { Settings, CirclePlus, Trash2, ArrowRightFromLine } from 'lucide-react';
@@ -14,12 +13,16 @@ type NodeProps = {
 
 export default function Node({ className, node }: NodeProps) {
   
-  const [isClicked, setIsClicked] = useState(false);
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({ id: node.id });
-  const { handleRightClick, handleBlur } = useNode({ isDragging, setIsClicked })
-  const addNode = useDirectedGraph(state => state.addNode)
-  const addEdge = useDirectedGraph(state => state.addEdge)
-  const removeNode = useDirectedGraph(state => state.removeNode)
+  const { 
+    isClicked,
+    inSettings,
+    handleRightClick, 
+    handleBlur, 
+    handleAddNode, 
+    handleDeleteNode, 
+    handleSettingNode 
+  } = useNode({ node, isDragging });
   
   const style = {
         top: `${node.coords.y}px`,
@@ -27,23 +30,20 @@ export default function Node({ className, node }: NodeProps) {
   } as React.CSSProperties
 
 
-  const handleAddNode = () => {
-    const newNodeId = addNode(null);
-    addEdge(node.id, newNodeId)
-    setIsClicked(false)    
-  }
 
-  const handleDeleteNode = () => {
-    removeNode(node.id)
-    setIsClicked(false)    
-  }
+
+  const classNameString = `Node${className ? ' ' + className : ''}` + 
+                    `${isClicked && !isDragging ? ' Node--clicked' : ''}` +
+                    `${isDragging ? ' Node--dragging' : ''}` +
+                    `${inSettings ? ' Node--settings' : ''}`
 
   return (
     <div 
-      className={`Node${className ? ` ${className}` : ''}${isClicked && !isDragging ? ' Node--clicked': ''}${isDragging ? ' Node--dragging' : ''}`} 
+      className={classNameString}
       ref={setNodeRef}
       onContextMenu={handleRightClick}
       onBlur={handleBlur}
+      tabIndex={0}
       style={style}
     >
         <button 
@@ -57,8 +57,6 @@ export default function Node({ className, node }: NodeProps) {
         
         <NodeSettingButton 
           className='Node__settingBtn--1' 
-          nodeId={node.id} 
-          setIsClicked={setIsClicked}
           onClick={handleAddNode}
         >
           <CirclePlus size={27} />
@@ -66,8 +64,6 @@ export default function Node({ className, node }: NodeProps) {
         
         <NodeSettingButton 
           className='Node__settingBtn--2' 
-          nodeId={node.id} 
-          setIsClicked={setIsClicked}
           // onClick={}
         >
           <ArrowRightFromLine size={27} />
@@ -75,8 +71,6 @@ export default function Node({ className, node }: NodeProps) {
         
         <NodeSettingButton 
           className='Node__settingBtn--3' 
-          nodeId={node.id} 
-          setIsClicked={setIsClicked}
           onClick={handleDeleteNode}
         >
           <Trash2 size={27} />
@@ -84,11 +78,33 @@ export default function Node({ className, node }: NodeProps) {
         
         <NodeSettingButton 
           className='Node__settingBtn--4' 
-          nodeId={node.id} 
-          setIsClicked={setIsClicked}
-          // onClick={}
+          onClick={handleSettingNode}
         >
           <Settings />
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--5'
+        >
+          
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--6'
+        >
+          
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--7'
+        >
+          
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--8'
+        >
+          
         </NodeSettingButton>
       </div>
   )
