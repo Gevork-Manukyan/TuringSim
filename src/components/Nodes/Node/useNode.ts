@@ -15,7 +15,12 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const removeNode = useDirectedGraph(state => state.removeNode);
 
 
-  useEffect(() => { isDragging ? setIsClicked(false) : null }, [isDragging])
+  useEffect(() => { isDragging ? clearStates() : null }, [isDragging])
+
+  const clearStates = () => {
+    setIsClicked(false)
+    setInSettings(false)
+  }
 
   const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
@@ -31,8 +36,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
       requestAnimationFrame(() => {
         // Check if the new focused element is a child of the original container
         if (!currentTarget.contains(document.activeElement)) {
-          setInSettings(false);
-          setIsClicked(false);
+          clearStates()
         }
       })
     },

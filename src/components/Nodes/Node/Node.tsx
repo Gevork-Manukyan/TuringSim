@@ -3,7 +3,12 @@ import NodeSettingButton from './NodeSettingButton';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
-import { Settings, CirclePlus, Trash2, ArrowRightFromLine, TextCursorInput } from 'lucide-react';
+import { Settings, Trash2, ArrowRightFromLine, TextCursorInput, CircleDot, CircleArrowRight, CornerDownLeft } from 'lucide-react';
+import NewNodeIcon from '../../Icons/NewNodeIcon';
+import DeleteNodeIcon from '../../Icons/DeleteNodeIcon';
+import NewEdgeIcon from '../../Icons/NewEdgeIcon';
+import StartNodeIcon from '../../Icons/StartNodeIcon';
+import EndNodeIcon from '../../Icons/EndNodeIcon';
 
 
 type NodeProps = {
@@ -34,7 +39,7 @@ export default function Node({ className, node }: NodeProps) {
 
   const classNameString = `Node${className ? ' ' + className : ''}` + 
                     `${isClicked && !isDragging ? ' Node--clicked' : ''}` +
-                    `${inSettings ? ' Node--settings' : ''}` +
+                    `${inSettings && !isDragging ? ' Node--settings' : ''}` +
                     `${isDragging ? ' Node--dragging' : ''}`
 
   return (
@@ -59,21 +64,21 @@ export default function Node({ className, node }: NodeProps) {
           className='Node__settingBtn--1' 
           onClick={handleAddNode}
         >
-          <CirclePlus size={27} />
+          <NewNodeIcon />
         </NodeSettingButton>
         
         <NodeSettingButton 
           className='Node__settingBtn--2' 
           // onClick={}
         >
-          <ArrowRightFromLine size={27} />
+          <NewEdgeIcon />
         </NodeSettingButton>
         
         <NodeSettingButton 
           className='Node__settingBtn--3' 
           onClick={handleDeleteNode}
         >
-          <Trash2 size={27} />
+          <DeleteNodeIcon />
         </NodeSettingButton>
         
         <NodeSettingButton 
@@ -86,25 +91,25 @@ export default function Node({ className, node }: NodeProps) {
         <NodeSettingButton 
           className='Node__settingBtn--5'
         >
-          
+          <TextCursorInput />
         </NodeSettingButton>
 
         <NodeSettingButton 
           className='Node__settingBtn--6'
         >
-          
+          <StartNodeIcon />
         </NodeSettingButton>
 
         <NodeSettingButton 
           className='Node__settingBtn--7'
         >
-          
+          <EndNodeIcon />
         </NodeSettingButton>
 
         <NodeSettingButton 
           className='Node__settingBtn--8'
         >
-          <TextCursorInput />
+          <CornerDownLeft strokeWidth={2} />    
         </NodeSettingButton>
       </div>
   )
