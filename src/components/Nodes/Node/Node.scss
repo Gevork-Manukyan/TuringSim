@@ -1,9 +1,43 @@
-.Node {
-    $nodeSize: 100px;
-    $radius: 100%;
-    $plusBtnTransition: transform 0.5s ease;;
-    $plusButtonSize: 50px;
+$nodeSize: 100px;
+$radius: 100%;
+$plusBtnTransition: transform 0.5s ease;;
+$plusButtonSize: 50px;
+$transition-distance: calc($nodeSize / 1.2);
+$hover-shift: $nodeSize - $transition-distance;
+$hover-transition: transform 0.3s ease;
 
+@mixin settingBtnClicked($index) {
+    @if $index == 1 or $index == 5 {
+        transform: translate(-50%, -$transition-distance);
+
+        &:hover {
+            transform: translate(-50%, -$transition-distance - $hover-shift);
+        }
+    }
+    @else if $index == 2 or $index == 6 {
+        transform: translate(calc($transition-distance - $plusButtonSize), -50%);
+            
+        &:hover {
+            transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
+        }
+    }
+    @else if $index == 3 or $index == 7 {
+        transform: translate(-50%, calc($transition-distance - $plusButtonSize));
+            
+        &:hover {
+            transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
+        }
+    }
+    @else if $index == 4 or $index == 8 {
+        transform: translate(-$transition-distance, -50%);
+            
+        &:hover {
+            transform: translate(-$transition-distance - $hover-shift, -50%);
+        }
+    }
+}
+
+.Node {
     position: absolute;
     user-select: none;
     border-radius: $radius;
@@ -66,46 +100,50 @@
     }
 
     &--clicked &__settingBtn {
-        $transition-distance: calc($nodeSize / 1.2);
-        $hover-shift: $nodeSize - $transition-distance;
-        $hover-transition: transform 0.3s ease;
-
         transition: $plusBtnTransition;
 
         &--1 {
-            transform: translate(-50%, -$transition-distance);
-
-            &:hover {
-                transform: translate(-50%, -$transition-distance - $hover-shift);
-            }
+            @include settingBtnClicked(1)
         }
 
         &--2 {
-            transform: translate(calc($transition-distance - $plusButtonSize), -50%);
-            
-            &:hover {
-                transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
-            }
+            @include settingBtnClicked(2)
         }
 
         &--3 {
-            transform: translate(-50%, calc($transition-distance - $plusButtonSize));
-            
-            &:hover {
-                transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
-            }
+            @include settingBtnClicked(3)
         }
 
         &--4 {
-            transform: translate(-$transition-distance, -50%);
-            
-            &:hover {
-                transform: translate(-$transition-distance - $hover-shift, -50%);
-            }
+            @include settingBtnClicked(4)
         }
 
         &:hover {
             transition: $hover-transition;
         }
     }  
+
+    &--settings &__settingBtn {
+        transition: $plusBtnTransition;
+
+        &--5 {
+            @include settingBtnClicked(1)
+        }
+
+        &--6 {
+            @include settingBtnClicked(2)
+        }
+
+        &--7 {
+            @include settingBtnClicked(3)
+        }
+
+        &--8 {
+            @include settingBtnClicked(4)
+        }
+
+        &:hover {
+            transition: $hover-transition;
+        }
+    }
 }

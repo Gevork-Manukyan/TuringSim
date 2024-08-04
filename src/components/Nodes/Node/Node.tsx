@@ -34,8 +34,8 @@ export default function Node({ className, node }: NodeProps) {
 
   const classNameString = `Node${className ? ' ' + className : ''}` + 
                     `${isClicked && !isDragging ? ' Node--clicked' : ''}` +
-                    `${isDragging ? ' Node--dragging' : ''}` +
-                    `${inSettings ? ' Node--settings' : ''}`
+                    `${inSettings ? ' Node--settings' : ''}` +
+                    `${isDragging ? ' Node--dragging' : ''}`
 
   return (
     <div 

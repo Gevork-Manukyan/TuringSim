@@ -19,6 +19,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
 
   const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
+    setInSettings(false)
     setIsClicked(prev => !prev)
   }
 
@@ -30,6 +31,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
       requestAnimationFrame(() => {
         // Check if the new focused element is a child of the original container
         if (!currentTarget.contains(document.activeElement)) {
+          setInSettings(false);
           setIsClicked(false);
         }
       })
@@ -48,7 +50,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setIsClicked(false)    
   }
 
-  const handleSettingNode = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  const handleSettingNode = () => {
+    setIsClicked(false)
     setInSettings(true)
   }
 
