@@ -20,9 +20,9 @@ export default function Canvas() {
   const keyboardSensor = useSensor(KeyboardSensor, {})
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-
   const [startCoords, setStartCoords] = useState<Coords | null>(null)
 
+  
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
     setStartCoords(getCoords(nodeId))

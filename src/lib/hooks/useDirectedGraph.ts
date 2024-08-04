@@ -57,13 +57,22 @@ function removeNode(state: TUseDirectedGraph, nodeId: string): Partial<TUseDirec
   const isNodeDeleted = newNodes.delete(nodeId);
   if (!isNodeDeleted) throw new Error("Node must exist to be deleted")
 
-  // Remove all edges going out of node
   const newOutgoingEdges = new Map(state.outgoingEdges);
-  newOutgoingEdges.set(nodeId, []);
+  const newIncomingEdges = new Map(state.incomingEdges);
+
+  // Remove all edges going out of node
+  for (const outgoingEdgeId of newOutgoingEdges.get(nodeId)!) {
+    const filteredEdges = newIncomingEdges.get(outgoingEdgeId)!.filter(edge => edge !== nodeId)
+    newIncomingEdges.set(outgoingEdgeId, filteredEdges)
+  }
+  newOutgoingEdges.delete(nodeId)
 
   // Remove all edges going into node
-  const newIncomingEdges = new Map(state.incomingEdges);
-  newIncomingEdges.set(nodeId, []);
+  for (const incomingEdgeId of newIncomingEdges.get(nodeId)!) {
+    const filteredEdges = newOutgoingEdges.get(incomingEdgeId)!.filter(edge => edge !== nodeId)
+    newOutgoingEdges.set(incomingEdgeId, filteredEdges)
+  }
+  newIncomingEdges.delete(nodeId)
 
   return { nodes: newNodes, incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges }
 }
