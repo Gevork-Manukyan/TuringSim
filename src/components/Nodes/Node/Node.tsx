@@ -3,7 +3,7 @@ import NodeSettingButton from './NodeSettingButton';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
-import { Settings, TextCursorInput, CornerDownLeft } from 'lucide-react';
+import { Settings, TextCursorInput, CornerDownLeft, Check, X } from 'lucide-react';
 import NewNodeIcon from '../../Icons/NewNodeIcon';
 import DeleteNodeIcon from '../../Icons/DeleteNodeIcon';
 import NewEdgeIcon from '../../Icons/NewEdgeIcon';
@@ -123,6 +123,18 @@ export default function Node({ className, node }: NodeProps) {
           onClick={handleSettingsBack}
         >
           <CornerDownLeft strokeWidth={2} />    
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--confirm'
+        >
+          <Check strokeWidth={3} />
+        </NodeSettingButton>
+
+        <NodeSettingButton 
+          className='Node__settingBtn--cancel'
+        >
+          <X strokeWidth={3} />
         </NodeSettingButton>
       </div>
   )

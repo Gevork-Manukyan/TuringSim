@@ -1,3 +1,4 @@
+// ===== VARIABLES =====
 $nodeSize: 100px;
 $radius: 100%;
 $plusBtnTransition: transform 0.5s ease;;
@@ -6,6 +7,8 @@ $transition-distance: calc($nodeSize / 1.2);
 $hover-shift: $nodeSize - $transition-distance;
 $hover-transition: transform 0.3s ease;
 
+
+// ===== MIXINS =====
 @mixin settingBtnClicked($direction) {
     @if $direction == "up" {
         transform: translate(-50%, -$transition-distance);
@@ -37,6 +40,16 @@ $hover-transition: transform 0.3s ease;
     }
 }
 
+@mixin subNodeTransition {
+    transition: $plusBtnTransition;
+
+    &:hover {
+        transition: $hover-transition;
+    }
+}
+
+
+// ===== RESETS =====
 input[type="text"] {
     padding: 0;
     background: none;
@@ -49,6 +62,8 @@ input[type="text"] {
     
 }
 
+
+// ===== STYLES =====
 .Node {
     position: absolute;
     user-select: none;
@@ -125,7 +140,7 @@ input[type="text"] {
     }
 
     &--clicked &__settingBtn {
-        transition: $plusBtnTransition;
+        @include subNodeTransition();
 
         &--1 {
             @include settingBtnClicked("up")
@@ -142,14 +157,10 @@ input[type="text"] {
         &--4 {
             @include settingBtnClicked("left")
         }
-
-        &:hover {
-            transition: $hover-transition;
-        }
     }  
 
     &--settings &__settingBtn {
-        transition: $plusBtnTransition;
+        @include subNodeTransition();
 
         &--5 {
             @include settingBtnClicked("up")
@@ -166,9 +177,11 @@ input[type="text"] {
         &--8 {
             @include settingBtnClicked("left")
         }
+    }
 
-        &:hover {
-            transition: $hover-transition;
-        }
+    &--confirmation &__settingBtn {
+        @include subNodeTransition();
+
+
     }
 }
