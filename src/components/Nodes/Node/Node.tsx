@@ -26,16 +26,14 @@ export default function Node({ className, node }: NodeProps) {
     handleBlur, 
     handleAddNode, 
     handleDeleteNode, 
-    handleSettingNode 
+    handleSettingNode,
+    handleSettingsBack
   } = useNode({ node, isDragging });
   
   const style = {
         top: `${node.coords.y}px`,
         left: `${node.coords.x}px`,
   } as React.CSSProperties
-
-
-
 
   const classNameString = `Node${className ? ' ' + className : ''}` + 
                     `${isClicked && !isDragging ? ' Node--clicked' : ''}` +
@@ -108,6 +106,7 @@ export default function Node({ className, node }: NodeProps) {
 
         <NodeSettingButton 
           className='Node__settingBtn--8'
+          onClick={handleSettingsBack}
         >
           <CornerDownLeft strokeWidth={2} />    
         </NodeSettingButton>

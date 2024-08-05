@@ -6,6 +6,7 @@ import { Coords, useDirectedGraph } from "../../lib/hooks/useDirectedGraph";
 import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
+import NewNodeIcon from "../Icons/NewNodeIcon";
 
 
 export default function Canvas() {
@@ -39,7 +40,7 @@ export default function Canvas() {
       onDragMove={handleDragMove}
     >
       <section id="Canvas">
-        {isGraphEmpty() && <AddNodeButton>+</AddNodeButton>}
+        {isGraphEmpty() && <AddNodeButton><NewNodeIcon /></AddNodeButton>}
         {Array.from(graphNodes.entries()).map(([key, node]) => {
           return <Node key={key} node={node} />
         })}

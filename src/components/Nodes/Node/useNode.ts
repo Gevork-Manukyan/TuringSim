@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { TNode, useDirectedGraph } from "../../../lib/hooks/useDirectedGraph";
 
 type useNodeProps = {
@@ -59,6 +59,11 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setInSettings(true)
   }
 
+  const handleSettingsBack = () => {
+    setIsClicked(true)
+    setInSettings(false)
+  }
+
   return {
     isClicked,
     inSettings,
@@ -66,6 +71,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
     handleBlur, 
     handleAddNode,
     handleDeleteNode,
-    handleSettingNode
+    handleSettingNode,
+    handleSettingsBack
   }
 }
