@@ -67,6 +67,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
   }
 
   const handleRenameNode = () => {
+    setIsClicked(false);
+    setInSettings(false);
     setIsRenaming(true);
   }
 

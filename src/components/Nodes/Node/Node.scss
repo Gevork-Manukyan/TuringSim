@@ -9,7 +9,7 @@ $hover-transition: transform 0.3s ease;
 
 
 // ===== MIXINS =====
-@mixin settingBtnClicked($direction) {
+@mixin subNodeDirection($direction) {
     @if $direction == "up" {
         transform: translate(-50%, -$transition-distance);
 
@@ -100,6 +100,7 @@ input[type="text"] {
     }
 
     &__renameInput {
+        width: $nodeSize;
         position: absolute;
         left: 50%;
         top: 50%;
@@ -143,19 +144,19 @@ input[type="text"] {
         @include subNodeTransition();
 
         &--1 {
-            @include settingBtnClicked("up")
+            @include subNodeDirection("up")
         }
 
         &--2 {
-            @include settingBtnClicked("right")
+            @include subNodeDirection("right")
         }
 
         &--3 {
-            @include settingBtnClicked("down")
+            @include subNodeDirection("down")
         }
 
         &--4 {
-            @include settingBtnClicked("left")
+            @include subNodeDirection("left")
         }
     }  
 
@@ -163,25 +164,31 @@ input[type="text"] {
         @include subNodeTransition();
 
         &--5 {
-            @include settingBtnClicked("up")
+            @include subNodeDirection("up")
         }
 
         &--6 {
-            @include settingBtnClicked("right")
+            @include subNodeDirection("right")
         }
 
         &--7 {
-            @include settingBtnClicked("down")
+            @include subNodeDirection("down")
         }
 
         &--8 {
-            @include settingBtnClicked("left")
+            @include subNodeDirection("left")
         }
     }
 
     &--confirmation &__settingBtn {
         @include subNodeTransition();
 
+        &--confirm {
+            @include subNodeDirection("right")
+        }
 
+        &--cancel {
+            @include subNodeDirection("left")
+        }
     }
 }

@@ -42,6 +42,7 @@ export default function Node({ className, node }: NodeProps) {
   const classNameString = `Node${className ? ' ' + className : ''}` + 
                     `${isClicked ? ' Node--clicked' : ''}` +
                     `${inSettings ? ' Node--settings' : ''}` +
+                    `${isRenaming ? ' Node--confirmation' : ''}` +
                     `${isDragging ? ' Node--dragging' : ''}`
 
   return (
@@ -66,7 +67,7 @@ export default function Node({ className, node }: NodeProps) {
             type='text' 
             value={nodeValue ? nodeValue : ''} 
             onChange={handleRenameChange} 
-            maxLength={29} 
+            maxLength={20} 
             autoFocus 
           />
         }
