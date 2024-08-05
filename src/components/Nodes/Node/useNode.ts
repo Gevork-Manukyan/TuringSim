@@ -9,6 +9,8 @@ type useNodeProps = {
 export function useNode({ node, isDragging }: useNodeProps) {
   const [isClicked, setIsClicked] = useState(false);
   const [inSettings, setInSettings] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [nodeValue, setNodeValue] = useState(node.value)
   
   const addNode = useDirectedGraph(state => state.addNode);
   const addEdge = useDirectedGraph(state => state.addEdge);
@@ -64,14 +66,27 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setInSettings(false)
   }
 
+  const handleRenameNode = () => {
+    setIsRenaming(true);
+  }
+
+  const handleRenameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation()
+    setNodeValue(event.target.value)
+  }
+
   return {
     isClicked,
     inSettings,
+    isRenaming,
+    nodeValue, 
     handleRightClick,
     handleBlur, 
     handleAddNode,
     handleDeleteNode,
     handleSettingNode,
-    handleSettingsBack
+    handleSettingsBack,
+    handleRenameNode,
+    handleRenameChange
   }
 }

@@ -3,7 +3,7 @@ import NodeSettingButton from './NodeSettingButton';
 import { TNode } from '../../../lib/hooks/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
-import { Settings, Trash2, ArrowRightFromLine, TextCursorInput, CircleDot, CircleArrowRight, CornerDownLeft } from 'lucide-react';
+import { Settings, TextCursorInput, CornerDownLeft } from 'lucide-react';
 import NewNodeIcon from '../../Icons/NewNodeIcon';
 import DeleteNodeIcon from '../../Icons/DeleteNodeIcon';
 import NewEdgeIcon from '../../Icons/NewEdgeIcon';
@@ -22,12 +22,16 @@ export default function Node({ className, node }: NodeProps) {
   const { 
     isClicked,
     inSettings,
+    isRenaming,
+    nodeValue,
     handleRightClick, 
     handleBlur, 
     handleAddNode, 
     handleDeleteNode, 
     handleSettingNode,
-    handleSettingsBack
+    handleSettingsBack,
+    handleRenameNode,
+    handleRenameChange
   } = useNode({ node, isDragging });
   
   const style = {
@@ -36,8 +40,8 @@ export default function Node({ className, node }: NodeProps) {
   } as React.CSSProperties
 
   const classNameString = `Node${className ? ' ' + className : ''}` + 
-                    `${isClicked && !isDragging ? ' Node--clicked' : ''}` +
-                    `${inSettings && !isDragging ? ' Node--settings' : ''}` +
+                    `${isClicked ? ' Node--clicked' : ''}` +
+                    `${inSettings ? ' Node--settings' : ''}` +
                     `${isDragging ? ' Node--dragging' : ''}`
 
   return (
@@ -54,7 +58,8 @@ export default function Node({ className, node }: NodeProps) {
           {...listeners}
           {...attributes}
         >
-          {node.value ? node.value : "Node"}
+          {!isRenaming && nodeValue ? nodeValue : ""}
+          {isRenaming && <input className='Node__renameInput' value={nodeValue ? nodeValue : ''} onChange={handleRenameChange} />}
         </button>
 
         
@@ -67,7 +72,6 @@ export default function Node({ className, node }: NodeProps) {
         
         <NodeSettingButton 
           className='Node__settingBtn--2' 
-          // onClick={}
         >
           <NewEdgeIcon />
         </NodeSettingButton>
@@ -88,6 +92,7 @@ export default function Node({ className, node }: NodeProps) {
 
         <NodeSettingButton 
           className='Node__settingBtn--5'
+          onClick={handleRenameNode}
         >
           <TextCursorInput />
         </NodeSettingButton>
