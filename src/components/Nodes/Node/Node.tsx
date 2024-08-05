@@ -60,7 +60,16 @@ export default function Node({ className, node }: NodeProps) {
         >
           {!isRenaming && nodeValue ? nodeValue : ""}
         </button>
-        {isRenaming && <input className='Node__renameInput' value={nodeValue ? nodeValue : ''} onChange={handleRenameChange} />}
+        {isRenaming && 
+          <input 
+            className='Node__renameInput' 
+            type='text' 
+            value={nodeValue ? nodeValue : ''} 
+            onChange={handleRenameChange} 
+            maxLength={29} 
+            autoFocus 
+          />
+        }
 
         
         <NodeSettingButton 
