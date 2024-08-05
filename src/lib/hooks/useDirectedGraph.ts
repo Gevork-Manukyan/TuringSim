@@ -123,6 +123,21 @@ function updateCoords(state: TUseDirectedGraph, nodeId: string, x: number, y: nu
   return { nodes: newNodes };
 }
 
+function getAllOutgoingEdgesCoords(nodes: TUseDirectedGraph['nodes'], outgoingEdges: TUseDirectedGraph['outgoingEdges']): TEdgeCoords[] {
+  const allEdges: TEdgeCoords[] = []
+  const entries = outgoingEdges.entries()
+  
+  for (const [nodeId, edges] of entries) {
+    const startCoords = nodes.get(nodeId)!.coords
+    edges.forEach(targetId => {
+      const endCoords = nodes.get(targetId)!.coords
+      allEdges.push({ startCoords, endCoords })
+    })
+  }
+  
+  return allEdges;
+}
+
 function doesEdgeExist(incomingEdges: TUseDirectedGraph['incomingEdges'], outgoingEdges: TUseDirectedGraph['outgoingEdges'], from: string, to: string): boolean {
     const fromOutgoingEdges = outgoingEdges.get(from)!
     if (fromOutgoingEdges.includes(to)) return true;
@@ -181,19 +196,10 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     else throw Error("Invalid Node ID");
   },
   getAllOutgoingEdgesCoords: () => {
-    const allEdges: TEdgeCoords[] = []
-    const entries = get().outgoingEdges.entries()
     const nodes = get().nodes
+    const outgoingEdges = get().outgoingEdges
 
-    for (const [nodeId, edges] of entries) {
-      const startCoords = nodes.get(nodeId)!.coords
-      edges.forEach(targetId => {
-        const endCoords = nodes.get(targetId)!.coords
-        allEdges.push({ startCoords, endCoords })
-      })
-    }
-    
-    return allEdges;
+    return getAllOutgoingEdgesCoords(nodes, outgoingEdges);
   },
   getIncomingEdges: (nodeId: string) => {
     const nodeEdges = get().incomingEdges.get(nodeId)
