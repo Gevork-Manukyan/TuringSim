@@ -77,6 +77,17 @@ function removeNode(state: TUseDirectedGraph, nodeId: string): Partial<TUseDirec
   return { nodes: newNodes, incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges }
 }
 
+function renameNode(state: TUseDirectedGraph, nodeId: TNode['id'], newValue: TNode['value']): Partial<TUseDirectedGraph> {
+  const newNodes = new Map(state.nodes)
+  const node = newNodes.get(nodeId)
+  if (node) {
+    node.value = newValue
+    newNodes.set(nodeId, node)
+    return { nodes: newNodes }
+  }
+  return state;
+}
+
 function addEdge(state: TUseDirectedGraph, from: string, to: string): Partial<TUseDirectedGraph> {
   if (!doNodesExist(from, to, state.nodes)) throw new Error("Both nodes must exist to make an edge");
   if (doesEdgeExist(state.incomingEdges, state.outgoingEdges, from, to)) throw Error(`Edge already exists from node '${from}' to node '${to}'`) 
@@ -157,15 +168,16 @@ type TUseDirectedGraph = {
   nodes: Map<string, TNode>;
   incomingEdges: Map<string, string[]>;
   outgoingEdges: Map<string, string[]>;
-  addNode: (value: TNode['value'], isEndNode?: boolean) => string;
-  removeNode: (nodeId: string) => void;
-  addEdge: (from: string, to: string) => void;
-  removeEdge: (from: string, to: string) => void;
-  getCoords: (nodeId: string) => Coords;
+  addNode: (value: TNode['value'], isEndNode?: boolean) => TNode['id'];
+  removeNode: (nodeId: TNode['id']) => void;
+  renameNode: (nodeId: TNode['id'], newValue: TNode["value"]) => void;
+  addEdge: (from: TNode['id'], to: TNode['id']) => void;
+  removeEdge: (from: TNode['id'], to: TNode['id']) => void;
+  getCoords: (nodeId: TNode['id']) => Coords;
   getAllOutgoingEdgesCoords: () => TEdgeCoords[];
-  getIncomingEdges: (nodeId: string) => string[];
-  getOutgoingEdges: (nodeId: string) => string[];
-  updateCoords: (nodeId: string, x: number, y: number) => void;
+  getIncomingEdges: (nodeId: TNode['id']) => TNode['id'][];
+  getOutgoingEdges: (nodeId: TNode['id']) => TNode['id'][];
+  updateCoords: (nodeId: TNode['id'], x: number, y: number) => void;
   isEmpty: () => boolean;
 }
 
@@ -184,13 +196,17 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   removeNode: (nodeId) => {
     set((state: TUseDirectedGraph) => removeNode(state, nodeId));
   },
-  addEdge: (from: string, to: string) => {
+  renameNode: (nodeId: TNode['id'], newValue: TNode["value"]) => {
+    if (newValue === null) return;
+    set((state: TUseDirectedGraph) => renameNode(state, nodeId, newValue))
+  },
+  addEdge: (from: TNode['id'], to: TNode['id']) => {
     set((state: TUseDirectedGraph) => addEdge(state, from, to));
   },
   removeEdge: (from, to) => {
     set((state: TUseDirectedGraph) => removeEdge(state, from, to));
   },
-  getCoords: (nodeId: string) => {
+  getCoords: (nodeId: TNode['id']) => {
     const coords = get().nodes.get(nodeId)?.coords;
     if (coords) return coords;
     else throw Error("Invalid Node ID");
@@ -201,17 +217,17 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
 
     return getAllOutgoingEdgesCoords(nodes, outgoingEdges);
   },
-  getIncomingEdges: (nodeId: string) => {
+  getIncomingEdges: (nodeId: TNode['id']) => {
     const nodeEdges = get().incomingEdges.get(nodeId)
     if (nodeEdges) return nodeEdges;
     else throw Error ("Invalid Node ID");
   },
-  getOutgoingEdges: (nodeId: string) => {
+  getOutgoingEdges: (nodeId: TNode['id']) => {
     const nodeEdges = get().outgoingEdges.get(nodeId)
     if (nodeEdges) return nodeEdges;
     else throw Error ("Invalid Node ID");
   },
-  updateCoords: (nodeId: string, x: number, y: number) => {
+  updateCoords: (nodeId: TNode['id'], x: Coords['x'], y: Coords['y']) => {
     set((state: TUseDirectedGraph) => updateCoords(state, nodeId, x, y));
   },
   isEmpty: () => {

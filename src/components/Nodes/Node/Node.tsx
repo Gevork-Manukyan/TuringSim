@@ -31,7 +31,9 @@ export default function Node({ className, node }: NodeProps) {
     handleSettingNode,
     handleSettingsBack,
     handleRenameNode,
-    handleRenameChange
+    handleRenameChange,
+    handleConfirm,
+    handleCancel
   } = useNode({ node, isDragging });
   
   const style = {
@@ -59,13 +61,14 @@ export default function Node({ className, node }: NodeProps) {
           {...listeners}
           {...attributes}
         >
-          {!isRenaming && nodeValue ? nodeValue : ""}
+          {!isRenaming && node.value ? node.value : ""}
         </button>
         {isRenaming && 
           <input 
             className='Node__renameInput' 
             type='text' 
-            value={nodeValue ? nodeValue : ''} 
+            value={nodeValue ? nodeValue : ''}
+            onFocus={e => e.target.select()}
             onChange={handleRenameChange} 
             maxLength={20} 
             autoFocus 
@@ -128,12 +131,14 @@ export default function Node({ className, node }: NodeProps) {
 
         <NodeSettingButton 
           className='Node__settingBtn--confirm'
+          onClick={handleConfirm}
         >
           <Check strokeWidth={3} />
         </NodeSettingButton>
 
         <NodeSettingButton 
           className='Node__settingBtn--cancel'
+          onClick={handleCancel}
         >
           <X strokeWidth={3} />
         </NodeSettingButton>

@@ -15,6 +15,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const addNode = useDirectedGraph(state => state.addNode);
   const addEdge = useDirectedGraph(state => state.addEdge);
   const removeNode = useDirectedGraph(state => state.removeNode);
+  const renameNode = useDirectedGraph(state => state.renameNode);
 
 
   useEffect(() => { isDragging ? clearStates() : null }, [isDragging])
@@ -46,7 +47,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
   )
 
   const handleAddNode = () => {
-    const newNodeId = addNode("Node");
+    const newNodeId = addNode(null);
     addEdge(node.id, newNodeId)
     setIsClicked(false)    
   }
@@ -77,6 +78,16 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setNodeValue(event.target.value)
   }
 
+  const handleConfirm = () => {    
+    renameNode(node.id, nodeValue)
+    setIsRenaming(false);
+  }
+
+  const handleCancel = () => {
+    setNodeValue(node.value)
+    setIsRenaming(false);
+  }
+
   return {
     isClicked,
     inSettings,
@@ -89,6 +100,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
     handleSettingNode,
     handleSettingsBack,
     handleRenameNode,
-    handleRenameChange
+    handleRenameChange,
+    handleConfirm,
+    handleCancel
   }
 }
