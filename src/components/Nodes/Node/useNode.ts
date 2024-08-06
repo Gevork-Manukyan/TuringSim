@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { TNode, useDirectedGraph } from "../../../lib/hooks/useDirectedGraph";
+import { TNode, useDirectedGraph } from "../../../lib/stores/useDirectedGraph";
 
 type useNodeProps = {
     node: TNode;
@@ -52,6 +52,10 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setIsClicked(false)    
   }
 
+  const handleAddEdge = () => {
+
+  }
+
   const handleDeleteNode = () => {
     removeNode(node.id)
     setIsClicked(false)    
@@ -96,6 +100,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
     handleRightClick,
     handleBlur, 
     handleAddNode,
+    handleAddEdge,
     handleDeleteNode,
     handleSettingNode,
     handleSettingsBack,

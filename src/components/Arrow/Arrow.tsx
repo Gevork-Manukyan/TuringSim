@@ -1,5 +1,5 @@
 import './Arrow.scss'
-import { Coords } from '../../lib/hooks/useDirectedGraph';
+import { Coords } from '../../lib/stores/useDirectedGraph';
 import { Arrow as SvgArrow } from 'react-absolute-svg-arrows';
 
 type ArrowConfig = {

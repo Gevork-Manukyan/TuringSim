@@ -1,6 +1,6 @@
 import './Node.scss'
 import NodeSettingButton from './NodeSettingButton';
-import { TNode } from '../../../lib/hooks/useDirectedGraph';
+import { TNode } from '../../../lib/stores/useDirectedGraph';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
 import { Settings, TextCursorInput, CornerDownLeft, Check, X } from 'lucide-react';
@@ -26,7 +26,8 @@ export default function Node({ className, node }: NodeProps) {
     nodeValue,
     handleRightClick, 
     handleBlur, 
-    handleAddNode, 
+    handleAddNode,
+    handleAddEdge,
     handleDeleteNode, 
     handleSettingNode,
     handleSettingsBack,
@@ -75,7 +76,7 @@ export default function Node({ className, node }: NodeProps) {
           />
         }
 
-        
+        {/* Add Node */}
         <NodeSettingButton 
           className='Node__settingBtn--1' 
           onClick={handleAddNode}
@@ -83,12 +84,15 @@ export default function Node({ className, node }: NodeProps) {
           <NewNodeIcon />
         </NodeSettingButton>
         
+        {/* Add Edge */}
         <NodeSettingButton 
-          className='Node__settingBtn--2' 
+          className='Node__settingBtn--2'
+          onClick={handleAddEdge}
         >
           <NewEdgeIcon />
         </NodeSettingButton>
         
+        {/* Delete Node */}
         <NodeSettingButton 
           className='Node__settingBtn--3' 
           onClick={handleDeleteNode}
@@ -96,6 +100,7 @@ export default function Node({ className, node }: NodeProps) {
           <DeleteNodeIcon />
         </NodeSettingButton>
         
+        {/* Settings */}
         <NodeSettingButton 
           className='Node__settingBtn--4' 
           onClick={handleSettingNode}
@@ -103,6 +108,7 @@ export default function Node({ className, node }: NodeProps) {
           <Settings />
         </NodeSettingButton>
 
+        {/* Rename Node */}
         <NodeSettingButton 
           className='Node__settingBtn--5'
           onClick={handleRenameNode}
@@ -110,18 +116,21 @@ export default function Node({ className, node }: NodeProps) {
           <TextCursorInput />
         </NodeSettingButton>
 
+        {/* Set Starting Node */}
         <NodeSettingButton 
           className='Node__settingBtn--6'
         >
           <StartNodeIcon />
         </NodeSettingButton>
 
+        {/* Set Ending Node */}
         <NodeSettingButton 
           className='Node__settingBtn--7'
         >
           <EndNodeIcon />
         </NodeSettingButton>
 
+        {/* Go Back */}
         <NodeSettingButton 
           className='Node__settingBtn--8'
           onClick={handleSettingsBack}
@@ -129,6 +138,7 @@ export default function Node({ className, node }: NodeProps) {
           <CornerDownLeft strokeWidth={2} />    
         </NodeSettingButton>
 
+        {/* Confirm */}
         <NodeSettingButton 
           className='Node__settingBtn--confirm'
           onClick={handleConfirm}
@@ -136,6 +146,7 @@ export default function Node({ className, node }: NodeProps) {
           <Check strokeWidth={3} />
         </NodeSettingButton>
 
+        {/* Cancel */}
         <NodeSettingButton 
           className='Node__settingBtn--cancel'
           onClick={handleCancel}

@@ -1,5 +1,5 @@
 import './AddNodeButton.scss'
-import { useDirectedGraph } from '../../../lib/hooks/useDirectedGraph'
+import { useDirectedGraph } from '../../../lib/stores/useDirectedGraph'
 
 type AddNodeButtonProps = {
     children?: React.ReactNode;
