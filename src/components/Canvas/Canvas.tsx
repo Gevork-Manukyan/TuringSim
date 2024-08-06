@@ -24,7 +24,6 @@ export default function Canvas() {
 
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge)
   const addingEdgeStartNode = useConnectNodes(state => state.startNode)
-  const addingEdgeEndNode = useConnectNodes(state => state.endNode)
 
   const [startCoords, setStartCoords] = useState<Coords | null>(null)
   const [mouseCooords, setMouseCoords] = useState<Coords | null>(null)
@@ -67,11 +66,11 @@ export default function Canvas() {
         {getAllOutgoingEdgesCoords().map((edge, index) => (
           <Arrow key={index} startPoint={edge.startCoords} endPoint={edge.endCoords} />
         ))}
-        {isAddingEdge && addingEdgeEndNode && addingEdgeStartNode ? 
+        {isAddingEdge && addingEdgeStartNode && mouseCooords ? 
           <Arrow 
-            key={addingEdgeStartNode.id + addingEdgeEndNode.id} 
+            key={addingEdgeStartNode.id} 
             startPoint={addingEdgeStartNode.coords}
-            endPoint={mouseCooords!}
+            endPoint={mouseCooords}
           /> : null
         }
       </section>

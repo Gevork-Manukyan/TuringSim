@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { TNode, useDirectedGraph } from "../../../lib/stores/useDirectedGraph";
+import { useConnectNodes } from "../../../lib/stores/useConnectNodes";
 
 type useNodeProps = {
     node: TNode;
@@ -17,6 +18,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const removeNode = useDirectedGraph(state => state.removeNode);
   const renameNode = useDirectedGraph(state => state.renameNode);
 
+  const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode)
+  const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge)
 
   useEffect(() => { isDragging ? clearStates() : null }, [isDragging])
 
@@ -53,7 +56,9 @@ export function useNode({ node, isDragging }: useNodeProps) {
   }
 
   const handleAddEdge = () => {
-
+    setConnectingEdgeStartNode(node)
+    setIsAddingEdge(true)
+    clearStates()
   }
 
   const handleDeleteNode = () => {
