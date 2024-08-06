@@ -26,11 +26,11 @@ function generateRandomString(): string {
   );
 }
 
-function generateRandomId(state: TUseDirectedGraph) {
+function generateRandomId(nodes: TUseDirectedGraph['nodes']) {
   let id;
   do {
     id = generateRandomString()
-  } while (state.nodes.has(id))
+  } while (nodes.has(id))
   return id;
 }
 
@@ -186,27 +186,24 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   incomingEdges: new Map<string, string[]>(),
   outgoingEdges: new Map<string, string[]>(),
   addNode: (value, isEndNode=false) => {
-    let nodeId = '';
-    set((state: TUseDirectedGraph) => {
-      nodeId = generateRandomId(state);
-      return addNode(state, value, nodeId, isEndNode);
-    });
+    const nodeId = generateRandomId(get().nodes);
+    set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isEndNode))
     return nodeId;
   },
   removeNode: (nodeId) => {
-    set((state: TUseDirectedGraph) => removeNode(state, nodeId));
+    set((state) => removeNode(state, nodeId));
   },
-  renameNode: (nodeId: TNode['id'], newValue: TNode["value"]) => {
+  renameNode: (nodeId, newValue) => {
     if (newValue === null) return;
-    set((state: TUseDirectedGraph) => renameNode(state, nodeId, newValue))
+    set((state) => renameNode(state, nodeId, newValue))
   },
-  addEdge: (from: TNode['id'], to: TNode['id']) => {
-    set((state: TUseDirectedGraph) => addEdge(state, from, to));
+  addEdge: (from, to) => {
+    set((state) => addEdge(state, from, to));
   },
   removeEdge: (from, to) => {
-    set((state: TUseDirectedGraph) => removeEdge(state, from, to));
+    set((state) => removeEdge(state, from, to));
   },
-  getCoords: (nodeId: TNode['id']) => {
+  getCoords: (nodeId) => {
     const coords = get().nodes.get(nodeId)?.coords;
     if (coords) return coords;
     else throw Error("Invalid Node ID");
@@ -214,21 +211,20 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   getAllOutgoingEdgesCoords: () => {
     const nodes = get().nodes
     const outgoingEdges = get().outgoingEdges
-
     return getAllOutgoingEdgesCoords(nodes, outgoingEdges);
   },
-  getIncomingEdges: (nodeId: TNode['id']) => {
+  getIncomingEdges: (nodeId) => {
     const nodeEdges = get().incomingEdges.get(nodeId)
     if (nodeEdges) return nodeEdges;
     else throw Error ("Invalid Node ID");
   },
-  getOutgoingEdges: (nodeId: TNode['id']) => {
+  getOutgoingEdges: (nodeId) => {
     const nodeEdges = get().outgoingEdges.get(nodeId)
     if (nodeEdges) return nodeEdges;
     else throw Error ("Invalid Node ID");
   },
-  updateCoords: (nodeId: TNode['id'], x: Coords['x'], y: Coords['y']) => {
-    set((state: TUseDirectedGraph) => updateCoords(state, nodeId, x, y));
+  updateCoords: (nodeId, x, y) => {
+    set((state) => updateCoords(state, nodeId, x, y));
   },
   isEmpty: () => {
     return get().nodes.size === 0;
