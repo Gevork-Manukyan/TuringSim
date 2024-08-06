@@ -74,6 +74,7 @@ input[type="text"] {
     position: absolute;
     user-select: none;
     border-radius: $radius;
+    z-index: 100;
     @include text();
 
     &:hover {
@@ -137,6 +138,7 @@ input[type="text"] {
         width: $plusButtonSize;
         border: solid black 1px;
         border-radius: 100%;
+        background-color: white;
         transform: translate(-50%, -50%);
         transition: $plusBtnTransition;
         box-sizing: border-box;
@@ -144,7 +146,7 @@ input[type="text"] {
         z-index: 0;
 
         &:hover {
-            background-color: rgba(211, 211, 211, 0.692);
+            background-color: rgb(231, 231, 231);
             border: solid 2px;
         }
     }
