@@ -113,6 +113,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
     inSettings,
     isRenaming,
     nodeValue, 
+    isMenuLocked,
     handleRightClick,
     handleBlur, 
     handleAddNode,

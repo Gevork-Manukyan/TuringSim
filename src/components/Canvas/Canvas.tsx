@@ -43,7 +43,6 @@ export default function Canvas() {
     }
   }, [isAddingEdge])
 
-  // When adding an edge, Nodes should be locked in place
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
     setStartCoords(getCoords(nodeId))

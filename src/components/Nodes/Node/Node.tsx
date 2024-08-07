@@ -24,7 +24,7 @@ export default function Node({ className, node }: NodeProps) {
     inSettings,
     isRenaming,
     nodeValue, 
-    isNodeLocked,
+    isMenuLocked,
     handleRightClick,
     handleBlur, 
     handleAddNode,
@@ -62,6 +62,7 @@ export default function Node({ className, node }: NodeProps) {
           className="Node__content"  
           {...listeners}
           {...attributes}
+          disabled={isMenuLocked()}
         >
           {!isRenaming && node.value ? node.value : ""}
         </button>

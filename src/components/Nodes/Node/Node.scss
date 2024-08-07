@@ -1,10 +1,10 @@
 // ===== VARIABLES =====
 $nodeSize: 100px;
 $radius: 100%;
-$plusBtnTransition: transform 0.5s ease;;
 $plusButtonSize: 50px;
 $transition-distance: calc($nodeSize / 1.2);
 $hover-shift: $nodeSize - $transition-distance;
+$subNode-Transition: transform 0.5s ease;;
 $hover-transition: transform 0.3s ease;
 
 
@@ -41,7 +41,7 @@ $hover-transition: transform 0.3s ease;
 }
 
 @mixin subNodeTransition {
-    transition: $plusBtnTransition;
+    transition: $subNode-Transition;
 
     &:hover {
         transition: $hover-transition;
@@ -140,7 +140,7 @@ input[type="text"] {
         border-radius: 100%;
         background-color: white;
         transform: translate(-50%, -50%);
-        transition: $plusBtnTransition;
+        transition: $subNode-Transition;
         box-sizing: border-box;
         cursor: pointer;    
         z-index: 0;
