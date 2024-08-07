@@ -43,6 +43,7 @@ export default function Canvas() {
     }
   }, [isAddingEdge])
 
+  // When adding an edge, Nodes should be locked in place
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
     setStartCoords(getCoords(nodeId))
@@ -60,12 +61,18 @@ export default function Canvas() {
     >
       <section id="Canvas">
         {isGraphEmpty() && <AddNodeButton><NewNodeIcon /></AddNodeButton>}
+        
+        {/* Render nodes */}
         {Array.from(graphNodes.entries()).map(([key, node]) => {
           return <Node key={key} node={node} />
         })}
+
+        {/* Render arrows connecting Nodes */}
         {getAllOutgoingEdgesCoords().map((edge, index) => (
           <Arrow key={index} startPoint={edge.startCoords} endPoint={edge.endCoords} />
         ))}
+
+        {/* Arrow when adding new Edge */}
         {isAddingEdge && addingEdgeStartNode && mouseCooords ? 
           <Arrow 
             key={addingEdgeStartNode.id} 

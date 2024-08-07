@@ -11,25 +11,36 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const [isClicked, setIsClicked] = useState(false);
   const [inSettings, setInSettings] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [nodeValue, setNodeValue] = useState(node.value)
+  const [nodeValue, setNodeValue] = useState(node.value);
   
   const addNode = useDirectedGraph(state => state.addNode);
   const addEdge = useDirectedGraph(state => state.addEdge);
   const removeNode = useDirectedGraph(state => state.removeNode);
   const renameNode = useDirectedGraph(state => state.renameNode);
 
-  const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode)
-  const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge)
+  const isAddingEdge = useConnectNodes(state => state.isAddingEdge);
+  const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode);
+  const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge);
 
-  useEffect(() => { isDragging ? clearStates() : null }, [isDragging])
+  useEffect(() => { isDragging ? closeMenus() : null }, [isDragging])
 
-  const clearStates = () => {
+  const resetAllState = () => {
+    closeMenus();
+    setIsAddingEdge(false);
+  }
+
+  const isMenuLocked = () => {
+    return isAddingEdge;
+  }
+
+  const closeMenus = () => {
     setIsClicked(false)
     setInSettings(false)
   }
 
   const handleRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
+    if (isMenuLocked()) return;
     setInSettings(false)
     setIsClicked(prev => !prev)
   }
@@ -42,7 +53,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
       requestAnimationFrame(() => {
         // Check if the new focused element is a child of the original container
         if (!currentTarget.contains(document.activeElement)) {
-          clearStates()
+          closeMenus()
         }
       })
     },
@@ -58,12 +69,12 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const handleAddEdge = () => {
     setConnectingEdgeStartNode(node)
     setIsAddingEdge(true)
-    clearStates()
+    closeMenus()
   }
 
   const handleDeleteNode = () => {
     removeNode(node.id)
-    setIsClicked(false)    
+    resetAllState()  
   }
 
   const handleSettingNode = () => {
