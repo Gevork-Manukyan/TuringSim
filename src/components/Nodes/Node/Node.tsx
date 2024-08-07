@@ -18,7 +18,7 @@ type NodeProps = {
 
 export default function Node({ className, node }: NodeProps) {
   
-  const {attributes, listeners, setNodeRef, isDragging} = useDraggable({ id: node.id });
+  const {attributes, listeners, setNodeRef, setActivatorNodeRef, isDragging} = useDraggable({ id: node.id });
   const { 
     isClicked,
     inSettings,
@@ -60,6 +60,7 @@ export default function Node({ className, node }: NodeProps) {
     >
         <button 
           className="Node__content"  
+          ref={setActivatorNodeRef}
           {...listeners}
           {...attributes}
           disabled={isMenuLocked()}
