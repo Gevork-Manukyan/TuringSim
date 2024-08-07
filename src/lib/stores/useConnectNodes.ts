@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TNode } from "./useDirectedGraph";
+import { TNode } from "../types";
 
 type TUseConnectNodes = {
     isAddingEdge: boolean;

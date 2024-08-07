@@ -1,6 +1,6 @@
 import './Node.scss'
 import NodeSettingButton from './NodeSettingButton';
-import { TNode } from '../../../lib/stores/useDirectedGraph';
+import { TNode } from '../../../lib/types';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
 import { Settings, TextCursorInput, CornerDownLeft, Check, X } from 'lucide-react';
@@ -67,6 +67,8 @@ export default function Node({ className, node }: NodeProps) {
         >
           {!isRenaming && node.value ? node.value : ""}
         </button>
+        
+        {/* Renaming Input */}
         {isRenaming && 
           <input 
             className='Node__renameInput' 

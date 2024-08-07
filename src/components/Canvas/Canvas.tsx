@@ -2,12 +2,13 @@ import "./Canvas.scss";
 import { useEffect, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { Coords, useDirectedGraph } from "../../lib/stores/useDirectedGraph";
+import { useDirectedGraph } from "../../lib/stores/useDirectedGraph";
 import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
 import { useConnectNodes } from "../../lib/stores/useConnectNodes";
+import { Coords } from "../../lib/types";
 
 
 export default function Canvas() {
@@ -24,6 +25,7 @@ export default function Canvas() {
 
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge)
   const addingEdgeStartNode = useConnectNodes(state => state.startNode)
+  const addingEdgeEndNode = useConnectNodes(state => state.endNode)
 
   const [startCoords, setStartCoords] = useState<Coords | null>(null)
   const [mouseCooords, setMouseCoords] = useState<Coords | null>(null)
@@ -76,7 +78,7 @@ export default function Canvas() {
           <Arrow 
             key={addingEdgeStartNode.id} 
             startPoint={addingEdgeStartNode.coords}
-            endPoint={mouseCooords}
+            endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCooords}
           /> : null
         }
       </section>
