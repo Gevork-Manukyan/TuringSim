@@ -1,5 +1,5 @@
 import './Arrow.scss'
-import { Coords } from '../../lib/stores/useDirectedGraph';
+import { Coords } from '../../lib/types';
 import { Arrow as SvgArrow } from 'react-absolute-svg-arrows';
 
 type ArrowConfig = {
@@ -16,6 +16,7 @@ type ArrowConfig = {
   
 type ArrowProps = {
     className?: string;
+    value?: string;
     startPoint: Coords;
     endPoint: Coords;
     isHighlighted?: boolean;
@@ -27,11 +28,24 @@ type ArrowProps = {
     tooltip?: string;
 };
 
-export default function Arrow({ className, startPoint, endPoint }: ArrowProps) {
+const config: ArrowConfig = {
+    arrowColor: '#777',
+    arrowHighlightedColor: '#235468',
+    dotEndingRadius: 0,
+    arrowHeadEndingSize: 100,
+    strokeWidth: 10,
+}
+
+export default function Arrow({ className, value='', startPoint, endPoint }: ArrowProps) {
     return (
-        <SvgArrow 
-            startPoint={startPoint}
-            endPoint={endPoint}
-        />
+        <div className={`Arrow${ className ? className : ''}`}>
+            <SvgArrow 
+                showDebugGuideLines
+                config={config}
+                startPoint={startPoint}
+                endPoint={endPoint}
+                isHighlighted
+            />
+        </div>
     )
 }
