@@ -12,24 +12,24 @@ import { Coords } from "../../lib/types";
 
 
 export default function Canvas() {
+  const [startCoords, setStartCoords] = useState<Coords | null>(null)  
+  
+  const mouseSensor = useSensor(MouseSensor)
+  const touchSensor = useSensor(TouchSensor)
+  const keyboardSensor = useSensor(KeyboardSensor, {})
+  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
+
   const graphNodes = useDirectedGraph(state => state.nodes)
   const getAllOutgoingEdgesCoords = useDirectedGraph(state => state.getAllOutgoingEdgesCoords)
   const isGraphEmpty = useDirectedGraph(state => state.isEmpty)
   const updateCoords = useDirectedGraph(state => state.updateCoords)
   const getCoords = useDirectedGraph(state => state.getCoords)
 
-  const mouseSensor = useSensor(MouseSensor)
-  const touchSensor = useSensor(TouchSensor)
-  const keyboardSensor = useSensor(KeyboardSensor, {})
-  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
-
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge)
   const addingEdgeStartNode = useConnectNodes(state => state.startNode)
   const addingEdgeEndNode = useConnectNodes(state => state.endNode)
-
-  const [startCoords, setStartCoords] = useState<Coords | null>(null)
-  const [mouseCooords, setMouseCoords] = useState<Coords | null>(null)
-  
+  const mouseCoords = useConnectNodes(state => state.mouseCoords)
+  const setMouseCoords = useConnectNodes(state => state.setMouseCoords)
 
   useEffect(() => {
     if (!isAddingEdge) return;
@@ -43,7 +43,7 @@ export default function Canvas() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [isAddingEdge])
+  }, [isAddingEdge, setMouseCoords])
 
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
@@ -74,11 +74,11 @@ export default function Canvas() {
         ))}
 
         {/* Arrow when adding new Edge */}
-        {isAddingEdge && addingEdgeStartNode && mouseCooords ? 
+        {isAddingEdge && addingEdgeStartNode && mouseCoords ? 
           <Arrow 
             key={addingEdgeStartNode.id} 
             startPoint={addingEdgeStartNode.coords}
-            endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCooords}
+            endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
           /> : null
         }
       </section>

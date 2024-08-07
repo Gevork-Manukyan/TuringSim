@@ -23,6 +23,7 @@ export default function Node({ className, node }: NodeProps) {
     isClicked,
     inSettings,
     isRenaming,
+    addingEdgeData,
     nodeValue, 
     isMenuLocked,
     handleRightClick,
@@ -49,7 +50,8 @@ export default function Node({ className, node }: NodeProps) {
     `${isClicked ? ' Node--clicked' : ''}` +
     `${inSettings ? ' Node--settings' : ''}` +
     `${isRenaming ? ' Node--confirmation' : ''}` +
-    `${isDragging ? ' Node--dragging' : ''}`
+    `${isDragging ? ' Node--dragging' : ''}` +
+    `${addingEdgeData.isActive && addingEdgeData.startNode?.id === node.id ? ' Node--addingEdge' : ''}`
 
   return (
     <div 

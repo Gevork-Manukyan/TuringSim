@@ -212,4 +212,8 @@ input[type="text"] {
             @include subNodeDirection("left")
         }
     }
+
+    .Canvas--addingEdge &--addingEdge &__settingBtn--cancel {
+        @include subNodeDirection("down")
+    }
 }

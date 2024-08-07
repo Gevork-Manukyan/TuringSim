@@ -24,9 +24,10 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge);
   const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode);
   const setEndNode = useConnectNodes(state => state.setEndNode);
+  const setMouseCoords = useConnectNodes(state => state.setMouseCoords);
+  const addingEdgeData = { isActive: isAddingEdge, startNode: addEdgeStartNode }
 
   useEffect(() => { isDragging ? closeMenus() : null }, [isDragging])
-
 
 
   const resetAllState = () => {
@@ -71,14 +72,16 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setIsClicked(false)    
   }
 
-  const handleAddEdge = () => {
+  const handleAddEdge = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     setConnectingEdgeStartNode(node)
+    setMouseCoords({ x: event.clientX, y: event.clientY })
     setIsAddingEdge(true)
     closeMenus()
   }
 
   const handleSelectNodeAddEdge = () => {
     addEdge(addEdgeStartNode!.id, node.id)
+    setMouseCoords(null)
     setIsAddingEdge(false)
   }
 
@@ -114,14 +117,20 @@ export function useNode({ node, isDragging }: useNodeProps) {
   }
 
   const handleCancel = () => {
-    setNodeValue(node.value)
-    setIsRenaming(false);
+    if (isRenaming) {
+      setNodeValue(node.value)
+      setIsRenaming(false);
+    }
+    else if (isAddingEdge) {
+      setIsAddingEdge(false)
+    }
   }
 
   return {
     isClicked,
     inSettings,
     isRenaming,
+    addingEdgeData,
     nodeValue, 
     isMenuLocked,
     handleRightClick,
