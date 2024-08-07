@@ -20,8 +20,9 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const renameNode = useDirectedGraph(state => state.renameNode);
 
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge);
-  const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode);
+  const addEdgeStartNode = useConnectNodes(state => state.startNode);
   const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge);
+  const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode);
   const setEndNode = useConnectNodes(state => state.setEndNode);
 
   useEffect(() => { isDragging ? closeMenus() : null }, [isDragging])
@@ -77,7 +78,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
   }
 
   const handleSelectNodeAddEdge = () => {
-    setEndNode(node)
+    addEdge(addEdgeStartNode!.id, node.id)
+    setIsAddingEdge(false)
   }
 
   const handleDeleteNode = () => {
