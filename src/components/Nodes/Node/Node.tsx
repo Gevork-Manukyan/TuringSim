@@ -29,6 +29,7 @@ export default function Node({ className, node }: NodeProps) {
     handleBlur, 
     handleAddNode,
     handleAddEdge,
+    handleSelectNodeAddEdge,
     handleDeleteNode,
     handleSettingNode,
     handleSettingsBack,
@@ -43,11 +44,12 @@ export default function Node({ className, node }: NodeProps) {
         left: `${node.coords.x}px`,
   } as React.CSSProperties
 
-  const classNameString = `Node${className ? ' ' + className : ''}` + 
-                    `${isClicked ? ' Node--clicked' : ''}` +
-                    `${inSettings ? ' Node--settings' : ''}` +
-                    `${isRenaming ? ' Node--confirmation' : ''}` +
-                    `${isDragging ? ' Node--dragging' : ''}`
+  const classNameString = 
+    `Node${className ? ' ' + className : ''}` + 
+    `${isClicked ? ' Node--clicked' : ''}` +
+    `${inSettings ? ' Node--settings' : ''}` +
+    `${isRenaming ? ' Node--confirmation' : ''}` +
+    `${isDragging ? ' Node--dragging' : ''}`
 
   return (
     <div 
@@ -58,6 +60,7 @@ export default function Node({ className, node }: NodeProps) {
       tabIndex={0}
       style={style}
     >
+        <div className="Node__addEdgeOverlay" onClick={handleSelectNodeAddEdge} />
         <button 
           className="Node__content"  
           ref={setActivatorNodeRef}

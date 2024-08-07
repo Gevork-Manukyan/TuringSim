@@ -22,6 +22,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge);
   const setConnectingEdgeStartNode = useConnectNodes(state => state.setStartNode);
   const setIsAddingEdge = useConnectNodes(state => state.setIsAddingEdge);
+  const setEndNode = useConnectNodes(state => state.setEndNode);
 
   useEffect(() => { isDragging ? closeMenus() : null }, [isDragging])
 
@@ -75,6 +76,10 @@ export function useNode({ node, isDragging }: useNodeProps) {
     closeMenus()
   }
 
+  const handleSelectNodeAddEdge = () => {
+    setEndNode(node)
+  }
+
   const handleDeleteNode = () => {
     removeNode(node.id)
     resetAllState()  
@@ -121,6 +126,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
     handleBlur, 
     handleAddNode,
     handleAddEdge,
+    handleSelectNodeAddEdge,
     handleDeleteNode,
     handleSettingNode,
     handleSettingsBack,

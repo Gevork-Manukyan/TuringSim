@@ -91,6 +91,16 @@ input[type="text"] {
         
     }
 
+    .Canvas--addingEdge &__addEdgeOverlay {
+        display: inline-block;
+        position: absolute;
+        border-radius: $radius;
+        height: $nodeSize;
+        width: $nodeSize;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
     &__content {
         width: $nodeSize;
         height: $nodeSize;

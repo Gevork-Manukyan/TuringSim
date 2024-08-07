@@ -60,7 +60,7 @@ export default function Canvas() {
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
     >
-      <section id="Canvas">
+      <section id="Canvas" className={`${isAddingEdge ? 'Canvas--addingEdge' : ''}`}>
         {isGraphEmpty() && <AddNodeButton><NewNodeIcon /></AddNodeButton>}
         
         {/* Render nodes */}
