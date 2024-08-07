@@ -85,6 +85,14 @@ export function useNode({ node, isDragging }: useNodeProps) {
     setIsAddingEdge(false)
   }
 
+  const handleAddEdgeHover = () => {
+    setEndNode(node)
+  }
+
+  const handleAddEdgeLeave = () => {
+    setEndNode(null)
+  }
+
   const handleDeleteNode = () => {
     removeNode(node.id)
     resetAllState()  
@@ -138,6 +146,8 @@ export function useNode({ node, isDragging }: useNodeProps) {
     handleAddNode,
     handleAddEdge,
     handleSelectNodeAddEdge,
+    handleAddEdgeHover,
+    handleAddEdgeLeave,
     handleDeleteNode,
     handleSettingNode,
     handleSettingsBack,

@@ -31,6 +31,8 @@ export default function Node({ className, node }: NodeProps) {
     handleAddNode,
     handleAddEdge,
     handleSelectNodeAddEdge,
+    handleAddEdgeHover,
+    handleAddEdgeLeave,
     handleDeleteNode,
     handleSettingNode,
     handleSettingsBack,
@@ -62,7 +64,7 @@ export default function Node({ className, node }: NodeProps) {
       tabIndex={0}
       style={style}
     >
-        <div className="Node__addEdgeOverlay" onClick={handleSelectNodeAddEdge} />
+        <div className="Node__addEdgeOverlay" onClick={handleSelectNodeAddEdge} onMouseOver={handleAddEdgeHover} onMouseLeave={handleAddEdgeLeave} />
         <button 
           className="Node__content"  
           ref={setActivatorNodeRef}
