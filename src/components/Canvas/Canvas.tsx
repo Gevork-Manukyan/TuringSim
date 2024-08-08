@@ -27,10 +27,6 @@ export default function Canvas() {
 
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge)
 
-  useEffect(() => {
-    console.log("component rerendered");
-  });
-
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
     setStartCoords(getCoords(nodeId))
