@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { useDirectedGraph } from "../../lib/stores/useDirectedGraph";
+import { useConnectNodes } from "../../lib/stores/useConnectNodes";
+import { Coords } from "../../lib/types";
 import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
-import { useConnectNodes } from "../../lib/stores/useConnectNodes";
-import { Coords } from "../../lib/types";
 
 
 export default function Canvas() {
