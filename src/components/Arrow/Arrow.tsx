@@ -5,22 +5,10 @@ import {
   calculateCanvasDimensions,
   calculateControlPoints,
 } from "./utils/arrow-utils";
-import { Coords } from "../../lib/types";
+import { ArrowConfig, Coords } from "../../lib/types";
 
 const CONTROL_POINTS_RADIUS = 5;
 const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5;
-
-type ArrowConfig = {
-  arrowColor?: string;
-  arrowHighlightedColor?: string;
-  controlPointsColor?: string;
-  boundingBoxColor?: string;
-  dotEndingBackground?: string;
-  dotEndingRadius?: number;
-  arrowHeadEndingSize?: number;
-  hoverableLineWidth?: number;
-  strokeWidth?: number;
-};
 
 type Props = {
   startPoint: Coords;

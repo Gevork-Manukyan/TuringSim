@@ -9,3 +9,15 @@ export type TNode = {
     coords: Coords;
     isEndNode: boolean;
 }
+
+export type ArrowConfig = {
+    arrowColor?: string;
+    arrowHighlightedColor?: string;
+    controlPointsColor?: string;
+    boundingBoxColor?: string;
+    dotEndingBackground?: string;
+    dotEndingRadius?: number;
+    arrowHeadEndingSize?: number;
+    hoverableLineWidth?: number;
+    strokeWidth?: number;
+};

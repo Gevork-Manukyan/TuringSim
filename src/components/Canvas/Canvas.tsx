@@ -2,13 +2,14 @@ import "./Canvas.scss";
 import { useEffect, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { useDirectedGraph } from "../../lib/stores/useDirectedGraph";
+import { TEdgeCoords, useDirectedGraph } from "../../lib/stores/useDirectedGraph";
 import { useConnectNodes } from "../../lib/stores/useConnectNodes";
 import { Coords } from "../../lib/types";
 import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
+import { ARROW_CONFIG, NODE_DIAMETER } from "../../lib/constants";
 
 
 export default function Canvas() {
@@ -51,15 +52,38 @@ export default function Canvas() {
         })}
 
         {/* Render arrows connecting Nodes */}
-        {getAllOutgoingEdgesCoords().map((edge, index) => (
-          <Arrow key={index} startPoint={edge.startCoords} endPoint={edge.endCoords} />
-        ))}
+        {getAllOutgoingEdgesCoords().map((edge, index) => {
+          const { startCoords, endCoords } = calcArrowCoords(edge)
+          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} />
+        })}
 
         {/* Arrow when adding new Edge */}
         {isAddingEdge ? <AddEdgeArrow /> : null}
       </section>
     </DndContext>
   );
+}
+
+function calcArrowCoords(edge: TEdgeCoords) {
+  const { startCoords, endCoords } = edge
+  const nodeRadius = NODE_DIAMETER / 2;
+  const startCenter = { x: startCoords.x + nodeRadius, y: startCoords.y + nodeRadius}
+  const endCenter = { x: endCoords.x + nodeRadius, y: endCoords.y + nodeRadius}
+
+  const dx = endCenter.x - startCenter.x;
+  const dy = endCenter.y - startCenter.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  
+  const unitX = dx / distance;
+  const unitY = dy / distance;
+  
+  const startX = startCenter.x + nodeRadius * unitX;
+  const startY = startCenter.y + nodeRadius * unitY;
+  
+  const endX = endCenter.x - nodeRadius * unitX;
+  const endY = endCenter.y - nodeRadius * unitY;
+
+  return { startCoords: {x: startX, y: startY}, endCoords: {x: endX, y: endY} }
 }
 
 function AddEdgeArrow() {
@@ -88,6 +112,7 @@ function AddEdgeArrow() {
     <>
     {addingEdgeStartNode && mouseCoords ? 
       <Arrow 
+        config={ARROW_CONFIG}
         key={addingEdgeStartNode.id} 
         startPoint={addingEdgeStartNode.coords}
         endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
