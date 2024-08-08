@@ -1,5 +1,5 @@
 import "./Canvas.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { TEdgeCoords, useDirectedGraph } from "../../lib/stores/useDirectedGraph";
@@ -77,13 +77,10 @@ function calcArrowCoords(edge: TEdgeCoords) {
   const unitX = dx / distance;
   const unitY = dy / distance;
   
-  const startX = startCenter.x + nodeRadius * unitX;
-  const startY = startCenter.y + nodeRadius * unitY;
-  
   const endX = endCenter.x - nodeRadius * unitX;
   const endY = endCenter.y - nodeRadius * unitY;
 
-  return { startCoords: {x: startX, y: startY}, endCoords: {x: endX, y: endY} }
+  return { startCoords: startCenter, endCoords: {x: endX, y: endY} }
 }
 
 function AddEdgeArrow() {
@@ -108,13 +105,21 @@ function AddEdgeArrow() {
     }
   }, [isAddingEdge, setMouseCoords])
 
+  // Early return if addingEdgeStartNode is null
+  if (!addingEdgeStartNode) return null
+
+  const startCoords = useMemo(() => {
+    const {x, y} = addingEdgeStartNode.coords
+    return {x: x + (NODE_DIAMETER / 2), y: y + (NODE_DIAMETER / 2)}
+  }, [addingEdgeStartNode.coords])
+
   return (
     <>
-    {addingEdgeStartNode && mouseCoords ? 
+    {mouseCoords ? 
       <Arrow 
         config={ARROW_CONFIG}
         key={addingEdgeStartNode.id} 
-        startPoint={addingEdgeStartNode.coords}
+        startPoint={startCoords}
         endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
       /> : null
     }
