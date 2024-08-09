@@ -10,6 +10,7 @@ import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
 import { ARROW_CONFIG, NODE_DIAMETER } from "../../lib/constants";
+import { calcEdgeCoords, calcNodeCenter } from "../../lib/util";
 
 
 export default function Canvas() {
@@ -53,7 +54,7 @@ export default function Canvas() {
 
         {/* Render arrows connecting Nodes */}
         {getAllOutgoingEdgesCoords().map((edge, index) => {
-          const { startCoords, endCoords } = calcArrowCoords(edge)
+          const { startCoords, endCoords } = calcEdgeCoords(calcNodeCenter(edge.startCoords), calcNodeCenter(edge.endCoords))
           return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} />
         })}
 
@@ -62,25 +63,6 @@ export default function Canvas() {
       </section>
     </DndContext>
   );
-}
-
-function calcArrowCoords(edge: TEdgeCoords) {
-  const { startCoords, endCoords } = edge
-  const nodeRadius = NODE_DIAMETER / 2;
-  const startCenter = { x: startCoords.x + nodeRadius, y: startCoords.y + nodeRadius}
-  const endCenter = { x: endCoords.x + nodeRadius, y: endCoords.y + nodeRadius}
-
-  const dx = endCenter.x - startCenter.x;
-  const dy = endCenter.y - startCenter.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  
-  const unitX = dx / distance;
-  const unitY = dy / distance;
-  
-  const endX = endCenter.x - nodeRadius * unitX;
-  const endY = endCenter.y - nodeRadius * unitY;
-
-  return { startCoords: startCenter, endCoords: {x: endX, y: endY} }
 }
 
 function AddEdgeArrow() {
@@ -105,21 +87,13 @@ function AddEdgeArrow() {
     }
   }, [isAddingEdge, setMouseCoords])
 
-  // Early return if addingEdgeStartNode is null
-  if (!addingEdgeStartNode) return null
-
-  const startCoords = useMemo(() => {
-    const {x, y} = addingEdgeStartNode.coords
-    return {x: x + (NODE_DIAMETER / 2), y: y + (NODE_DIAMETER / 2)}
-  }, [addingEdgeStartNode.coords])
-
   return (
     <>
-    {mouseCoords ? 
+    {addingEdgeStartNode && mouseCoords ? 
       <Arrow 
         config={ARROW_CONFIG}
         key={addingEdgeStartNode.id} 
-        startPoint={startCoords}
+        startPoint={addingEdgeStartNode.coords}
         endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
       /> : null
     }

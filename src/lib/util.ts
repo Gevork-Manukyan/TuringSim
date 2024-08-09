@@ -1,25 +1,22 @@
 import { NODE_RADIUS } from "./constants";
-import { TEdgeCoords } from "./stores/useDirectedGraph";
 import { Coords } from "./types";
 
-export function calcEdgeCoords(edge: TEdgeCoords) {
-    const { startCoords, endCoords } = edge
-    const startCenter = getNodeCenter(startCoords)
-    const endCenter = getNodeCenter(endCoords)
+
+export function calcEdgeCoords(startNodeCenter: Coords, endNodeCenter: Coords) {
   
-    const dx = endCenter.x - startCenter.x;
-    const dy = endCenter.y - startCenter.y;
+    const dx = endNodeCenter.x - startNodeCenter.x;
+    const dy = endNodeCenter.y - startNodeCenter.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     
     const unitX = dx / distance;
     const unitY = dy / distance;
     
-    const endX = endCenter.x - NODE_RADIUS * unitX;
-    const endY = endCenter.y - NODE_RADIUS * unitY;
+    const endX = endNodeCenter.x - NODE_RADIUS * unitX;
+    const endY = endNodeCenter.y - NODE_RADIUS * unitY;
   
-    return { startCoords: startCenter, endCoords: {x: endX, y: endY} }
+    return { startCoords: startNodeCenter, endCoords: {x: endX, y: endY} }
 }
 
-export function getNodeCenter(coords: Coords) {
+export function calcNodeCenter(coords: Coords) {
   return { x: coords.x + NODE_RADIUS, y: coords.y + NODE_RADIUS };
 }
