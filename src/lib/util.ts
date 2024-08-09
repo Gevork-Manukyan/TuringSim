@@ -1,12 +1,24 @@
 import { NODE_RADIUS } from "./constants";
 import { Coords } from "./types";
 
+type CalcEdgeCoordsR = {
+  startCoords: Coords,
+  endCoords: Coords
+}
 
-export function calcEdgeCoords(startNodeCenter: Coords, endNodeCenter: Coords) {
+export function calcEdgeCoords(startNodeCenter: Coords, endNodeCenter: Coords): CalcEdgeCoordsR {
   
     const dx = endNodeCenter.x - startNodeCenter.x;
     const dy = endNodeCenter.y - startNodeCenter.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Node pointing to itself
+    if (distance === 0) {
+      const endX = endNodeCenter.x + NODE_RADIUS;
+      const endY = endNodeCenter.y
+
+      return { startCoords: startNodeCenter, endCoords: {x: endX, y: endY} }
+    }
     
     const unitX = dx / distance;
     const unitY = dy / distance;
@@ -14,6 +26,7 @@ export function calcEdgeCoords(startNodeCenter: Coords, endNodeCenter: Coords) {
     const endX = endNodeCenter.x - NODE_RADIUS * unitX;
     const endY = endNodeCenter.y - NODE_RADIUS * unitY;
   
+    console.log(distance)
     return { startCoords: startNodeCenter, endCoords: {x: endX, y: endY} }
 }
 
