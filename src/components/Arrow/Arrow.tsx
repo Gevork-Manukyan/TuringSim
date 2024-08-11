@@ -7,7 +7,6 @@ import {
 } from "./utils/arrow-utils";
 import { ArrowConfig, Coords } from "../../lib/types";
 
-const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5;
 
 type Props = {
   startPoint: Coords;
@@ -27,7 +26,6 @@ type TranslateProps = {
 
 type LineProps = {
   $isHighlighted: boolean;
-  $showDebugGuideLines?: boolean;
   $boundingBoxColor?: string;
 } & TranslateProps;
 
@@ -41,10 +39,7 @@ const Line = styled.svg.attrs(({ $xTranslate, $yTranslate }: LineProps) => ({
   top: 0;
 `;
 
-const StraightLine = styled(Line)`
-  border: ${({ $showDebugGuideLines, $boundingBoxColor = "black" }) =>
-    $showDebugGuideLines ? `dashed 1px ${$boundingBoxColor}` : "0"};
-`;
+const StraightLine = styled(Line)`border: 0`;
 
 const RenderedLine = styled.path`
   transition: stroke 300ms;
@@ -131,9 +126,6 @@ export default function Arrow({
     absDy,
   });
 
-  const angleRadians = Math.atan2(dy, dx);
-  const angleDegrees = (angleRadians * 180) / Math.PI;
-
   const { canvasWidth, canvasHeight } = calculateCanvasDimensions({
     absDx,
     absDy,
@@ -149,13 +141,10 @@ export default function Arrow({
   M ${p1.x} ${p1.y}
   L ${p4.x} ${p4.y}`;  
 
-  // const arrowHeadEndingPath = `
-  // M ${(arrowHeadEndingSize / 5) * 2} 0
-  // L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-  // L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`
-
-  const arrowHeadEndingPath = ``
-
+  const arrowHeadEndingPath = `
+  M ${(arrowHeadEndingSize / 5) * 2} 0
+  L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
+  L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`
 
   const getStrokeColor = () => {
     if (isHighlighted) return arrowHighlightedColor;

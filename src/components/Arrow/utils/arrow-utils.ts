@@ -3,31 +3,6 @@ import { Coords } from '../../../lib/types';
 const MAX_Y_CONTROL_POINT_SHIFT = 50;
 const MAX_X_CONTROL_POINT_SHIFT = 10;
 
-// Y coordinates of our control points are moved in case of low delta Y to prevent lines overlapping.
-// Sign flips the curve depending on delta Y.
-// Movement is described according to following function: `y=a\left(0.9^{1.2^{\frac{x}{10}}}\right)`
-//    1 +--------------------------------------------------------------------+
-//      |       ************** +           +          +           +          |
-//      |                     *******         1*(0.9**(1.2**(x/10))) ******* |
-//  0.8 |-+                          *****                                 +-|
-//      |                                ****                                |
-//      |                                    ****                            |
-//      |                                       ***                          |
-//  0.6 |-+                                        ***                     +-|
-//      |                                            ***                     |
-//      |                                              ***                   |
-//  0.4 |-+                                              ***               +-|
-//      |                                                   **               |
-//      |                                                     **             |
-//  0.2 |-+                                                     **         +-|
-//      |                                                         ***        |
-//      |                                                            ***     |
-//      |                                                               *****|
-//    0 |-+                                                                +-|
-//      |                                                                    |
-//      |           +          +           +          +           +          |
-// -0.2 +--------------------------------------------------------------------+
-// -100         -50         0           50        100         150        200
 export const calculateLowDyControlPointShift = (
   dx: number,
   dy: number,
