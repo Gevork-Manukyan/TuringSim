@@ -131,6 +131,9 @@ export default function Arrow({
     absDy,
   });
 
+  const angleRadians = Math.atan2(dy, dx);
+  const angleDegrees = (angleRadians * 180) / Math.PI;
+
   const { canvasWidth, canvasHeight } = calculateCanvasDimensions({
     absDx,
     absDy,
