@@ -147,13 +147,14 @@ export default function Arrow({
 
   const straightLinePath = `
   M ${p1.x} ${p1.y}
-  L ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
-  L ${p4.x} ${p4.y}`;
+  L ${p4.x} ${p4.y}`;  
 
-  const arrowHeadEndingPath = `
-  M ${(arrowHeadEndingSize / 5) * 2} 0
-  L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-  L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`
+  // const arrowHeadEndingPath = `
+  // M ${(arrowHeadEndingSize / 5) * 2} 0
+  // L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
+  // L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`
+
+  const arrowHeadEndingPath = ``
 
 
   const getStrokeColor = () => {
