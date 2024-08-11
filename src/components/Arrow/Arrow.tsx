@@ -43,7 +43,30 @@ const RenderedLine = styled.path`
   transition: stroke 300ms;
 `;
 
+const Endings = styled(Line)`
+  pointer-events: none;
+  z-index: ${({ $isHighlighted }) => ($isHighlighted ? 11 : 10)};
+`;
+
+const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTranslate }) => ({
+  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
+}))<TranslateProps>`
+  transition: stroke 300ms;
+`;
+
+const DotEnding = styled.circle`
+  transition: stroke 300ms;
+`;
+
 const HoverableLine = styled.path`
+  cursor: default;
+`;
+
+const HoverableArrowHeadEnding = styled(ArrowHeadEnding)`
+  cursor: default;
+`;
+
+const HoverableDotEnding = styled.circle`
   cursor: default;
 `;
 
@@ -65,8 +88,9 @@ const Arrow = ({
     boundingBoxColor: "#ffcccc",
     dotEndingBackground: "#fff",
     dotEndingRadius: 3,
-    strokeWidth: 1,
+    arrowHeadEndingSize: 9,
     hoverableLineWidth: 15,
+    strokeWidth: 1,
   };
 
   const currentConfig = { ...defaultConfig, ...config };
@@ -75,11 +99,18 @@ const Arrow = ({
     arrowColor,
     arrowHighlightedColor,
     boundingBoxColor,
+    arrowHeadEndingSize,
     strokeWidth,
     hoverableLineWidth,
     dotEndingBackground,
     dotEndingRadius,
   } = currentConfig;
+
+  const arrowHeadOffset = arrowHeadEndingSize / 2;
+  const boundingBoxElementsBuffer =
+    strokeWidth +
+    arrowHeadEndingSize / 2 +
+    dotEndingRadius;
 
   const calculateDeltas = (startPoint: Coords, targetPoint: Coords) => {
     const dx = targetPoint.x - startPoint.x;
@@ -168,7 +199,7 @@ const Arrow = ({
 
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
   const { p1, p2, boundingBoxBuffer } = calculateControlPointsWithBuffer({
-    boundingBoxElementsBuffer: strokeWidth + dotEndingRadius,
+    boundingBoxElementsBuffer,
     dx,
     dy,
     absDx,
@@ -188,6 +219,12 @@ const Arrow = ({
   const straightLinePath = `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
+  `;
+
+  const arrowHeadEndingPath = `
+    M ${(arrowHeadEndingSize / 5) * 2} 0
+    L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
+    L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}
   `;
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
@@ -221,7 +258,57 @@ const Arrow = ({
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
+        <HoverableArrowHeadEnding
+          d={arrowHeadEndingPath}
+          fill="none"
+          stroke="transparent"
+          strokeWidth={hoverableLineWidth}
+          strokeLinecap="round"
+          pointerEvents="all"
+          $xTranslate={p2.x - arrowHeadOffset * 2}
+          $yTranslate={p2.y - arrowHeadOffset}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onClick={onClick}
+        >
+          {tooltip && <title>{tooltip}</title>}
+        </HoverableArrowHeadEnding>
+        <HoverableDotEnding
+          cx={p1.x}
+          cy={p1.y}
+          r={dotEndingRadius}
+          stroke="transparent"
+          strokeWidth={hoverableLineWidth}
+          fill="transparent"
+        >
+          {tooltip && <title>{tooltip}</title>}
+        </HoverableDotEnding>
       </StraightLine>
+      <Endings
+        width={canvasWidth}
+        height={canvasHeight}
+        $isHighlighted={isHighlighted}
+        $xTranslate={canvasXOffset}
+        $yTranslate={canvasYOffset}
+      >
+        <DotEnding
+          cx={p1.x}
+          cy={p1.y}
+          r={dotEndingRadius}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          fill={dotEndingBackground}
+        />
+        <ArrowHeadEnding
+          d={arrowHeadEndingPath}
+          fill="none"
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          $xTranslate={p2.x - arrowHeadOffset * 2}
+          $yTranslate={p2.y - arrowHeadOffset}
+        />
+      </Endings>
     </>
   );
 };
