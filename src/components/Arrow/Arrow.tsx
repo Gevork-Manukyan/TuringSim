@@ -139,19 +139,10 @@ const Arrow = ({
     if (dx < 0) [leftTopX, rightBottomX] = [rightBottomX, leftTopX];
     if (dy < 0) [leftTopY, rightBottomY] = [rightBottomY, leftTopY];
 
-    const WEIGHT_X = 4;
-    const WEIGHT_Y = 0.8;
-    const fixedLineInflectionConstant = Math.round(Math.sqrt(absDx) * WEIGHT_X + Math.sqrt(absDy) * WEIGHT_Y);
-    const lowDyYShift = Math.round(
-      Math.pow(0.9, Math.pow(1.2, Math.abs(dy) / 10)),
-    );
-
     const p1 = { x: leftTopX, y: leftTopY };
-    const p2 = { x: leftTopX + fixedLineInflectionConstant, y: leftTopY + lowDyYShift };
-    const p3 = { x: rightBottomX - fixedLineInflectionConstant, y: rightBottomY - lowDyYShift };
-    const p4 = { x: rightBottomX, y: rightBottomY };
+    const p2 = { x: rightBottomX, y: rightBottomY };
 
-    return { p1, p2, p3, p4 };
+    return { p1, p2 };
   };
 
   const calculateControlPointsWithBuffer = ({
@@ -167,17 +158,17 @@ const Arrow = ({
     dx: number;
     dy: number;
   }) => {
-    const { p1, p2, p3, p4 } = calculateControlPoints({
+    const { p1, p2 } = calculateControlPoints({
       absDx,
       absDy,
       dx,
       dy,
     });
 
-    const topBorder = Math.min(p1.y, p2.y, p3.y, p4.y);
-    const bottomBorder = Math.max(p1.y, p2.y, p3.y, p4.y);
-    const leftBorder = Math.min(p1.x, p2.x, p3.x, p4.x);
-    const rightBorder = Math.max(p1.x, p2.x, p3.x, p4.x);
+    const topBorder = Math.min(p1.y, p2.y);
+    const bottomBorder = Math.max(p1.y, p2.y);
+    const leftBorder = Math.min(p1.x, p2.x);
+    const rightBorder = Math.max(p1.x, p2.x);
 
     const verticalBuffer =
       (bottomBorder - topBorder - absDy) / 2 + boundingBoxElementsBuffer;
@@ -187,8 +178,6 @@ const Arrow = ({
     return {
       p1: { x: p1.x + horizontalBuffer, y: p1.y + verticalBuffer },
       p2: { x: p2.x + horizontalBuffer, y: p2.y + verticalBuffer },
-      p3: { x: p3.x + horizontalBuffer, y: p3.y + verticalBuffer },
-      p4: { x: p4.x + horizontalBuffer, y: p4.y + verticalBuffer },
       boundingBoxBuffer: { vertical: verticalBuffer, horizontal: horizontalBuffer },
     };
   };
@@ -209,7 +198,7 @@ const Arrow = ({
   };
 
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
-  const { p1, p4, boundingBoxBuffer } = calculateControlPointsWithBuffer({
+  const { p1, p2, boundingBoxBuffer } = calculateControlPointsWithBuffer({
     boundingBoxElementsBuffer,
     dx,
     dy,
@@ -229,7 +218,7 @@ const Arrow = ({
 
   const straightLinePath = `
     M ${p1.x} ${p1.y}
-    L ${p4.x} ${p4.y}
+    L ${p2.x} ${p2.y}
   `;
 
   const arrowHeadEndingPath = `
@@ -276,8 +265,8 @@ const Arrow = ({
           strokeWidth={hoverableLineWidth}
           strokeLinecap="round"
           pointerEvents="all"
-          $xTranslate={p4.x - arrowHeadOffset * 2}
-          $yTranslate={p4.y - arrowHeadOffset}
+          $xTranslate={p2.x - arrowHeadOffset * 2}
+          $yTranslate={p2.y - arrowHeadOffset}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onClick={onClick}
@@ -316,8 +305,8 @@ const Arrow = ({
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          $xTranslate={p4.x - arrowHeadOffset * 2}
-          $yTranslate={p4.y - arrowHeadOffset}
+          $xTranslate={p2.x - arrowHeadOffset * 2}
+          $yTranslate={p2.y - arrowHeadOffset}
         />
       </Endings>
     </>
