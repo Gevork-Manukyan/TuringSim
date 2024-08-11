@@ -26,7 +26,6 @@ export function calcEdgeCoords(startNodeCenter: Coords, endNodeCenter: Coords): 
     const endX = endNodeCenter.x - NODE_RADIUS * unitX;
     const endY = endNodeCenter.y - NODE_RADIUS * unitY;
   
-    console.log(distance)
     return { startCoords: startNodeCenter, endCoords: {x: endX, y: endY} }
 }
 

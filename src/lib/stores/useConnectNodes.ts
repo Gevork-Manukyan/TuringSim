@@ -20,7 +20,6 @@ export const useConnectNodes = create<TUseConnectNodes>((set) => ({
     mouseCoords: null,
     setIsAddingEdge: (value) => set({ isAddingEdge: value }),
     setStartNode: (node) => set(() => { 
-        console.log("start: ", node)
         if (node) {
             const newNode = { ...node, coords: calcNodeCenter(node.coords) };
             return { startNode: newNode };
