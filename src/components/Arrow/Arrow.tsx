@@ -7,7 +7,6 @@ import {
 } from "./utils/arrow-utils";
 import { ArrowConfig, Coords } from "../../lib/types";
 
-const CONTROL_POINTS_RADIUS = 5;
 const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5;
 
 type Props = {
@@ -81,55 +80,6 @@ const HoverableDotEnding = styled.circle`
   cursor: default;
 `;
 
-const ControlPoints = ({
-  p1,
-  p2,
-  p3,
-  p4,
-  color,
-}: {
-  p1: Coords;
-  p2: Coords;
-  p3: Coords;
-  p4: Coords;
-  color: string;
-}) => {
-  return (
-    <>
-      <circle
-        cx={p2.x}
-        cy={p2.y}
-        r={CONTROL_POINTS_RADIUS}
-        strokeWidth="0"
-        fill={color}
-      />
-      <circle
-        cx={p3.x}
-        cy={p3.y}
-        r={CONTROL_POINTS_RADIUS}
-        strokeWidth="0"
-        fill={color}
-      />
-      <line
-        strokeDasharray="1,3"
-        stroke={color}
-        x1={p1.x}
-        y1={p1.y}
-        x2={p2.x}
-        y2={p2.y}
-      />
-      <line
-        strokeDasharray="1,3"
-        stroke={color}
-        x1={p3.x}
-        y1={p3.y}
-        x2={p4.x}
-        y2={p4.y}
-      />
-    </>
-  );
-};
-
 export default function Arrow({
   startPoint,
   endPoint,
@@ -160,7 +110,6 @@ export default function Arrow({
   const {
     arrowColor,
     arrowHighlightedColor,
-    controlPointsColor,
     boundingBoxColor,
     arrowHeadEndingSize,
     strokeWidth,
@@ -173,11 +122,10 @@ export default function Arrow({
   const boundingBoxElementsBuffer =
     strokeWidth +
     arrowHeadEndingSize / 2 +
-    dotEndingRadius +
-    CONTROL_POINTS_RADIUS / 2;
+    dotEndingRadius;
 
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
-  const { p1, p2, p3, p4, boundingBoxBuffer } = calculateControlPoints({
+  const { p1, p4, boundingBoxBuffer } = calculateControlPoints({
     boundingBoxElementsBuffer,
     dx,
     dy,
@@ -195,13 +143,6 @@ export default function Arrow({
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
-
-  // const curvedLinePath = `
-  //   M ${p1.x} ${p1.y}
-  //   C ${p2.x} ${p2.y},
-  //   ${p3.x} ${p3.y},
-  //   ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
-  //   L ${p4.x} ${p4.y}`;
 
   const straightLinePath = `
   M ${p1.x} ${p1.y}
@@ -302,15 +243,6 @@ export default function Arrow({
           $xTranslate={p4.x - arrowHeadOffset * 2}
           $yTranslate={p4.y - arrowHeadOffset}
         />
-        {showDebugGuideLines && (
-          <ControlPoints
-            p1={p1}
-            p2={p2}
-            p3={p3}
-            p4={p4}
-            color={controlPointsColor}
-          />
-        )}
       </Endings>
     </>
   );
