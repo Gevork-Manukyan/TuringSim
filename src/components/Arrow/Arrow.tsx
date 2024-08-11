@@ -196,12 +196,18 @@ export default function Arrow({
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
 
-  const curvedLinePath = `
-    M ${p1.x} ${p1.y}
-    C ${p2.x} ${p2.y},
-    ${p3.x} ${p3.y},
-    ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
-    L ${p4.x} ${p4.y}`;
+  // const curvedLinePath = `
+  //   M ${p1.x} ${p1.y}
+  //   C ${p2.x} ${p2.y},
+  //   ${p3.x} ${p3.y},
+  //   ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
+  //   L ${p4.x} ${p4.y}`;
+
+  const straightLinePath = `
+  M ${p1.x} ${p1.y}
+  L ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
+  L ${p4.x} ${p4.y}`;
+
 
   const getStrokeColor = () => {
     if (isHighlighted) return arrowHighlightedColor;
@@ -223,13 +229,13 @@ export default function Arrow({
         $yTranslate={canvasYOffset}
       >
         <RenderedLine
-          d={curvedLinePath}
+          d={straightLinePath}
           strokeWidth={strokeWidth}
           stroke={getStrokeColor()}
           fill="none"
         />
         <HoverableLine
-          d={curvedLinePath}
+          d={straightLinePath}
           strokeWidth={hoverableLineWidth}
           stroke="transparent"
           pointerEvents="all"

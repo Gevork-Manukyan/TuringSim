@@ -55,7 +55,7 @@ export default function Canvas() {
         {/* Render arrows connecting Nodes */}
         {getAllOutgoingEdgesCoords().map((edge, index) => {
           const { startCoords, endCoords } = calcEdgeCoords(calcNodeCenter(edge.startCoords), calcNodeCenter(edge.endCoords))
-          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} showDebugGuideLines={true} />
+          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} />
         })}
 
         {/* Arrow when adding new Edge */}
