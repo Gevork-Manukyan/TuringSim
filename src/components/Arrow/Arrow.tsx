@@ -13,7 +13,6 @@ type Props = {
   startPoint: Coords;
   endPoint: Coords;
   isHighlighted?: boolean;
-  showDebugGuideLines?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
   onClick?: (e: React.MouseEvent) => void;
@@ -84,7 +83,6 @@ export default function Arrow({
   startPoint,
   endPoint,
   isHighlighted = false,
-  showDebugGuideLines = false,
   onMouseEnter,
   onMouseLeave,
   onClick,
@@ -164,7 +162,6 @@ export default function Arrow({
         width={canvasWidth}
         height={canvasHeight}
         $isHighlighted={isHighlighted}
-        $showDebugGuideLines={showDebugGuideLines}
         $boundingBoxColor={boundingBoxColor}
         $xTranslate={canvasXOffset}
         $yTranslate={canvasYOffset}
