@@ -41,7 +41,7 @@ const Line = styled.svg.attrs(({ $xTranslate, $yTranslate }: LineProps) => ({
   top: 0;
 `;
 
-const CurvedLine = styled(Line)`
+const StraightLine = styled(Line)`
   border: ${({ $showDebugGuideLines, $boundingBoxColor = "black" }) =>
     $showDebugGuideLines ? `dashed 1px ${$boundingBoxColor}` : "0"};
 `;
@@ -158,7 +158,7 @@ export default function Arrow({
 
   return (
     <>
-      <CurvedLine
+      <StraightLine
         width={canvasWidth}
         height={canvasHeight}
         $isHighlighted={isHighlighted}
@@ -212,7 +212,7 @@ export default function Arrow({
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableDotEnding>
-      </CurvedLine>
+      </StraightLine>
       <Endings
         width={canvasWidth}
         height={canvasHeight}
