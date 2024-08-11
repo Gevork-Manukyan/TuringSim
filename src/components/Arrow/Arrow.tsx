@@ -147,6 +147,11 @@ export default function Arrow({
   L ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
   L ${p4.x} ${p4.y}`;
 
+  const arrowHeadEndingPath = `
+  M ${(arrowHeadEndingSize / 5) * 2} 0
+  L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
+  L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`
+
 
   const getStrokeColor = () => {
     if (isHighlighted) return arrowHighlightedColor;
@@ -185,10 +190,7 @@ export default function Arrow({
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
         <HoverableArrowHeadEnding
-          d={`
-            M ${(arrowHeadEndingSize / 5) * 2} 0
-            L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-            L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`}
+          d={arrowHeadEndingPath}
           fill="none"
           stroke="transparent"
           strokeWidth={hoverableLineWidth}
@@ -229,10 +231,7 @@ export default function Arrow({
           fill={dotEndingBackground}
         />
         <ArrowHeadEnding
-          d={`
-            M ${(arrowHeadEndingSize / 5) * 2} 0
-            L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-            L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`}
+          d={arrowHeadEndingPath}
           fill="none"
           stroke={strokeColor}
           strokeWidth={strokeWidth}
