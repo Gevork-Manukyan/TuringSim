@@ -52,6 +52,8 @@ const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTran
   style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
 }))<TranslateProps>`
   transition: stroke 300ms;
+  transform-origin: center;
+  transform-box: fill-box;
 `;
 
 const DotEnding = styled.circle`
@@ -197,7 +199,11 @@ const Arrow = ({
     return { canvasWidth, canvasHeight };
   };
 
+  // absDx/Dy is the x/y distance between the start and end
+  // dx/dy are used to know the quadrant (ex. if dx is positive then you know its on the right side so Q1 or Q4)
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
+  // p1 represents the top left corner 
+  // p2 represents the bottom right corner
   const { p1, p2, boundingBoxBuffer } = calculateControlPointsWithBuffer({
     boundingBoxElementsBuffer,
     dx,
