@@ -198,6 +198,20 @@ const Arrow = ({
     return { canvasWidth, canvasHeight };
   };
 
+  const calculateArrowheadPoints = ({ p2, arrowHeadEndingSize, angle }: { p2: Coords, arrowHeadEndingSize: number, angle: number }) => {
+    const arrowPoint1 = {
+      x: p2.x - arrowHeadEndingSize * Math.cos(angle) + arrowHeadEndingSize * Math.sin(angle),
+      y: p2.y - arrowHeadEndingSize * Math.sin(angle) - arrowHeadEndingSize * Math.cos(angle),
+    };
+    
+    const arrowPoint2 = {
+      x: p2.x - arrowHeadEndingSize * Math.cos(angle) - arrowHeadEndingSize * Math.sin(angle),
+      y: p2.y - arrowHeadEndingSize * Math.sin(angle) + arrowHeadEndingSize * Math.cos(angle),
+    };
+
+    return { arrowPoint1, arrowPoint2 }
+  }
+
   // absDx/Dy is the x/y distance between the start and end
   // dx/dy are used to know the quadrant (ex. if dx is positive then you know its on the right side so Q1 or Q4)
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
@@ -225,15 +239,7 @@ const Arrow = ({
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
   
   // Calculate the arrowhead points
-  const arrowPoint1 = {
-    x: p2.x - arrowHeadEndingSize * Math.cos(angle) + arrowHeadEndingSize * Math.sin(angle),
-    y: p2.y - arrowHeadEndingSize * Math.sin(angle) - arrowHeadEndingSize * Math.cos(angle),
-  };
-  
-  const arrowPoint2 = {
-    x: p2.x - arrowHeadEndingSize * Math.cos(angle) - arrowHeadEndingSize * Math.sin(angle),
-    y: p2.y - arrowHeadEndingSize * Math.sin(angle) + arrowHeadEndingSize * Math.cos(angle),
-  };
+  const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({ p2, arrowHeadEndingSize, angle })
   
   const straightLinePath = `
     M ${p1.x} ${p1.y}
