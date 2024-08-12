@@ -8,6 +8,6 @@ export const ARROW_CONFIG: ArrowConfig = {
     // arrowHighlightedColor: ,
     dotEndingRadius: 0,
     arrowHeadEndingSize: 5,
-    hoverableLineWidth: 7,
-    strokeWidth: 2,
+    hoverableLineWidth: 1,
+    strokeWidth: 1,
 }

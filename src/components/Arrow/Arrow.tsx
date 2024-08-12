@@ -24,6 +24,10 @@ type LineProps = {
   $boundingBoxColor?: string;
 } & TranslateProps;
 
+type TranslapteArrowheadProps = TranslateProps & {
+  $angleDegrees: number
+}
+
 // Styled Components
 const Line = styled.svg.attrs<LineProps>(({ $xTranslate, $yTranslate }) => ({
   style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
@@ -48,9 +52,9 @@ const Endings = styled(Line)`
   z-index: ${({ $isHighlighted }) => ($isHighlighted ? 11 : 10)};
 `;
 
-const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTranslate }) => ({
-  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
-}))<TranslateProps>`
+const ArrowHeadEnding = styled.path.attrs<TranslapteArrowheadProps>(({ $xTranslate, $yTranslate, $angleDegrees }) => ({
+  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px) rotate(${$angleDegrees}deg)` },
+}))<TranslapteArrowheadProps>`
   transition: stroke 300ms;
   transform-origin: center;
   transform-box: fill-box;
@@ -222,6 +226,9 @@ const Arrow = ({
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
 
+  const angleRadians = Math.atan2(dy, dx);
+  const angleDegrees = (angleRadians * 180) / Math.PI;
+  
   const straightLinePath = `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
@@ -273,6 +280,7 @@ const Arrow = ({
           pointerEvents="all"
           $xTranslate={p2.x - arrowHeadOffset * 2}
           $yTranslate={p2.y - arrowHeadOffset}
+          $angleDegrees={angleDegrees}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onClick={onClick}
@@ -313,6 +321,7 @@ const Arrow = ({
           strokeLinecap="round"
           $xTranslate={p2.x - arrowHeadOffset * 2}
           $yTranslate={p2.y - arrowHeadOffset}
+          $angleDegrees={angleDegrees}
         />
       </Endings>
     </>
