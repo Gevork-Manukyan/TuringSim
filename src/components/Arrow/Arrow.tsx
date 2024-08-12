@@ -110,7 +110,7 @@ const Arrow = ({
 
   const boundingBoxElementsBuffer =
     strokeWidth +
-    arrowHeadEndingSize / 2 +
+    arrowHeadEndingSize +
     dotEndingRadius;
 
   const calculateDeltas = (startPoint: Coords, targetPoint: Coords) => {
