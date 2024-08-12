@@ -24,10 +24,6 @@ type LineProps = {
   $boundingBoxColor?: string;
 } & TranslateProps;
 
-type TranslapteArrowheadProps = TranslateProps & {
-  $angleDegrees: number
-}
-
 // Styled Components
 const Line = styled.svg.attrs<LineProps>(({ $xTranslate, $yTranslate }) => ({
   style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
@@ -52,9 +48,9 @@ const Endings = styled(Line)`
   z-index: ${({ $isHighlighted }) => ($isHighlighted ? 11 : 10)};
 `;
 
-const ArrowHeadEnding = styled.path.attrs<TranslapteArrowheadProps>(({ $xTranslate, $yTranslate, $angleDegrees }) => ({
-  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px) rotate(${$angleDegrees}deg)` },
-}))<TranslapteArrowheadProps>`
+const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTranslate }) => ({
+  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
+}))<TranslateProps>`
   transition: stroke 300ms;
   transform-origin: center;
   transform-box: fill-box;
@@ -225,20 +221,33 @@ const Arrow = ({
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
-
-  const angleRadians = Math.atan2(dy, dx);
-  const angleDegrees = (angleRadians * 180) / Math.PI;
+  
+  const arrowLength = 10; // Length of the arrowhead
+  const arrowWidth = 5;  // Width of the arrowhead (half-width from the center line)
+  
+  // Calculate the angle of the line
+  const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+  
+  // Calculate the arrowhead points
+  const arrowPoint1 = {
+    x: p2.x - arrowLength * Math.cos(angle) + arrowWidth * Math.sin(angle),
+    y: p2.y - arrowLength * Math.sin(angle) - arrowWidth * Math.cos(angle),
+  };
+  
+  const arrowPoint2 = {
+    x: p2.x - arrowLength * Math.cos(angle) - arrowWidth * Math.sin(angle),
+    y: p2.y - arrowLength * Math.sin(angle) + arrowWidth * Math.cos(angle),
+  };
   
   const straightLinePath = `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
+    L ${arrowPoint1.x} ${arrowPoint1.y}
+    M ${p2.x} ${p2.y}
+    L ${arrowPoint2.x} ${arrowPoint2.y}
   `;
 
-  const arrowHeadEndingPath = `
-    M ${(arrowHeadEndingSize / 5) * 2} 0
-    L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-    L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}
-  `;
+  const arrowHeadEndingPath = ``;
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
   const strokeColor = getStrokeColor();
@@ -280,7 +289,6 @@ const Arrow = ({
           pointerEvents="all"
           $xTranslate={p2.x - arrowHeadOffset * 2}
           $yTranslate={p2.y - arrowHeadOffset}
-          $angleDegrees={angleDegrees}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onClick={onClick}
@@ -321,7 +329,6 @@ const Arrow = ({
           strokeLinecap="round"
           $xTranslate={p2.x - arrowHeadOffset * 2}
           $yTranslate={p2.y - arrowHeadOffset}
-          $angleDegrees={angleDegrees}
         />
       </Endings>
     </>
