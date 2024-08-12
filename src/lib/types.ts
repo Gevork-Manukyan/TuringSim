@@ -20,4 +20,5 @@ export type ArrowConfig = {
     arrowHeadEndingSize?: number;
     hoverableLineWidth?: number;
     strokeWidth?: number;
+    circleArcRadius?: number;
 };

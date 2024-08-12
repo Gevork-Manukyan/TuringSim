@@ -4,9 +4,10 @@ import { ArrowConfig, Coords } from "../../lib/types";
 import { calculateDeltas, calculateControlPointsWithBuffer, calculateCanvasDimensions, calculateArrowheadPoints } from './util';
 
 // Types
-type Props = {
+type ArrowProps = {
   startPoint: Coords;
   endPoint: Coords;
+  type?: 'line' | 'circle';
   isHighlighted?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
@@ -77,13 +78,14 @@ const HoverableDotEnding = styled.circle`
 const Arrow = ({
   startPoint,
   endPoint,
+  type = 'circle',
   isHighlighted = false,
   onMouseEnter,
   onMouseLeave,
   onClick,
   config,
   tooltip,
-}: Props) => {
+}: ArrowProps) => {
   const defaultConfig = {
     arrowColor: "#bcc4cc",
     arrowHighlightedColor: "#4da6ff",
@@ -94,6 +96,7 @@ const Arrow = ({
     arrowHeadEndingSize: 9,
     hoverableLineWidth: 15,
     strokeWidth: 1,
+    circleArcRadius: 50
   };
 
   const currentConfig = { ...defaultConfig, ...config };
@@ -107,6 +110,7 @@ const Arrow = ({
     hoverableLineWidth,
     dotEndingBackground,
     dotEndingRadius,
+    circleArcRadius
   } = currentConfig;
 
   const boundingBoxElementsBuffer =
@@ -134,18 +138,20 @@ const Arrow = ({
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
   
-  // Calculate the angle of the line
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
   
-  // Calculate the arrowhead points
   const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({ p2, arrowHeadEndingSize, angle })
   
-  const straightLinePath = `
+  const linePath = type === 'line' ?
+  `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
     L ${arrowPoint1.x} ${arrowPoint1.y}
     M ${p2.x} ${p2.y}
     L ${arrowPoint2.x} ${arrowPoint2.y}
+  ` : `
+    M ${p1.x} ${p1.y}
+    A ${circleArcRadius} ${circleArcRadius} 0 0 1 ${p2.x} ${p2.y}
   `;
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
@@ -162,13 +168,13 @@ const Arrow = ({
         $yTranslate={canvasYOffset}
       >
         <RenderedLine
-          d={straightLinePath}
+          d={linePath}
           strokeWidth={strokeWidth}
           stroke={strokeColor}
           fill="none"
         />
         <HoverableLine
-          d={straightLinePath}
+          d={linePath}
           strokeWidth={hoverableLineWidth}
           stroke="transparent"
           pointerEvents="all"
