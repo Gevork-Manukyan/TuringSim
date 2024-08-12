@@ -108,7 +108,6 @@ const Arrow = ({
     dotEndingRadius,
   } = currentConfig;
 
-  const arrowHeadOffset = arrowHeadEndingSize / 2;
   const boundingBoxElementsBuffer =
     strokeWidth +
     arrowHeadEndingSize / 2 +
@@ -222,21 +221,18 @@ const Arrow = ({
   const canvasYOffset =
     Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
   
-  const arrowLength = 10; // Length of the arrowhead
-  const arrowWidth = 5;  // Width of the arrowhead (half-width from the center line)
-  
   // Calculate the angle of the line
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
   
   // Calculate the arrowhead points
   const arrowPoint1 = {
-    x: p2.x - arrowLength * Math.cos(angle) + arrowWidth * Math.sin(angle),
-    y: p2.y - arrowLength * Math.sin(angle) - arrowWidth * Math.cos(angle),
+    x: p2.x - arrowHeadEndingSize * Math.cos(angle) + arrowHeadEndingSize * Math.sin(angle),
+    y: p2.y - arrowHeadEndingSize * Math.sin(angle) - arrowHeadEndingSize * Math.cos(angle),
   };
   
   const arrowPoint2 = {
-    x: p2.x - arrowLength * Math.cos(angle) - arrowWidth * Math.sin(angle),
-    y: p2.y - arrowLength * Math.sin(angle) + arrowWidth * Math.cos(angle),
+    x: p2.x - arrowHeadEndingSize * Math.cos(angle) - arrowHeadEndingSize * Math.sin(angle),
+    y: p2.y - arrowHeadEndingSize * Math.sin(angle) + arrowHeadEndingSize * Math.cos(angle),
   };
   
   const straightLinePath = `
@@ -246,8 +242,6 @@ const Arrow = ({
     M ${p2.x} ${p2.y}
     L ${arrowPoint2.x} ${arrowPoint2.y}
   `;
-
-  const arrowHeadEndingPath = ``;
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
   const strokeColor = getStrokeColor();
@@ -280,21 +274,6 @@ const Arrow = ({
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
-        <HoverableArrowHeadEnding
-          d={arrowHeadEndingPath}
-          fill="none"
-          stroke="transparent"
-          strokeWidth={hoverableLineWidth}
-          strokeLinecap="round"
-          pointerEvents="all"
-          $xTranslate={p2.x - arrowHeadOffset * 2}
-          $yTranslate={p2.y - arrowHeadOffset}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onClick={onClick}
-        >
-          {tooltip && <title>{tooltip}</title>}
-        </HoverableArrowHeadEnding>
         <HoverableDotEnding
           cx={p1.x}
           cy={p1.y}
@@ -320,15 +299,6 @@ const Arrow = ({
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={dotEndingBackground}
-        />
-        <ArrowHeadEnding
-          d={arrowHeadEndingPath}
-          fill="none"
-          stroke={strokeColor}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          $xTranslate={p2.x - arrowHeadOffset * 2}
-          $yTranslate={p2.y - arrowHeadOffset}
         />
       </Endings>
     </>
