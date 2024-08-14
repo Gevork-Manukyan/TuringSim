@@ -96,7 +96,6 @@ const Arrow = ({
     arrowHeadEndingSize: 9,
     hoverableLineWidth: 15,
     strokeWidth: 1,
-    circleArcRadius: 50
   };
 
   const currentConfig = { ...defaultConfig, ...config };
@@ -110,7 +109,6 @@ const Arrow = ({
     hoverableLineWidth,
     dotEndingBackground,
     dotEndingRadius,
-    circleArcRadius
   } = currentConfig;
 
   const boundingBoxElementsBuffer =
@@ -142,17 +140,14 @@ const Arrow = ({
   
   const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({ p2, arrowHeadEndingSize, angle })
   
-  const linePath = type === 'line' ?
+  const linePath = 
   `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
     L ${arrowPoint1.x} ${arrowPoint1.y}
     M ${p2.x} ${p2.y}
     L ${arrowPoint2.x} ${arrowPoint2.y}
-  ` : `
-    M ${p1.x} ${p1.y}
-    A ${circleArcRadius} ${circleArcRadius} 0 0 1 ${p2.x} ${p2.y}
-  `;
+  `
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
   const strokeColor = getStrokeColor();
