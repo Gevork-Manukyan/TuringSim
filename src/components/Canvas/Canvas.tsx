@@ -55,7 +55,8 @@ export default function Canvas() {
         {/* Render arrows connecting Nodes */}
         {getAllOutgoingEdgesCoords().map((edge, index) => {
           const { startCoords, endCoords } = calcEdgeCoords(calcNodeCenter(edge.startCoords), calcNodeCenter(edge.endCoords))
-          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} />
+          const selfPointing = (edge.startCoords.x === edge.endCoords.x) && (edge.startCoords.y === edge.startCoords.y)
+          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} type={selfPointing ? "circle" : 'line'} />
         })}
 
         {/* Arrow when adding new Edge */}
@@ -96,6 +97,7 @@ function AddEdgeArrow() {
         key={addingEdgeStartNode.id} 
         startPoint={addingEdgeStartNode.coords}
         endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
+        type={addingEdgeStartNode.id === addingEdgeEndNode?.id ? 'circle' : 'line'}
       /> : null
     }
     </>
