@@ -1,15 +1,15 @@
 import "./Canvas.scss";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { TEdgeCoords, useDirectedGraph } from "../../lib/stores/useDirectedGraph";
+import { useDirectedGraph } from "../../lib/stores/useDirectedGraph";
 import { useConnectNodes } from "../../lib/stores/useConnectNodes";
 import { Coords } from "../../lib/types";
 import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
-import { ARROW_CONFIG, NODE_DIAMETER } from "../../lib/constants";
+import { ARROW_CONFIG } from "../../lib/constants";
 import { calcEdgeCoords, calcNodeCenter } from "../../lib/util";
 
 
