@@ -73,17 +73,27 @@ export const calculateControlPointsWithBuffer = ({
 export const calculateCanvasDimensions = ({
     absDx,
     absDy,
-    boundingBoxBuffer,
+    boundingBoxBuffer: { vertical, horizontal },
+    isCircle,
+    circleRadius,
   }: {
     absDx: number;
     absDy: number;
     boundingBoxBuffer: { vertical: number; horizontal: number };
+    isCircle: boolean;
+    circleRadius: number;
   }) => {
-    const canvasWidth = absDx + 2 * boundingBoxBuffer.horizontal;
-    const canvasHeight = absDy + 2 * boundingBoxBuffer.vertical;
-
+    const canvasWidth = isCircle
+      ? 2 * circleRadius + 2 * horizontal
+      : absDx + 2 * horizontal;
+  
+    const canvasHeight = isCircle
+      ? 2 * circleRadius + 2 * vertical
+      : absDy + 2 * vertical;
+  
     return { canvasWidth, canvasHeight };
-  };
+};
+  
 
 export const calculateArrowheadPoints = ({ p2, arrowHeadEndingSize, angle }: { p2: Coords, arrowHeadEndingSize: number, angle: number }) => {
     const arrowPoint1 = {

@@ -116,6 +116,8 @@ const Arrow = ({
     arrowHeadEndingSize +
     dotEndingRadius;
 
+  const CIRCLE_RADIUS = 50;
+
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
 
   const { p1, p2, boundingBoxBuffer } = calculateControlPointsWithBuffer({
@@ -129,24 +131,30 @@ const Arrow = ({
     absDx,
     absDy,
     boundingBoxBuffer,
+    isCircle: type === 'circle',
+    circleRadius: CIRCLE_RADIUS
   });
 
   const canvasXOffset =
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
-  const canvasYOffset =
-    Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical;
+  const canvasYOffset = type === 'line'
+    ? Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical
+    : Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical - (2 * CIRCLE_RADIUS)
   
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
   
   const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({ p2, arrowHeadEndingSize, angle })
   
-  const linePath = 
+  const linePath = type === 'line' ? 
   `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
     L ${arrowPoint1.x} ${arrowPoint1.y}
     M ${p2.x} ${p2.y}
     L ${arrowPoint2.x} ${arrowPoint2.y}
+  ` : `
+    m ${30} ${CIRCLE_RADIUS * 2}
+    a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
   `
 
   const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
