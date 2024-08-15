@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ArrowConfig, Coords } from "../../lib/types";
 import { calculateDeltas, calculateControlPointsWithBuffer, calculateCanvasDimensions, calculateArrowheadPoints } from './util';
 
-// Types
 type ArrowProps = {
   startPoint: Coords;
   endPoint: Coords;
@@ -45,11 +44,6 @@ const RenderedLine = styled.path`
   transition: stroke 300ms;
 `;
 
-const Endings = styled(Line)`
-  pointer-events: none;
-  z-index: ${({ $isHighlighted }) => ($isHighlighted ? 11 : 10)};
-`;
-
 const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTranslate }) => ({
   style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
 }))<TranslateProps>`
@@ -58,15 +52,7 @@ const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTran
   transform-box: fill-box;
 `;
 
-const DotEnding = styled.circle`
-  transition: stroke 300ms;
-`;
-
 const HoverableLine = styled.path`
-  cursor: default;
-`;
-
-const HoverableArrowHeadEnding = styled(ArrowHeadEnding)`
   cursor: default;
 `;
 
@@ -107,7 +93,6 @@ const Arrow = ({
     arrowHeadEndingSize,
     strokeWidth,
     hoverableLineWidth,
-    dotEndingBackground,
     dotEndingRadius,
   } = currentConfig;
 
@@ -199,22 +184,6 @@ const Arrow = ({
           {tooltip && <title>{tooltip}</title>}
         </HoverableDotEnding>
       </StraightLine>
-      <Endings
-        width={canvasWidth}
-        height={canvasHeight}
-        $isHighlighted={isHighlighted}
-        $xTranslate={canvasXOffset}
-        $yTranslate={canvasYOffset}
-      >
-        <DotEnding
-          cx={p1.x}
-          cy={p1.y}
-          r={dotEndingRadius}
-          stroke={strokeColor}
-          strokeWidth={strokeWidth}
-          fill={dotEndingBackground}
-        />
-      </Endings>
     </>
   );
 };
