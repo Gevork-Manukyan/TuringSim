@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { Coords, TNode } from "../types";
 
+export type Edge = {
+  value: string | null;
+  fromId: TNode['id'];
+  toId: TNode['id'];
+}
+
 export type TEdgeCoords = {
   startCoords: Coords,
   endCoords: Coords
@@ -13,8 +19,8 @@ type TUseDirectedGraph = {
   addNode: (value: TNode['value'], isEndNode?: boolean) => TNode['id'];
   removeNode: (nodeId: TNode['id']) => void;
   renameNode: (nodeId: TNode['id'], newValue: TNode["value"]) => void;
-  addEdge: (from: TNode['id'], to: TNode['id']) => void;
-  removeEdge: (from: TNode['id'], to: TNode['id']) => void;
+  addEdge: (edge: Edge) => void;
+  removeEdge: (edge: Edge) => void;
   getCoords: (nodeId: TNode['id']) => Coords;
   getAllOutgoingEdgesCoords: () => TEdgeCoords[];
   getIncomingEdges: (nodeId: TNode['id']) => TNode['id'][];
@@ -39,11 +45,11 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     if (newValue === null) return;
     set((state) => renameNode(state, nodeId, newValue))
   },
-  addEdge: (from, to) => {
-    set((state) => addEdge(state, from, to));
+  addEdge: (edge) => {
+    set((state) => addEdge(state, edge));
   },
-  removeEdge: (from, to) => {
-    set((state) => removeEdge(state, from, to));
+  removeEdge: (edge) => {
+    set((state) => removeEdge(state, edge));
   },
   getCoords: (nodeId) => {
     const coords = get().nodes.get(nodeId)?.coords;
@@ -144,33 +150,35 @@ function renameNode(state: TUseDirectedGraph, nodeId: TNode['id'], newValue: TNo
   return state;
 }
 
-function addEdge(state: TUseDirectedGraph, from: string, to: string): Partial<TUseDirectedGraph> {
-  if (!doNodesExist(from, to, state.nodes)) throw new Error("Both nodes must exist to make an edge");
-  if (doesEdgeExist(state.incomingEdges, state.outgoingEdges, from, to)) throw Error(`Edge already exists from node '${from}' to node '${to}'`) 
+function addEdge(state: TUseDirectedGraph, edge: Edge): Partial<TUseDirectedGraph> {
+  const { fromId, toId } = edge;
+  if (!doNodesExist(fromId, toId, state.nodes)) throw new Error("Both nodes must exist to make an edge");
+  if (doesEdgeExist(state.incomingEdges, state.outgoingEdges, fromId, toId)) throw Error(`Edge already exists from node '${fromId}' to node '${toId}'`) 
 
   const newIncomingEdges = new Map(state.incomingEdges)
   const newOutgoingEdges = new Map(state.outgoingEdges)
   
   // Add the new edge to the outgoing edges of the from node
-  newOutgoingEdges.get(from)!.push(to)
+  newOutgoingEdges.get(fromId)!.push(toId)
   // Add the new edge to the incoming edges of the to node
-  newIncomingEdges.get(to)!.push(from)
+  newIncomingEdges.get(toId)!.push(fromId)
   
   return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
 }
 
-function removeEdge(state: TUseDirectedGraph, from: string, to: string): Partial<TUseDirectedGraph> {
-  if (!doNodesExist(from, to, state.nodes)) throw new Error("Both nodes must exist to remove an edge");
-  if (!doesEdgeExist(state.incomingEdges, state.outgoingEdges, from, to)) throw Error(`Cannot remove edge from node '${from}' to node '${to}' as it does not exist`) 
+function removeEdge(state: TUseDirectedGraph, edge: Edge): Partial<TUseDirectedGraph> {
+  const { fromId, toId } = edge;
+  if (!doNodesExist(fromId, toId, state.nodes)) throw new Error("Both nodes must exist to remove an edge");
+  if (!doesEdgeExist(state.incomingEdges, state.outgoingEdges, fromId, toId)) throw Error(`Cannot remove edge from node '${fromId}' to node '${toId}' as it does not exist`) 
 
   const newIncomingEdges = new Map(state.incomingEdges)
   const newOutgoingEdges = new Map(state.outgoingEdges)
 
-  const filteredIncomingEdges = newIncomingEdges.get(to)!.filter(edge => edge !== from)
-  const filteredOutgoingEdges = newOutgoingEdges.get(from)!.filter(edge => edge !== to)
+  const filteredIncomingEdges = newIncomingEdges.get(toId)!.filter(edge => edge !== fromId)
+  const filteredOutgoingEdges = newOutgoingEdges.get(fromId)!.filter(edge => edge !== toId)
 
-  newIncomingEdges.set(to, filteredIncomingEdges)
-  newOutgoingEdges.set(from, filteredOutgoingEdges)
+  newIncomingEdges.set(toId, filteredIncomingEdges)
+  newOutgoingEdges.set(fromId, filteredOutgoingEdges)
 
   return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
 }
@@ -216,6 +224,7 @@ function doesEdgeExist(incomingEdges: TUseDirectedGraph['incomingEdges'], outgoi
 }
 
 function doNodesExist(from: string, to: string, nodes: TUseDirectedGraph['nodes']): boolean {
+  console.log(nodes, from, to)
   if (!nodes.has(from) || !nodes.has(to)) return false;
   return true;
 }

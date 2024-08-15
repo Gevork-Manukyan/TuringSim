@@ -68,7 +68,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
 
   const handleAddNode = () => {
     const newNodeId = addNode(null);
-    addEdge(node.id, newNodeId)
+    addEdge({fromId: node.id, toId: newNodeId, value: null })
     setIsClicked(false)    
   }
 
@@ -80,7 +80,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
   }
 
   const handleSelectNodeAddEdge = () => {
-    addEdge(addEdgeStartNode!.id, node.id)
+    addEdge({ fromId: addEdgeStartNode!.id, toId: node.id, value: null })
     setMouseCoords(null)
     setIsAddingEdge(false)
   }
