@@ -112,7 +112,7 @@ const Arrow = ({
   } = currentConfig;
 
   const boundingBoxElementsBuffer =
-    strokeWidth +
+    hoverableLineWidth / 2 +
     arrowHeadEndingSize +
     dotEndingRadius;
 

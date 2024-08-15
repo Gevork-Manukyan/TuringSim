@@ -224,7 +224,6 @@ function doesEdgeExist(incomingEdges: TUseDirectedGraph['incomingEdges'], outgoi
 }
 
 function doNodesExist(from: string, to: string, nodes: TUseDirectedGraph['nodes']): boolean {
-  console.log(nodes, from, to)
   if (!nodes.has(from) || !nodes.has(to)) return false;
   return true;
 }

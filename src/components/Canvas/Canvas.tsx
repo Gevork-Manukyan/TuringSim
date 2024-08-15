@@ -29,6 +29,8 @@ export default function Canvas() {
 
   const isAddingEdge = useConnectNodes(state => state.isAddingEdge)
 
+  const [isArrowHovered, setIsArrowHovered] = useState(false)
+
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString()
     setStartCoords(getCoords(nodeId))
@@ -36,6 +38,10 @@ export default function Canvas() {
 
   const handleDragMove = ({ active, delta }: DragMoveEvent) => {
     updateCoords(active.id.toString(), startCoords!.x + delta.x, startCoords!.y + delta.y)
+  }
+
+  const handleArrowClick = () => {
+
   }
 
   return (
@@ -56,7 +62,19 @@ export default function Canvas() {
         {getAllOutgoingEdgesCoords().map((edge, index) => {
           const { startCoords, endCoords } = calcEdgeCoords(calcNodeCenter(edge.startCoords), calcNodeCenter(edge.endCoords))
           const selfPointing = (edge.startCoords.x === edge.endCoords.x) && (edge.startCoords.y === edge.startCoords.y)
-          return <Arrow key={index} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} type={selfPointing ? "circle" : 'line'} />
+          return (
+            <Arrow 
+              key={index} 
+              startPoint={startCoords} 
+              endPoint={endCoords} 
+              config={ARROW_CONFIG} 
+              type={selfPointing ? "circle" : 'line'} 
+              onClick={handleArrowClick}
+              onMouseEnter={() => setIsArrowHovered(true)}
+              onMouseLeave={() => setIsArrowHovered(false)}
+              isHighlighted={isArrowHovered}
+            />
+          )
         })}
 
         {/* Arrow when adding new Edge */}
