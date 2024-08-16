@@ -1,41 +1,45 @@
 import { create } from "zustand";
-import { Coords, TNode } from "../types";
+import { Coord, TNode } from "../types";
 import { calcEdgeCoords, calcNodeCenter } from "../util";
 
 type TUseConnectNodes = {
-    isAddingEdge: boolean;
-    startNode: TNode | null;
-    endNode: TNode | null;
-    mouseCoords: Coords | null;
-    setIsAddingEdge: (value: TUseConnectNodes['isAddingEdge']) => void;
-    setStartNode: (node: TUseConnectNodes['startNode']) => void;
-    setEndNode: (node: TUseConnectNodes['endNode']) => void;
-    setMouseCoords: (coords: TUseConnectNodes['mouseCoords']) => void;
-}
+  isAddingEdge: boolean;
+  startNode: TNode | null;
+  endNode: TNode | null;
+  mouseCoords: Coord | null;
+  setIsAddingEdge: (value: TUseConnectNodes["isAddingEdge"]) => void;
+  setStartNode: (node: TUseConnectNodes["startNode"]) => void;
+  setEndNode: (node: TUseConnectNodes["endNode"]) => void;
+  setMouseCoords: (coords: TUseConnectNodes["mouseCoords"]) => void;
+};
 
 export const useConnectNodes = create<TUseConnectNodes>((set) => ({
-    isAddingEdge: false,
-    startNode: null,
-    endNode: null,
-    mouseCoords: null,
-    setIsAddingEdge: (value) => set({ isAddingEdge: value }),
-    setStartNode: (node) => set(() => { 
-        if (node) {
-            const newNode = { ...node, coords: calcNodeCenter(node.coords) };
-            return { startNode: newNode };
-        } 
-        return { startNode: null };
+  isAddingEdge: false,
+  startNode: null,
+  endNode: null,
+  mouseCoords: null,
+  setIsAddingEdge: (value) => set({ isAddingEdge: value }),
+  setStartNode: (node) =>
+    set(() => {
+      if (node) {
+        const newNode = { ...node, coords: calcNodeCenter(node.coords) };
+        return { startNode: newNode };
+      }
+      return { startNode: null };
     }),
-    setEndNode: (node) => set((state) => {
-        if (node && state.startNode) {
-            const endNodeCenter = calcNodeCenter(node.coords)
-            const { endCoords } = calcEdgeCoords(state.startNode.coords, endNodeCenter);
-            const newNode = { ...node, coords: endCoords };
-            return { endNode: newNode };
-        } 
+  setEndNode: (node) =>
+    set((state) => {
+      if (node && state.startNode) {
+        const endNodeCenter = calcNodeCenter(node.coords);
+        const { endCoords } = calcEdgeCoords(
+          state.startNode.coords,
+          endNodeCenter
+        );
+        const newNode = { ...node, coords: endCoords };
+        return { endNode: newNode };
+      }
 
-        return { endNode: null };
+      return { endNode: null };
     }),
-    setMouseCoords: (coords) => set({ mouseCoords: coords }),
+  setMouseCoords: (coords) => set({ mouseCoords: coords }),
 }));
-

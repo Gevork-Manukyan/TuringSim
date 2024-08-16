@@ -1,12 +1,18 @@
-import React from 'react';
+import './Arrow.scss'
 import styled from "styled-components";
-import { ArrowConfig, Coords } from "../../lib/types";
-import { calculateDeltas, calculateControlPointsWithBuffer, calculateCanvasDimensions, calculateArrowheadPoints } from './util';
+import { ArrowConfig, Coord } from "../../lib/types";
+import {
+  calculateDeltas,
+  calculateControlPointsWithBuffer,
+  calculateCanvasDimensions,
+  calculateArrowheadPoints,
+  calculateMidpoint,
+} from "./util";
 
 type ArrowProps = {
-  startPoint: Coords;
-  endPoint: Coords;
-  type?: 'line' | 'circle';
+  startPoint: Coord;
+  endPoint: Coord;
+  type?: "line" | "circle";
   isHighlighted?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
@@ -27,7 +33,7 @@ type LineProps = {
 
 // Styled Components
 const Line = styled.svg.attrs<LineProps>(({ $xTranslate, $yTranslate }) => ({
-  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
+  style: { transform: `translate(${$xTranslate}px, ${$yTranslate}px)` },
 }))<LineProps>`
   pointer-events: none;
   z-index: ${({ $isHighlighted }) => ($isHighlighted ? 2 : 1)};
@@ -44,9 +50,11 @@ const RenderedLine = styled.path`
   transition: stroke 300ms;
 `;
 
-const ArrowHeadEnding = styled.path.attrs<TranslateProps>(({ $xTranslate, $yTranslate }) => ({
-  style: { transform: `translate(${ $xTranslate }px, ${ $yTranslate }px)` },
-}))<TranslateProps>`
+const ArrowHeadEnding = styled.path.attrs<TranslateProps>(
+  ({ $xTranslate, $yTranslate }) => ({
+    style: { transform: `translate(${$xTranslate}px, ${$yTranslate}px)` },
+  })
+)<TranslateProps>`
   transition: stroke 300ms;
   transform-origin: center;
   transform-box: fill-box;
@@ -64,7 +72,7 @@ const HoverableDotEnding = styled.circle`
 const Arrow = ({
   startPoint,
   endPoint,
-  type = 'circle',
+  type = "circle",
   isHighlighted = false,
   onMouseEnter,
   onMouseLeave,
@@ -97,9 +105,7 @@ const Arrow = ({
   } = currentConfig;
 
   const boundingBoxElementsBuffer =
-    hoverableLineWidth / 2 +
-    arrowHeadEndingSize +
-    dotEndingRadius;
+    hoverableLineWidth / 2 + arrowHeadEndingSize + dotEndingRadius;
 
   const CIRCLE_RADIUS = 50;
 
@@ -116,37 +122,49 @@ const Arrow = ({
     absDx,
     absDy,
     boundingBoxBuffer,
-    isCircle: type === 'circle',
-    circleRadius: CIRCLE_RADIUS
+    isCircle: type === "circle",
+    circleRadius: CIRCLE_RADIUS,
   });
 
   const canvasXOffset =
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
-  const canvasYOffset = type === 'line'
-    ? Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical
-    : Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical - (2 * CIRCLE_RADIUS)
-  
+  const canvasYOffset =
+    type === "line"
+      ? Math.min(startPoint.y, endPoint.y) - boundingBoxBuffer.vertical
+      : Math.min(startPoint.y, endPoint.y) -
+        boundingBoxBuffer.vertical -
+        2 * CIRCLE_RADIUS;
+
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-  
-  const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({ p2, arrowHeadEndingSize, angle })
-  
-  const linePath = type === 'line' ? 
-  `
+
+  const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({
+    p2,
+    arrowHeadEndingSize,
+    angle,
+  });
+
+  const linePath =
+    type === "line"
+      ? `
     M ${p1.x} ${p1.y}
     L ${p2.x} ${p2.y}
     L ${arrowPoint1.x} ${arrowPoint1.y}
     M ${p2.x} ${p2.y}
     L ${arrowPoint2.x} ${arrowPoint2.y}
-  ` : `
+  `
+      : `
     m ${30} ${CIRCLE_RADIUS * 2}
     a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
-  `
+  `;
 
-  const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
+  const getStrokeColor = () =>
+    isHighlighted ? arrowHighlightedColor : arrowColor;
   const strokeColor = getStrokeColor();
 
+  const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
+
   return (
-    <>
+    <div className="Arrow">
       <StraightLine
         width={canvasWidth}
         height={canvasHeight}
@@ -184,7 +202,8 @@ const Arrow = ({
           {tooltip && <title>{tooltip}</title>}
         </HoverableDotEnding>
       </StraightLine>
-    </>
+      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}}>Hello World</div>
+    </div>
   );
 };
 
