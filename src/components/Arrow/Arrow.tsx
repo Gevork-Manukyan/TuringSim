@@ -12,6 +12,7 @@ import {
 type ArrowProps = {
   startPoint: Coord;
   endPoint: Coord;
+  label?: string;
   type?: "line" | "circle";
   isHighlighted?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;
@@ -31,7 +32,6 @@ type LineProps = {
   $boundingBoxColor?: string;
 } & TranslateProps;
 
-// Styled Components
 const Line = styled.svg.attrs<LineProps>(({ $xTranslate, $yTranslate }) => ({
   style: { transform: `translate(${$xTranslate}px, ${$yTranslate}px)` },
 }))<LineProps>`
@@ -50,28 +50,15 @@ const RenderedLine = styled.path`
   transition: stroke 300ms;
 `;
 
-const ArrowHeadEnding = styled.path.attrs<TranslateProps>(
-  ({ $xTranslate, $yTranslate }) => ({
-    style: { transform: `translate(${$xTranslate}px, ${$yTranslate}px)` },
-  })
-)<TranslateProps>`
-  transition: stroke 300ms;
-  transform-origin: center;
-  transform-box: fill-box;
-`;
-
 const HoverableLine = styled.path`
   cursor: default;
 `;
 
-const HoverableDotEnding = styled.circle`
-  cursor: default;
-`;
 
-// Arrow Component
 const Arrow = ({
   startPoint,
   endPoint,
+  label = "",
   type = "circle",
   isHighlighted = false,
   onMouseEnter,
@@ -191,18 +178,8 @@ const Arrow = ({
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
-        <HoverableDotEnding
-          cx={p1.x}
-          cy={p1.y}
-          r={dotEndingRadius}
-          stroke="transparent"
-          strokeWidth={hoverableLineWidth}
-          fill="transparent"
-        >
-          {tooltip && <title>{tooltip}</title>}
-        </HoverableDotEnding>
       </StraightLine>
-      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}}>Hello World</div>
+      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}}>{label}</div>
     </div>
   );
 };
