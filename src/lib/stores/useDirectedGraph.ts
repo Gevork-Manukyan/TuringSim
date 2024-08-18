@@ -18,7 +18,7 @@ type TUseDirectedGraph = {
   addEdge: (edge: Edge) => void;
   removeEdge: (edge: Edge) => void;
   getNodeCoords: (nodeId: NodeId) => Coord;
-  getAllOutgoingEdgesCoords: () => EdgeCoords[];
+  getAllEdgeCoords: () => EdgeCoords[];
   getIncomingEdges: (nodeId: NodeId) => MapEdge[];
   getOutgoingEdges: (nodeId: NodeId) => MapEdge[];
   updateNodeCoords: (nodeId: NodeId, x: number, y: number) => void;
@@ -53,10 +53,10 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     if (coords) return coords;
     else throw Error("Invalid Node ID");
   },
-  getAllOutgoingEdgesCoords: () => {
+  getAllEdgeCoords: () => {
     const nodes = get().nodes;
     const outgoingEdges = get().outgoingEdges;
-    return getAllOutgoingEdgesCoords(nodes, outgoingEdges);
+    return getAllEdgeCoords(nodes, outgoingEdges);
   },
   getIncomingEdges: (nodeId) => {
     const nodeEdges = get().incomingEdges.get(nodeId);
@@ -241,18 +241,18 @@ function updateNodeCoords(
   return { nodes: newNodes };
 }
 
-function getAllOutgoingEdgesCoords(
+function getAllEdgeCoords(
   nodes: TUseDirectedGraph["nodes"],
   outgoingEdges: TUseDirectedGraph["outgoingEdges"]
 ) {
-  const allEdges: TEdgeCoords = [];
+  const allEdges: EdgeCoords[] = [];
   const entries = outgoingEdges.entries();
 
   for (const [nodeId, edges] of entries) {
-    const startCoords = nodes.get(nodeId)!.coords;
-    edges.forEach((targetId) => {
-      const endCoords = nodes.get(targetId)!.coords;
-      allEdges.push({ startCoords, endCoords,  });
+    const startCoord = nodes.get(nodeId)!.coords;
+    edges.forEach((edge) => {
+      const endCoord = nodes.get(edge.nodeId)!.coords;
+      allEdges.push({ id: edge.edgeId, startCoord, endCoord });
     });
   }
 

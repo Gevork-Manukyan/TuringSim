@@ -28,9 +28,7 @@ export default function Canvas() {
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
   const graphNodes = useDirectedGraph((state) => state.nodes);
-  const getAllOutgoingEdgesCoords = useDirectedGraph(
-    (state) => state.getAllOutgoingEdgesCoords
-  );
+  const getAllEdgeCoords = useDirectedGraph((state) => state.getAllEdgeCoords);
   const isGraphEmpty = useDirectedGraph((state) => state.isEmpty);
   const updateCoords = useDirectedGraph((state) => state.updateNodeCoords);
   const getCoords = useDirectedGraph((state) => state.getNodeCoords);
@@ -76,7 +74,7 @@ export default function Canvas() {
         })}
 
         {/* Render arrows connecting Nodes */}
-        {getAllOutgoingEdgesCoords().map((edge, index) => {
+        {getAllEdgeCoords().map((edge, index) => {
           const { startCoords, endCoords } = calcEdgeCoords(
             calcNodeCenter(edge.startCoord),
             calcNodeCenter(edge.endCoord)
@@ -89,7 +87,6 @@ export default function Canvas() {
               key={index}
               startPoint={startCoords}
               endPoint={endCoords}
-              label={}
               config={ARROW_CONFIG}
               type={selfPointing ? "circle" : "line"}
               onClick={handleArrowClick}
