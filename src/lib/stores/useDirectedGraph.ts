@@ -265,13 +265,21 @@ function doesEdgeExist(
   from: string,
   to: string
 ): boolean {
+
+  let inOutgoing = false;
+  let inIncoming = false;
+
   const fromOutgoingEdges = outgoingEdges.get(from)!;
-  if (fromOutgoingEdges.includes(to)) return true;
+  for (const edge of fromOutgoingEdges) {
+    if (edge.nodeId === to) inOutgoing = true;
+  }
 
   const toIncomingEdges = incomingEdges.get(to)!;
-  if (toIncomingEdges.includes(from)) return true;
+  for (const edge of toIncomingEdges) {
+    if (edge.nodeId === from) inIncoming = true;
+  }
 
-  return false;
+  return inOutgoing && inIncoming;
 }
 
 function doNodesExist(
