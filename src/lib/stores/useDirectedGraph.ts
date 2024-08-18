@@ -176,7 +176,7 @@ function addEdge(
   state: TUseDirectedGraph,
   edge: Edge
 ): Partial<TUseDirectedGraph> {
-  const { fromId, toId } = edge;
+  const { id, fromId, toId } = edge;
   if (!doNodesExist(fromId, toId, state.nodes))
     throw new Error("Both nodes must exist to make an edge");
   if (doesEdgeExist(state.incomingEdges, state.outgoingEdges, fromId, toId))
@@ -186,9 +186,9 @@ function addEdge(
   const newOutgoingEdges = new Map(state.outgoingEdges);
 
   // Add the new edge to the outgoing edges of the from node
-  newOutgoingEdges.get(fromId)!.push(toId);
+  newOutgoingEdges.get(fromId)!.push({ nodeId: toId, edgeId: id });
   // Add the new edge to the incoming edges of the to node
-  newIncomingEdges.get(toId)!.push(fromId);
+  newIncomingEdges.get(toId)!.push({ nodeId: fromId, edgeId: id });
 
   return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
 }
