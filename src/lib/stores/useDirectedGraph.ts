@@ -1,41 +1,38 @@
 import { create } from "zustand";
-import { Coord, TNode } from "../types";
+import { Coord, EdgeId, NodeId, Node, Edge, EdgeCoords } from "../types";
+import { generateRandomString } from "../util";
 
-export type Edge = {
-  value: string | null;
-  fromId: TNode["id"];
-  toId: TNode["id"];
-};
-
-export type TEdgeCoords = {
-  startCoords: Coord;
-  endCoords: Coord;
-};
+type MapEdge = {
+  nodeId: NodeId;
+  edgeId: EdgeId;
+}
 
 type TUseDirectedGraph = {
-  nodes: Map<string, TNode>;
-  incomingEdges: Map<string, string[]>;
-  outgoingEdges: Map<string, string[]>;
-  addNode: (value: TNode["value"], isEndNode?: boolean) => TNode["id"];
-  removeNode: (nodeId: TNode["id"]) => void;
-  renameNode: (nodeId: TNode["id"], newValue: TNode["value"]) => void;
+  nodes: Map<NodeId, Node>;
+  edges: Map<EdgeId, Edge>;
+  incomingEdges: Map<NodeId, MapEdge[]>;
+  outgoingEdges: Map<NodeId, MapEdge[]>;
+  addNode: (value: Node["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
+  removeNode: (nodeId: NodeId) => void;
+  renameNode: (nodeId: NodeId, newValue: Node["value"]) => void;
   addEdge: (edge: Edge) => void;
   removeEdge: (edge: Edge) => void;
-  getCoords: (nodeId: TNode["id"]) => Coord;
-  getAllOutgoingEdgesCoords: () => TEdgeCoords[];
-  getIncomingEdges: (nodeId: TNode["id"]) => TNode["id"][];
-  getOutgoingEdges: (nodeId: TNode["id"]) => TNode["id"][];
-  updateCoords: (nodeId: TNode["id"], x: number, y: number) => void;
+  getNodeCoords: (nodeId: NodeId) => Coord;
+  getAllOutgoingEdgesCoords: () => EdgeCoords[];
+  getIncomingEdges: (nodeId: NodeId) => MapEdge[];
+  getOutgoingEdges: (nodeId: NodeId) => MapEdge[];
+  updateNodeCoords: (nodeId: NodeId, x: number, y: number) => void;
   isEmpty: () => boolean;
 };
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
-  nodes: new Map<string, TNode>(),
-  incomingEdges: new Map<string, string[]>(),
-  outgoingEdges: new Map<string, string[]>(),
-  addNode: (value, isEndNode = false) => {
-    const nodeId = generateRandomId(get().nodes);
-    set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isEndNode));
+  nodes: new Map<NodeId, Node>(),
+  edges: new Map<EdgeId, Edge>(),
+  incomingEdges: new Map<NodeId, MapEdge[]>(),
+  outgoingEdges: new Map<NodeId, MapEdge[]>(),
+  addNode: (value, isStartNode = false, isEndNode = false) => {
+    const nodeId = generateRandomNodeId(get().nodes);
+    set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode));
     return nodeId;
   },
   removeNode: (nodeId) => {
@@ -51,7 +48,7 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   removeEdge: (edge) => {
     set((state) => removeEdge(state, edge));
   },
-  getCoords: (nodeId) => {
+  getNodeCoords: (nodeId) => {
     const coords = get().nodes.get(nodeId)?.coords;
     if (coords) return coords;
     else throw Error("Invalid Node ID");
@@ -71,35 +68,35 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     if (nodeEdges) return nodeEdges;
     else throw Error("Invalid Node ID");
   },
-  updateCoords: (nodeId, x, y) => {
-    set((state) => updateCoords(state, nodeId, x, y));
+  updateNodeCoords: (nodeId, x, y) => {
+    set((state) => updateNodeCoords(state, nodeId, x, y));
   },
   isEmpty: () => {
     return get().nodes.size === 0;
   },
 }));
 
-function generateRandomString(): string {
-  const length = 16;
-  const array = new Uint8Array(length / 2);
-  window.crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
-    ""
-  );
+function generateRandomNodeId(nodes: TUseDirectedGraph["nodes"]) {
+  return generateRandomId(nodes);
 }
 
-function generateRandomId(nodes: TUseDirectedGraph["nodes"]) {
+function generateRandomEdgeId(edges: TUseDirectedGraph["edges"]) {
+  return generateRandomId(edges);
+}
+
+function generateRandomId<V>(map: Map<string, V>) {
   let id;
   do {
     id = generateRandomString();
-  } while (nodes.has(id));
+  } while (map.has(id));
   return id;
 }
 
 function addNode(
   state: TUseDirectedGraph,
-  nodeValue: TNode["value"],
+  nodeValue: Node["value"],
   nodeId: string,
+  isStartNode: boolean,
   isEndNode: boolean
 ): Partial<TUseDirectedGraph> {
   const newNodes = new Map(state.nodes);
@@ -107,6 +104,7 @@ function addNode(
     id: nodeId,
     value: nodeValue,
     coords: { x: 0, y: 0 },
+    isStartNode: isStartNode,
     isEndNode: isEndNode,
   });
 
@@ -161,8 +159,8 @@ function removeNode(
 
 function renameNode(
   state: TUseDirectedGraph,
-  nodeId: TNode["id"],
-  newValue: TNode["value"]
+  nodeId: NodeId,
+  newValue: Node["value"]
 ): Partial<TUseDirectedGraph> {
   const newNodes = new Map(state.nodes);
   const node = newNodes.get(nodeId);
@@ -223,7 +221,7 @@ function removeEdge(
   return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
 }
 
-function updateCoords(
+function updateNodeCoords(
   state: TUseDirectedGraph,
   nodeId: string,
   x: number,
@@ -246,15 +244,15 @@ function updateCoords(
 function getAllOutgoingEdgesCoords(
   nodes: TUseDirectedGraph["nodes"],
   outgoingEdges: TUseDirectedGraph["outgoingEdges"]
-): TEdgeCoords[] {
-  const allEdges: TEdgeCoords[] = [];
+) {
+  const allEdges: TEdgeCoords = [];
   const entries = outgoingEdges.entries();
 
   for (const [nodeId, edges] of entries) {
     const startCoords = nodes.get(nodeId)!.coords;
     edges.forEach((targetId) => {
       const endCoords = nodes.get(targetId)!.coords;
-      allEdges.push({ startCoords, endCoords });
+      allEdges.push({ startCoords, endCoords,  });
     });
   }
 

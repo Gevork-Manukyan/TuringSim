@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDirectedGraph } from "../../../lib/stores/useDirectedGraph";
 import { useConnectNodes } from "../../../lib/stores/useConnectNodes";
-import { TNode } from "../../../lib/types";
+import { Node } from "../../../lib/types";
 
 type useNodeProps = {
-    node: TNode;
+    node: Node;
     isDragging: boolean;
 }
 
