@@ -1,6 +1,6 @@
 import './Arrow.scss'
 import styled from "styled-components";
-import { ArrowConfig, Coord } from "../../lib/types";
+import { ArrowConfig, Coord, Edge } from "../../lib/types";
 import {
   calculateDeltas,
   calculateControlPointsWithBuffer,
@@ -12,7 +12,7 @@ import {
 type ArrowProps = {
   startPoint: Coord;
   endPoint: Coord;
-  label?: string;
+  label?: Edge['value'];
   type?: "line" | "circle";
   isHighlighted?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;

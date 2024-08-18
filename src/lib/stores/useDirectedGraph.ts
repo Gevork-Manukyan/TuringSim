@@ -15,8 +15,9 @@ type TUseDirectedGraph = {
   addNode: (value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
-  addEdge: (edge: Edge) => void;
-  removeEdge: (edge: Edge) => void;
+  addEdge: (edge: Omit<Edge, 'id'>) => void;
+  removeEdge: (edgeId: EdgeId) => void;
+  getEdge: (edgeId: EdgeId) => Edge;
   getNodeCoords: (nodeId: NodeId) => Coord;
   getAllEdgeCoords: () => EdgeCoords[];
   getIncomingEdges: (nodeId: NodeId) => MapEdge[];
@@ -45,8 +46,11 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   addEdge: (edge) => {
     set((state) => addEdge(state, edge));
   },
-  removeEdge: (edge) => {
-    set((state) => removeEdge(state, edge));
+  removeEdge: (edgeId) => {
+    set((state) => removeEdge(state, edgeId));
+  },
+  getEdge: (edgeId) => {
+    return get().edges.get(edgeId)!;
   },
   getNodeCoords: (nodeId) => {
     const coords = get().nodes.get(nodeId)?.coords;
@@ -131,6 +135,7 @@ function removeNode(
 
   const newOutgoingEdges = new Map(state.outgoingEdges);
   const newIncomingEdges = new Map(state.incomingEdges);
+  const newEdges = new Map(state.edges)
 
   // Remove all edges going out of node
   for (const outgoingEdge of newOutgoingEdges.get(nodeId)!) {
@@ -138,6 +143,8 @@ function removeNode(
       .get(outgoingEdge.nodeId)!
       .filter((edge) => edge.nodeId !== nodeId);
     newIncomingEdges.set(outgoingEdge.nodeId, filteredEdges);
+
+    newEdges.delete(outgoingEdge.edgeId)
   }
   newOutgoingEdges.delete(nodeId);
 
@@ -147,6 +154,8 @@ function removeNode(
       .get(incomingEdge.nodeId)!
       .filter((edge) => edge.nodeId !== nodeId);
     newOutgoingEdges.set(incomingEdge.nodeId, filteredEdges);
+
+    newEdges.delete(incomingEdge.edgeId)
   }
   newIncomingEdges.delete(nodeId);
 
@@ -154,6 +163,7 @@ function removeNode(
     nodes: newNodes,
     incomingEdges: newIncomingEdges,
     outgoingEdges: newOutgoingEdges,
+    edges: newEdges
   };
 }
 
@@ -174,9 +184,9 @@ function renameNode(
 
 function addEdge(
   state: TUseDirectedGraph,
-  edge: Edge
+  edge: Omit<Edge, 'id'>
 ): Partial<TUseDirectedGraph> {
-  const { id, fromId, toId } = edge;
+  const { fromId, toId } = edge;
   if (!doNodesExist(fromId, toId, state.nodes))
     throw new Error("Both nodes must exist to make an edge");
   if (doesEdgeExist(state.incomingEdges, state.outgoingEdges, fromId, toId))
@@ -184,20 +194,26 @@ function addEdge(
 
   const newIncomingEdges = new Map(state.incomingEdges);
   const newOutgoingEdges = new Map(state.outgoingEdges);
+  const newEdges = new Map(state.edges)
+
+  const edgeId = generateRandomEdgeId(newEdges)
+  const newEdge = {...edge, id: edgeId}
 
   // Add the new edge to the outgoing edges of the from node
-  newOutgoingEdges.get(fromId)!.push({ nodeId: toId, edgeId: id });
+  newOutgoingEdges.get(fromId)!.push({ nodeId: toId, edgeId: edgeId });
   // Add the new edge to the incoming edges of the to node
-  newIncomingEdges.get(toId)!.push({ nodeId: fromId, edgeId: id });
+  newIncomingEdges.get(toId)!.push({ nodeId: fromId, edgeId: edgeId });
+  // Add the new edge to Edges
+  newEdges.set(edgeId, newEdge);
 
-  return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
+  return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, edges: newEdges };
 }
 
 function removeEdge(
   state: TUseDirectedGraph,
-  edge: Edge
+  edgeId: EdgeId
 ): Partial<TUseDirectedGraph> {
-  const { fromId, toId } = edge;
+  const { fromId, toId } = state.edges.get(edgeId)!;
   if (!doNodesExist(fromId, toId, state.nodes))
     throw new Error("Both nodes must exist to remove an edge");
   if (!doesEdgeExist(state.incomingEdges, state.outgoingEdges, fromId, toId))
@@ -207,6 +223,7 @@ function removeEdge(
 
   const newIncomingEdges = new Map(state.incomingEdges);
   const newOutgoingEdges = new Map(state.outgoingEdges);
+  const newEdges = new Map(state.edges);
 
   const filteredIncomingEdges = newIncomingEdges
     .get(toId)!
@@ -217,8 +234,9 @@ function removeEdge(
 
   newIncomingEdges.set(toId, filteredIncomingEdges);
   newOutgoingEdges.set(fromId, filteredOutgoingEdges);
+  newEdges.delete(edgeId)
 
-  return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges };
+  return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, edges: newEdges };
 }
 
 function updateNodeCoords(

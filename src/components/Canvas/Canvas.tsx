@@ -32,6 +32,7 @@ export default function Canvas() {
   const isGraphEmpty = useDirectedGraph((state) => state.isEmpty);
   const updateCoords = useDirectedGraph((state) => state.updateNodeCoords);
   const getCoords = useDirectedGraph((state) => state.getNodeCoords);
+  const getEdge = useDirectedGraph((state) => state.getEdge)
 
   const isAddingEdge = useConnectNodes((state) => state.isAddingEdge);
 
@@ -74,19 +75,20 @@ export default function Canvas() {
         })}
 
         {/* Render arrows connecting Nodes */}
-        {getAllEdgeCoords().map((edge, index) => {
+        {getAllEdgeCoords().map((edgeCoords, index) => {
           const { startCoords, endCoords } = calcEdgeCoords(
-            calcNodeCenter(edge.startCoord),
-            calcNodeCenter(edge.endCoord)
+            calcNodeCenter(edgeCoords.startCoord),
+            calcNodeCenter(edgeCoords.endCoord)
           );
           const selfPointing =
-            edge.startCoord.x === edge.endCoord.x &&
-            edge.startCoord.y === edge.endCoord.y;
+            edgeCoords.startCoord.x === edgeCoords.endCoord.x &&
+            edgeCoords.startCoord.y === edgeCoords.endCoord.y;
           return (
             <Arrow
               key={index}
               startPoint={startCoords}
               endPoint={endCoords}
+              label={getEdge(edgeCoords.id).value}
               config={ARROW_CONFIG}
               type={selfPointing ? "circle" : "line"}
               onClick={handleArrowClick}
