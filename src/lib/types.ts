@@ -3,11 +3,28 @@ export type Coord = {
   y: number;
 };
 
-export type TNode = {
-  id: string;
+export type NodeId = string;
+export type EdgeId = string;
+
+export type Node = {
+  id: NodeId;
   value: string | number | null;
   coords: Coord;
+  isStartNode: boolean;
   isEndNode: boolean;
+};
+
+export type Edge = {
+  id: EdgeId;
+  value: string | number;
+  fromId: NodeId;
+  toId: NodeId;
+};
+
+export type EdgeCoords = {
+  id: EdgeId;
+  startCoord: Coord;
+  endCoord: Coord;
 };
 
 export type ArrowConfig = {
