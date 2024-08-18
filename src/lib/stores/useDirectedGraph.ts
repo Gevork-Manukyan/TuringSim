@@ -210,10 +210,10 @@ function removeEdge(
 
   const filteredIncomingEdges = newIncomingEdges
     .get(toId)!
-    .filter((edge) => edge !== fromId);
+    .filter((edge) => edge.nodeId !== fromId);
   const filteredOutgoingEdges = newOutgoingEdges
     .get(fromId)!
-    .filter((edge) => edge !== toId);
+    .filter((edge) => edge.nodeId !== toId);
 
   newIncomingEdges.set(toId, filteredIncomingEdges);
   newOutgoingEdges.set(fromId, filteredOutgoingEdges);
