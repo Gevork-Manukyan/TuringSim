@@ -51,8 +51,6 @@ export default function Canvas() {
     );
   };
 
-  const handleArrowClick = () => {};
-
   return (
     <DndContext
       sensors={sensors}
@@ -86,12 +84,12 @@ export default function Canvas() {
           return (
             <Arrow
               key={index}
+              edgeId={edgeCoords.id}
               startPoint={startCoords}
               endPoint={endCoords}
               label={getEdge(edgeCoords.id).value}
               config={ARROW_CONFIG}
               type={selfPointing ? "circle" : "line"}
-              onClick={handleArrowClick}
               onMouseEnter={() => setIsArrowHovered(true)}
               onMouseLeave={() => setIsArrowHovered(false)}
               isHighlighted={isArrowHovered}
@@ -133,6 +131,7 @@ function AddEdgeArrow() {
       {/* If start node id is same as end, then use circle arrow */}
       {addingEdgeStartNode && mouseCoords ? (
         <Arrow
+          edgeId={null}
           config={ARROW_CONFIG}
           key={addingEdgeStartNode.id}
           startPoint={addingEdgeStartNode.coords}

@@ -3,7 +3,13 @@
     &__label {
         position: absolute;
         transform: translate(-50%, -50%);
-        line-height: 0
-        ;
+        line-height: 0;
+        z-index: 1000;
+    }
+
+    &__input {
+        text-align: center;
+        position: relative;
+        border: none;
     }
 }

@@ -18,6 +18,7 @@ type TUseDirectedGraph = {
   addEdge: (edge: Omit<Edge, 'id'>) => void;
   removeEdge: (edgeId: EdgeId) => void;
   getEdge: (edgeId: EdgeId) => Edge;
+  renameEdge: (edgeId: EdgeId, newValue: Edge['value']) => void;
   getNodeCoords: (nodeId: NodeId) => Coord;
   getAllEdgeCoords: () => EdgeCoords[];
   getIncomingEdges: (nodeId: NodeId) => MapEdge[];
@@ -51,6 +52,9 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   getEdge: (edgeId) => {
     return get().edges.get(edgeId)!;
+  },
+  renameEdge: (edgeId, newValue) => {
+    set((state) => renameEdge(state, edgeId, newValue))
   },
   getNodeCoords: (nodeId) => {
     const coords = get().nodes.get(nodeId)?.coords;
@@ -237,6 +241,22 @@ function removeEdge(
   newEdges.delete(edgeId)
 
   return { incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, edges: newEdges };
+}
+
+function renameEdge(  
+  state: TUseDirectedGraph,
+  edgeId: EdgeId,
+  newValue: Edge['value']
+): Partial<TUseDirectedGraph> {
+  const newEdges = new Map(state.edges)
+  const edge = newEdges.get(edgeId)
+
+  if (edge) {
+    edge.value = newValue
+    newEdges.set(edgeId, edge)
+    return { edges: newEdges }
+  }
+  return state;
 }
 
 function updateNodeCoords(

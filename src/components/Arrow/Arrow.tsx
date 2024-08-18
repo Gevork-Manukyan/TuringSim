@@ -1,6 +1,6 @@
 import './Arrow.scss'
 import styled from "styled-components";
-import { ArrowConfig, Coord, Edge } from "../../lib/types";
+import { ArrowConfig, Coord, Edge, EdgeId } from "../../lib/types";
 import {
   calculateDeltas,
   calculateControlPointsWithBuffer,
@@ -8,8 +8,11 @@ import {
   calculateArrowheadPoints,
   calculateMidpoint,
 } from "./util";
+import { useState } from 'react';
+import { useDirectedGraph } from '../../lib/stores/useDirectedGraph';
 
 type ArrowProps = {
+  edgeId: EdgeId | null;
   startPoint: Coord;
   endPoint: Coord;
   label?: Edge['value'];
@@ -56,6 +59,7 @@ const HoverableLine = styled.path`
 
 
 const Arrow = ({
+  edgeId, 
   startPoint,
   endPoint,
   label = "",
@@ -150,6 +154,24 @@ const Arrow = ({
 
   const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
 
+  const renameEdge = useDirectedGraph(state => state.renameEdge)
+  const [isEditingLabel, setIsEditingLabel] = useState(false)
+  const [arrowLabel, setArrowLabel] = useState(label)
+  const handleOnClick = (e: React.MouseEvent) => {
+    setIsEditingLabel(true)
+
+    if (onClick) onClick(e);
+  }
+
+  const handleOnBlur = () => {
+    if(isEditingLabel && edgeId) renameEdge(edgeId, arrowLabel)
+    setIsEditingLabel(false)
+  }
+
+  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setArrowLabel(e.target.value)
+  }
+
   return (
     <div className="Arrow">
       <StraightLine
@@ -174,12 +196,16 @@ const Arrow = ({
           fill="none"
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          onClick={onClick}
+          onClick={handleOnClick}
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
       </StraightLine>
-      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}}>{label}</div>
+      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}} onClick={handleOnClick}>
+        {isEditingLabel 
+         ? <input autoFocus className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
+         : arrowLabel}
+      </div>
     </div>
   );
 };
