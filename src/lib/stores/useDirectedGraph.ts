@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Coord, EdgeId, NodeId, Node, Edge, EdgeCoords } from "../types";
+import { Coord, EdgeId, NodeId, TNode, Edge, EdgeCoords } from "../types";
 import { generateRandomString } from "../util";
 
 type MapEdge = {
@@ -8,13 +8,13 @@ type MapEdge = {
 }
 
 type TUseDirectedGraph = {
-  nodes: Map<NodeId, Node>;
+  nodes: Map<NodeId, TNode>;
   edges: Map<EdgeId, Edge>;
   incomingEdges: Map<NodeId, MapEdge[]>;
   outgoingEdges: Map<NodeId, MapEdge[]>;
-  addNode: (value: Node["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
+  addNode: (value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
   removeNode: (nodeId: NodeId) => void;
-  renameNode: (nodeId: NodeId, newValue: Node["value"]) => void;
+  renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
   addEdge: (edge: Edge) => void;
   removeEdge: (edge: Edge) => void;
   getNodeCoords: (nodeId: NodeId) => Coord;
@@ -26,7 +26,7 @@ type TUseDirectedGraph = {
 };
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
-  nodes: new Map<NodeId, Node>(),
+  nodes: new Map<NodeId, TNode>(),
   edges: new Map<EdgeId, Edge>(),
   incomingEdges: new Map<NodeId, MapEdge[]>(),
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
@@ -94,7 +94,7 @@ function generateRandomId<V>(map: Map<string, V>) {
 
 function addNode(
   state: TUseDirectedGraph,
-  nodeValue: Node["value"],
+  nodeValue: TNode["value"],
   nodeId: string,
   isStartNode: boolean,
   isEndNode: boolean
@@ -160,7 +160,7 @@ function removeNode(
 function renameNode(
   state: TUseDirectedGraph,
   nodeId: NodeId,
-  newValue: Node["value"]
+  newValue: TNode["value"]
 ): Partial<TUseDirectedGraph> {
   const newNodes = new Map(state.nodes);
   const node = newNodes.get(nodeId);

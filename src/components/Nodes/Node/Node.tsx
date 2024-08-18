@@ -1,6 +1,6 @@
 import './Node.scss'
 import NodeSettingButton from './NodeSettingButton';
-import { Node } from '../../../lib/types';
+import { TNode } from '../../../lib/types';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
 import { Settings, TextCursorInput, CornerDownLeft, Check, X } from 'lucide-react';
@@ -13,7 +13,7 @@ import EndNodeIcon from '../../Icons/EndNodeIcon';
 
 type NodeProps = {
   className?: string;
-  node: Node;
+  node: TNode;
 }
 
 export default function Node({ className, node }: NodeProps) {

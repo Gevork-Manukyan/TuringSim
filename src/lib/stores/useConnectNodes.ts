@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { Coord, Node } from "../types";
+import { Coord, TNode } from "../types";
 import { calcEdgeCoords, calcNodeCenter } from "../util";
 
 type TUseConnectNodes = {
   isAddingEdge: boolean;
-  startNode: Node | null;
-  endNode: Node | null;
+  startNode: TNode | null;
+  endNode: TNode | null;
   mouseCoords: Coord | null;
   setIsAddingEdge: (value: TUseConnectNodes["isAddingEdge"]) => void;
   setStartNode: (node: TUseConnectNodes["startNode"]) => void;

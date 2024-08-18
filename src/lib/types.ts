@@ -6,7 +6,7 @@ export type Coord = {
 export type NodeId = string;
 export type EdgeId = string;
 
-export type Node = {
+export type TNode = {
   id: NodeId;
   value: string | number | null;
   coords: Coord;
