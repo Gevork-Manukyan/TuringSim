@@ -1,15 +1,25 @@
 .Arrow {
 
     &__label {
+        width: max-content;
+        height: inherit;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: absolute;
         transform: translate(-50%, -50%);
-        line-height: 0;
+        line-height: 1;
         z-index: 1000;
+
+        background-color: white;
     }
 
     &__input {
-        text-align: center;
         position: relative;
+        font-size: inherit;
+        font-family: inherit;
+        text-align: center;
         border: none;
     }
 }

@@ -36,3 +36,18 @@ button:focus,
 button:focus-visible {
   /* outline: 4px auto -webkit-focus-ring-color; */
 }
+
+input[type="text"] {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input[type="text"]:focus-visible {
+  outline: none;
+}

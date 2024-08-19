@@ -203,7 +203,7 @@ const Arrow = ({
       </StraightLine>
       <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}} onClick={handleOnClick}>
         {isEditingLabel 
-         ? <input autoFocus className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
+         ? <input autoFocus type='text' className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
          : arrowLabel}
       </div>
     </div>
