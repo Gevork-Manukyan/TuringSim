@@ -9,6 +9,7 @@ import {
   calculateMidpoint,
 } from "./util";
 import useArrowLabel from './useArrowLabel';
+import { useState } from 'react';
 
 type ArrowProps = {
   edgeId: EdgeId | null;
@@ -63,7 +64,7 @@ const Arrow = ({
   endPoint,
   label = "",
   type = "circle",
-  isHighlighted = false,
+  isHighlighted,
   onMouseEnter,
   onMouseLeave,
   onClick,
@@ -97,7 +98,7 @@ const Arrow = ({
   const boundingBoxElementsBuffer =
     hoverableLineWidth / 2 + arrowHeadEndingSize + dotEndingRadius;
 
-  const CIRCLE_RADIUS = 50;
+  const CIRCLE_RADIUS: number = 50;
 
   const { absDx, absDy, dx, dy } = calculateDeltas(startPoint, endPoint);
 
@@ -116,13 +117,17 @@ const Arrow = ({
     circleRadius: CIRCLE_RADIUS,
   });
 
+  // In radians
+  const arrowAngle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+
   const {
+    labelStyle,
     isEditingLabel,
     arrowLabel,
     handleOnClick,
     handleOnBlur,
     handleLabelChange,
-  } = useArrowLabel({ label, onClick, edgeId })
+  } = useArrowLabel({ type, label, startPoint, endPoint, CIRCLE_RADIUS, arrowAngle, onClick, edgeId })
 
   const canvasXOffset =
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
@@ -133,19 +138,11 @@ const Arrow = ({
         boundingBoxBuffer.vertical -
         2 * CIRCLE_RADIUS;
 
-  // In radians
-  const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-
   const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({
     p2,
     arrowHeadEndingSize,
-    angle,
+    angle: arrowAngle,
   });
-
-  const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
-  const strokeColor = getStrokeColor();
-
-  const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
 
   const linePath =
     type === "line"
@@ -161,21 +158,25 @@ const Arrow = ({
     a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
   `;
 
-  // Calculate location of label for circular arrow
-  const circleArrowCenter = { x: endPoint.x, y: endPoint.y - CIRCLE_RADIUS }
-  const circleLabelAngle = -1 * (Math.PI / 4)
-  const circleLabelCoords = { x: circleArrowCenter.x + (CIRCLE_RADIUS * Math.cos(circleLabelAngle)), y: circleArrowCenter.y + (CIRCLE_RADIUS * Math.sin(circleLabelAngle)) }
+  const [isHighlightedState, useIsHighlightedState] = useState(false)
+  const handleOnHighlight = () => {
+    console.log("Enter")
+    useIsHighlightedState(true)
+  }
 
-  const labelStyle = type === 'line'
-  ? { left: midPoint.x, top: midPoint.y }
-  : { left: circleLabelCoords.x, top: circleLabelCoords.y }
+  const handleOnUnhighlight = () => {
+    useIsHighlightedState(false)
+  }
+
+  const getStrokeColor = () => isHighlighted || (isHighlighted === undefined && isHighlightedState) ? arrowHighlightedColor : arrowColor;
+  const strokeColor = getStrokeColor();
 
   return (
     <div className="Arrow">
       <StraightLine
         width={canvasWidth}
         height={canvasHeight}
-        $isHighlighted={isHighlighted}
+        $isHighlighted={isHighlighted !== undefined ? isHighlighted : isHighlightedState}
         $boundingBoxColor={boundingBoxColor}
         $xTranslate={canvasXOffset}
         $yTranslate={canvasYOffset}
@@ -192,8 +193,8 @@ const Arrow = ({
           stroke="transparent"
           pointerEvents="all"
           fill="none"
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
+          onMouseEnter={onMouseEnter ? onMouseEnter : handleOnHighlight}
+          onMouseLeave={onMouseLeave ? onMouseLeave : handleOnUnhighlight}
           onClick={handleOnClick}
         >
           {tooltip && <title>{tooltip}</title>}

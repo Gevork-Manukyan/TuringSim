@@ -36,8 +36,6 @@ export default function Canvas() {
 
   const isAddingEdge = useConnectNodes((state) => state.isAddingEdge);
 
-  const [isArrowHovered, setIsArrowHovered] = useState(false);
-
   const handleDragStart = (event: DragStartEvent) => {
     const nodeId = event.active.id.toString();
     setStartCoords(getCoords(nodeId));
@@ -90,9 +88,6 @@ export default function Canvas() {
               label={getEdge(edgeCoords.id).value}
               config={ARROW_CONFIG}
               type={selfPointing ? "circle" : "line"}
-              onMouseEnter={() => setIsArrowHovered(true)}
-              onMouseLeave={() => setIsArrowHovered(false)}
-              isHighlighted={isArrowHovered}
             />
           );
         })}
@@ -136,9 +131,7 @@ function AddEdgeArrow() {
           key={addingEdgeStartNode.id}
           startPoint={addingEdgeStartNode.coords}
           endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}
-          type={
-            addingEdgeStartNode.id === addingEdgeEndNode?.id ? "circle" : "line"
-          }
+          type={addingEdgeStartNode.id === addingEdgeEndNode?.id ? "circle" : "line"}
         />
       ) : null}
     </>
