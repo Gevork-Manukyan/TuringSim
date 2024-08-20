@@ -8,8 +8,7 @@ import {
   calculateArrowheadPoints,
   calculateMidpoint,
 } from "./util";
-import { useState } from 'react';
-import { useDirectedGraph } from '../../lib/stores/useDirectedGraph';
+import useArrowLabel from './useArrowLabel';
 
 type ArrowProps = {
   edgeId: EdgeId | null;
@@ -154,23 +153,13 @@ const Arrow = ({
 
   const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
 
-  const renameEdge = useDirectedGraph(state => state.renameEdge)
-  const [isEditingLabel, setIsEditingLabel] = useState(false)
-  const [arrowLabel, setArrowLabel] = useState(label)
-  const handleOnClick = (e: React.MouseEvent) => {
-    setIsEditingLabel(true)
-
-    if (onClick) onClick(e);
-  }
-
-  const handleOnBlur = () => {
-    if(isEditingLabel && edgeId) renameEdge(edgeId, arrowLabel)
-    setIsEditingLabel(false)
-  }
-
-  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setArrowLabel(e.target.value)
-  }
+  const {
+    isEditingLabel,
+    arrowLabel,
+    handleOnClick,
+    handleOnBlur,
+    handleLabelChange,
+  } = useArrowLabel({ label, onClick, edgeId })
 
   return (
     <div className="Arrow">
@@ -201,7 +190,7 @@ const Arrow = ({
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
       </StraightLine>
-      <div className="Arrow__label" style={{left: midPoint.x, top: midPoint.y}} onClick={handleOnClick}>
+      <div className={`Arrow__label${type === 'circle' ? " Arrow__label--circle" : ""}`} style={{left: midPoint.x, top: midPoint.y}} onClick={handleOnClick}>
         {isEditingLabel 
          ? <input autoFocus type='text' className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
          : arrowLabel}
