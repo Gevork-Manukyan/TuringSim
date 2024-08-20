@@ -116,6 +116,14 @@ const Arrow = ({
     circleRadius: CIRCLE_RADIUS,
   });
 
+  const {
+    isEditingLabel,
+    arrowLabel,
+    handleOnClick,
+    handleOnBlur,
+    handleLabelChange,
+  } = useArrowLabel({ label, onClick, edgeId })
+
   const canvasXOffset =
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
   const canvasYOffset =
@@ -125,6 +133,7 @@ const Arrow = ({
         boundingBoxBuffer.vertical -
         2 * CIRCLE_RADIUS;
 
+  // In radians
   const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 
   const { arrowPoint1, arrowPoint2 } = calculateArrowheadPoints({
@@ -132,6 +141,11 @@ const Arrow = ({
     arrowHeadEndingSize,
     angle,
   });
+
+  const getStrokeColor = () => isHighlighted ? arrowHighlightedColor : arrowColor;
+  const strokeColor = getStrokeColor();
+
+  const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
 
   const linePath =
     type === "line"
@@ -147,19 +161,14 @@ const Arrow = ({
     a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
   `;
 
-  const getStrokeColor = () =>
-    isHighlighted ? arrowHighlightedColor : arrowColor;
-  const strokeColor = getStrokeColor();
+  // Calculate location of label for circular arrow
+  const circleArrowCenter = { x: endPoint.x, y: endPoint.y - CIRCLE_RADIUS }
+  const circleLabelAngle = -1 * (Math.PI / 4)
+  const circleLabelCoords = { x: circleArrowCenter.x + (CIRCLE_RADIUS * Math.cos(circleLabelAngle)), y: circleArrowCenter.y + (CIRCLE_RADIUS * Math.sin(circleLabelAngle)) }
 
-  const midPoint = calculateMidpoint(startPoint, endPoint, CIRCLE_RADIUS, angle)
-
-  const {
-    isEditingLabel,
-    arrowLabel,
-    handleOnClick,
-    handleOnBlur,
-    handleLabelChange,
-  } = useArrowLabel({ label, onClick, edgeId })
+  const labelStyle = type === 'line'
+  ? { left: midPoint.x, top: midPoint.y }
+  : { left: circleLabelCoords.x, top: circleLabelCoords.y }
 
   return (
     <div className="Arrow">
@@ -190,7 +199,7 @@ const Arrow = ({
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
       </StraightLine>
-      <div className={`Arrow__label${type === 'circle' ? " Arrow__label--circle" : ""}`} style={{left: midPoint.x, top: midPoint.y}} onClick={handleOnClick}>
+      <div className={`Arrow__label${type === 'circle' ? " Arrow__label--circle" : ""}`} style={labelStyle} onClick={handleOnClick}>
         {isEditingLabel 
          ? <input autoFocus type='text' className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
          : arrowLabel}
