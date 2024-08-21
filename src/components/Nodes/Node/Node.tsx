@@ -37,6 +37,8 @@ export default function Node({ className, node }: NodeProps) {
     handleSettingNode,
     handleSettingsBack,
     handleRenameNode,
+    handleStartNode,
+    handleEndNode,
     handleRenameChange,
     handleConfirm,
     handleCancel
@@ -53,7 +55,9 @@ export default function Node({ className, node }: NodeProps) {
     `${inSettings ? ' Node--settings' : ''}` +
     `${isRenaming ? ' Node--confirmation' : ''}` +
     `${isDragging ? ' Node--dragging' : ''}` +
-    `${addingEdgeData.isActive && addingEdgeData.startNode?.id === node.id ? ' Node--addingEdge' : ''}`
+    `${addingEdgeData.isActive && addingEdgeData.startNode?.id === node.id ? ' Node--addingEdge' : ''}` +
+    `${node.isStartNode ? ' Node--startNode' : ''}` +
+    `${node.isEndNode ? ' Node--endNode' : ''}`
 
   return (
     <div 
@@ -131,6 +135,7 @@ export default function Node({ className, node }: NodeProps) {
         {/* Set Starting Node */}
         <NodeSettingButton 
           className='Node__settingBtn--6'
+          onClick={handleStartNode}
         >
           <StartNodeIcon />
         </NodeSettingButton>
@@ -138,6 +143,7 @@ export default function Node({ className, node }: NodeProps) {
         {/* Set Ending Node */}
         <NodeSettingButton 
           className='Node__settingBtn--7'
+          onClick={handleEndNode}
         >
           <EndNodeIcon />
         </NodeSettingButton>

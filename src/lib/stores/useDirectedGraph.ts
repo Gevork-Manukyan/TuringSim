@@ -24,6 +24,8 @@ type TUseDirectedGraph = {
   getIncomingEdges: (nodeId: NodeId) => MapEdge[];
   getOutgoingEdges: (nodeId: NodeId) => MapEdge[];
   updateNodeCoords: (nodeId: NodeId, x: number, y: number) => void;
+  setIsStartNode: (nodeId: NodeId, value: TNode['isStartNode']) => void;
+  setIsEndNode: (nodeId: NodeId, value: TNode['isEndNode']) => void;
   isEmpty: () => boolean;
 };
 
@@ -78,6 +80,12 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   updateNodeCoords: (nodeId, x, y) => {
     set((state) => updateNodeCoords(state, nodeId, x, y));
+  },
+  setIsStartNode: (nodeId, value) => {
+    set((state) => setIsStartNode(state, nodeId, value));
+  },
+  setIsEndNode: (nodeId, value) => {
+    set((state) => setIsEndNode(state, nodeId, value));
   },
   isEmpty: () => {
     return get().nodes.size === 0;
@@ -295,6 +303,22 @@ function getAllEdgeCoords(
   }
 
   return allEdges;
+}
+
+function setIsStartNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isStartNode']) {
+  const newNodes = new Map(state.nodes)
+  const node = newNodes.get(nodeId)
+  if (!node) return state;
+  newNodes.set(nodeId, { ...node, isStartNode: value })
+  return { nodes: newNodes }
+}
+
+function setIsEndNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isEndNode']) {
+  const newNodes = new Map(state.nodes)
+  const node = newNodes.get(nodeId)
+  if (!node) return state;
+  newNodes.set(nodeId, { ...node, isEndNode: value })
+  return { nodes: newNodes }
 }
 
 function doesEdgeExist(
