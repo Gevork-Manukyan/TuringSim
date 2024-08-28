@@ -6,18 +6,20 @@ import {
   calculateControlPointsWithBuffer,
   calculateCanvasDimensions,
   calculateArrowheadPoints,
-  calculateMidpoint,
 } from "./util";
 import useArrowLabel from './useArrowLabel';
 import { useState } from 'react';
 
 type ArrowProps = {
+  className?: string;
   edgeId: EdgeId | null;
   startPoint: Coord;
   endPoint: Coord;
   label?: Edge['value'];
   type?: "line" | "circle";
   isHighlighted?: boolean;
+  isDisabled?: boolean;
+  isLocked?: boolean;
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
   onClick?: (e: React.MouseEvent) => void;
@@ -59,12 +61,15 @@ const HoverableLine = styled.path`
 
 
 const Arrow = ({
+  className,
   edgeId, 
   startPoint,
   endPoint,
   label = "",
-  type = "circle",
-  isHighlighted,
+  type = "line",
+  isHighlighted = false,
+  isLocked = false,
+  isDisabled = false,
   onMouseEnter,
   onMouseLeave,
   onClick,
@@ -168,16 +173,21 @@ const Arrow = ({
     useIsHighlightedState(false)
   }
 
-  const getStrokeColor = () => isHighlighted || (isHighlighted === undefined && isHighlightedState) ? arrowHighlightedColor : arrowColor;
-  const strokeColor = getStrokeColor();
+  const isDisabledOrLocked = () => isDisabled || isLocked
+
+  const strokeColor = (isHighlighted || isHighlightedState) && !isDisabledOrLocked()
+    ? arrowHighlightedColor 
+    : arrowColor;
 
   return (
-    <div className="Arrow">
+    <div className={`Arrow${className ? ` ${className}` : ''}`}>
       <StraightLine
         width={canvasWidth}
         height={canvasHeight}
         $isHighlighted={isHighlighted !== undefined ? isHighlighted : isHighlightedState}
         $boundingBoxColor={boundingBoxColor}
+        // $xTranslate={!isLocked ? canvasXOffset : 0}
+        // $yTranslate={!isLocked ? canvasYOffset : 0}
         $xTranslate={canvasXOffset}
         $yTranslate={canvasYOffset}
       >
@@ -193,9 +203,9 @@ const Arrow = ({
           stroke="transparent"
           pointerEvents="all"
           fill="none"
-          onMouseEnter={onMouseEnter ? onMouseEnter : handleOnHighlight}
-          onMouseLeave={onMouseLeave ? onMouseLeave : handleOnUnhighlight}
-          onClick={handleOnClick}
+          onMouseEnter={onMouseEnter && !isDisabledOrLocked() ? onMouseEnter : handleOnHighlight}
+          onMouseLeave={onMouseLeave && !isDisabledOrLocked() ? onMouseLeave : handleOnUnhighlight}
+          onClick={!isDisabledOrLocked() ? handleOnClick : () => {}}
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
