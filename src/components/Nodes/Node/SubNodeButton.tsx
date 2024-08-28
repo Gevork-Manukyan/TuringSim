@@ -11,7 +11,7 @@ export default function SubNodeButton({ children, className, style, onClick }: N
 
   return (
     <div 
-      className={`Node__settingBtn${className ? ` ${className}`: ''}`}
+      className={`Node__subNodeBtn${className ? ` ${className}`: ''}`}
       style={style}
       onClick={onClick}
       >

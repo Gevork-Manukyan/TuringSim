@@ -1,5 +1,5 @@
 import './Node.scss'
-import NodeSettingButton from './NodeSettingButton';
+import SubNodeButton from './SubNodeButton';
 import { TNode } from '../../../lib/types';
 import { useDraggable } from '@dnd-kit/core';
 import { useNode } from './useNode';
@@ -107,84 +107,84 @@ export default function Node({ className, node }: NodeProps) {
         }
 
         {/* Add Node */}
-        <NodeSettingButton 
-          className='Node__settingBtn--1' 
+        <SubNodeButton 
+          className='Node__subNodeBtn--1' 
           onClick={handleAddNode}
           >
           <NewNodeIcon />
-        </NodeSettingButton>
+        </SubNodeButton>
         
         {/* Add Edge */}
-        <NodeSettingButton 
-          className='Node__settingBtn--2'
+        <SubNodeButton 
+          className='Node__subNodeBtn--2'
           onClick={handleAddEdge}
           >
           <NewEdgeIcon />
-        </NodeSettingButton>
+        </SubNodeButton>
         
         {/* Delete Node */}
-        <NodeSettingButton 
-          className='Node__settingBtn--3' 
+        <SubNodeButton 
+          className='Node__subNodeBtn--3' 
           onClick={handleDeleteNode}
           >
           <DeleteNodeIcon />
-        </NodeSettingButton>
+        </SubNodeButton>
         
         {/* Settings */}
-        <NodeSettingButton 
-          className='Node__settingBtn--4' 
+        <SubNodeButton 
+          className='Node__subNodeBtn--4' 
           onClick={handleSettingNode}
           >
           <Settings />
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Rename Node */}
-        <NodeSettingButton 
-          className='Node__settingBtn--5'
+        <SubNodeButton 
+          className='Node__subNodeBtn--5'
           onClick={handleRenameNode}
           >
           <TextCursorInput />
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Set Starting Node */}
-        <NodeSettingButton 
-          className='Node__settingBtn--6'
+        <SubNodeButton 
+          className='Node__subNodeBtn--6'
           onClick={handleStartNode}
           >
           <StartNodeIcon />
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Set Ending Node */}
-        <NodeSettingButton 
-          className='Node__settingBtn--7'
+        <SubNodeButton 
+          className='Node__subNodeBtn--7'
           onClick={handleEndNode}
           >
           <EndNodeIcon />
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Go Back */}
-        <NodeSettingButton 
-          className='Node__settingBtn--8'
+        <SubNodeButton 
+          className='Node__subNodeBtn--8'
           onClick={handleSettingsBack}
           >
           <CornerDownLeft strokeWidth={2} />    
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Confirm */}
-        <NodeSettingButton 
-          className='Node__settingBtn--confirm'
+        <SubNodeButton 
+          className='Node__subNodeBtn--confirm'
           onClick={handleConfirm}
           >
           <Check strokeWidth={3} />
-        </NodeSettingButton>
+        </SubNodeButton>
 
         {/* Cancel */}
-        <NodeSettingButton 
-          className='Node__settingBtn--cancel'
+        <SubNodeButton 
+          className='Node__subNodeBtn--cancel'
           onClick={handleCancel}
           >
           <X strokeWidth={3} />
-        </NodeSettingButton>
+        </SubNodeButton>
     </div>
     </>
   )
