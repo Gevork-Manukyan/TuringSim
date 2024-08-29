@@ -12,6 +12,7 @@ type TUseDirectedGraph = {
   edges: Map<EdgeId, Edge>;
   incomingEdges: Map<NodeId, MapEdge[]>;
   outgoingEdges: Map<NodeId, MapEdge[]>;
+  startNodeId: NodeId;
   addNode: (value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
@@ -23,6 +24,7 @@ type TUseDirectedGraph = {
   getAllEdgeCoords: () => EdgeCoords[];
   getIncomingEdges: (nodeId: NodeId) => MapEdge[];
   getOutgoingEdges: (nodeId: NodeId) => MapEdge[];
+  getStartNode: () => TNode | null;
   updateNodeCoords: (nodeId: NodeId, x: number, y: number) => void;
   setIsStartNode: (nodeId: NodeId, value: TNode['isStartNode']) => void;
   setIsEndNode: (nodeId: NodeId, value: TNode['isEndNode']) => void;
@@ -34,6 +36,7 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   edges: new Map<EdgeId, Edge>(),
   incomingEdges: new Map<NodeId, MapEdge[]>(),
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
+  startNodeId: "",
   addNode: (value, isStartNode = false, isEndNode = false) => {
     const nodeId = generateRandomNodeId(get().nodes);
     set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode));
@@ -77,6 +80,9 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     const nodeEdges = get().outgoingEdges.get(nodeId);
     if (nodeEdges) return nodeEdges;
     else throw Error("Invalid Node ID");
+  },
+  getStartNode: () => {
+    return get().nodes.get(get().startNodeId) || null;
   },
   updateNodeCoords: (nodeId, x, y) => {
     set((state) => updateNodeCoords(state, nodeId, x, y));
@@ -306,11 +312,15 @@ function getAllEdgeCoords(
 }
 
 function setIsStartNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isStartNode']) {
+  const currStartNode = state.getStartNode()
   const newNodes = new Map(state.nodes)
   const node = newNodes.get(nodeId)
   if (!node) return state;
+
+  // If setting a new node to start node, then remove the old one 
+  if (value && currStartNode) newNodes.set(currStartNode.id, { ...currStartNode, isStartNode: false })
   newNodes.set(nodeId, { ...node, isStartNode: value })
-  return { nodes: newNodes }
+  return { nodes: newNodes, startNode: node }
 }
 
 function setIsEndNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isEndNode']) {
