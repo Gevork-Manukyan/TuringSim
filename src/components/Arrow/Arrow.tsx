@@ -165,7 +165,6 @@ const Arrow = ({
 
   const [isHighlightedState, useIsHighlightedState] = useState(false)
   const handleOnHighlight = () => {
-    console.log("Enter")
     useIsHighlightedState(true)
   }
 

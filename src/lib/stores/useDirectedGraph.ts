@@ -312,15 +312,15 @@ function getAllEdgeCoords(
 }
 
 function setIsStartNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isStartNode']) {
-  const currStartNode = state.getStartNode()
   const newNodes = new Map(state.nodes)
   const node = newNodes.get(nodeId)
   if (!node) return state;
-
+  
   // If setting a new node to start node, then remove the old one 
+  const currStartNode = state.getStartNode()
   if (value && currStartNode) newNodes.set(currStartNode.id, { ...currStartNode, isStartNode: false })
   newNodes.set(nodeId, { ...node, isStartNode: value })
-  return { nodes: newNodes, startNode: node }
+  return { nodes: newNodes, startNodeId: node.id }
 }
 
 function setIsEndNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['isEndNode']) {
