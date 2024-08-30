@@ -15,6 +15,7 @@ import { NODE_RADIUS } from '../../../lib/constants';
 
 
 type NodeProps = {
+  children?: React.ReactNode
   className?: string;
   node: TNode;
 }

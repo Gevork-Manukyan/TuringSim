@@ -29,6 +29,7 @@ type TUseDirectedGraph = {
   setIsStartNode: (nodeId: NodeId, value: TNode['isStartNode']) => void;
   setIsEndNode: (nodeId: NodeId, value: TNode['isEndNode']) => void;
   isEmpty: () => boolean;
+  evaluate: (input: string[]) => void;
 };
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
@@ -96,6 +97,9 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   isEmpty: () => {
     return get().nodes.size === 0;
   },
+  evaluate: (input: string[]) => {
+    
+  }
 }));
 
 function generateRandomNodeId(nodes: TUseDirectedGraph["nodes"]) {

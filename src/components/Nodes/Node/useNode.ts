@@ -69,9 +69,9 @@ export function useNode({ node, isDragging }: useNodeProps) {
   )
 
   const handleAddNode = () => {
-    const newNodeId = addNode(null);
+    const newNodeId = addNode("");
     addEdge({fromId: node.id, toId: newNodeId, value: "" })
-    setIsClicked(false)    
+    setIsClicked(false)
   }
 
   const handleAddEdge = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {

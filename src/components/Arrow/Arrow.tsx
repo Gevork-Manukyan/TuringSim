@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import './Arrow.scss'
 import styled from "styled-components";
 import { ArrowConfig, Coord, Edge, EdgeId } from "../../lib/types";

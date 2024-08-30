@@ -8,7 +8,7 @@ export type EdgeId = string;
 
 export type TNode = {
   id: NodeId;
-  value: string | number | null;
+  value: string;
   coords: Coord;
   isStartNode: boolean;
   isEndNode: boolean;

@@ -1,12 +1,13 @@
 import './AddNodeButton.scss'
 import { useDirectedGraph } from '../../../lib/stores/useDirectedGraph'
+import { TNode } from '../../../lib/types';
 
 type AddNodeButtonProps = {
     children?: React.ReactNode;
-    value?: string | number | null;
+    value?: TNode['value'];
 }
 
-export default function AddNodeButton({ children, value=null }: AddNodeButtonProps) {
+export default function AddNodeButton({ children, value="" }: AddNodeButtonProps) {
     const addNode = useDirectedGraph(state => state.addNode)
     
     return (
