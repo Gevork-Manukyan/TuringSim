@@ -377,13 +377,22 @@ function doNodesExist(
   return true;
 }
 
+
+// ----- EVALUATING -----
+
 function evaluate(state: TUseDirectedGraph, input: string[]) {
   if (!checkIfGraphIsValid(state)) return;
   
   let currNode = state.getStartNode()
   for (let index = 0; index < input.length; index++) {
+    const currInput = input[index]
     const currNodeId = currNode.id
+    const currNodeOutgoingEdges = state.getOutgoingEdges(currNodeId).map(mapEdge => state.edges.get(mapEdge.edgeId)!)
+    const result = checkForInput(currInput, currNodeOutgoingEdges)
+    if (!result) return false;
+    currNode = state.nodes.get(result.toId)!
   }
+  return true;
 }
 
 function checkIfGraphIsValid(state: TUseDirectedGraph): 
@@ -401,3 +410,10 @@ state is Omit<TUseDirectedGraph, 'getStartNode'> & { getStartNode: () => NonNull
 
   return true;
 }
+
+function checkForInput(input: string, edges: Edge[]) {
+  for (const edge of edges) {
+    if (edge.value === input) return edge;
+  }
+  return null;
+} 
