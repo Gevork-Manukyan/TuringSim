@@ -11,7 +11,7 @@ import StartNodeIcon from '../../Icons/StartNodeIcon';
 import EndNodeIcon from '../../Icons/EndNodeIcon';
 import Arrow from '../../Arrow/Arrow';
 import { calcEdgeCoords, calcNodeCenter } from '../../../lib/util';
-import { ARROW_CONFIG, NODE_RADIUS } from '../../../lib/constants';
+import { NODE_RADIUS } from '../../../lib/constants';
 
 
 type NodeProps = {

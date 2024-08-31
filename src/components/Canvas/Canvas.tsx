@@ -16,7 +16,6 @@ import Node from "../Nodes/Node/Node";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
-import { ARROW_CONFIG } from "../../lib/constants";
 import { calcEdgeCoords, calcNodeCenter } from "../../lib/util";
 
 export default function Canvas() {

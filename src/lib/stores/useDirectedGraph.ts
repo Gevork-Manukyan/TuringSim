@@ -382,11 +382,12 @@ function evaluate(state: TUseDirectedGraph, input: string[]) {
   
   let currNode = state.getStartNode()
   for (let index = 0; index < input.length; index++) {
-    const currNodeId = currNode!.id
+    const currNodeId = currNode.id
   }
 }
 
-function checkIfGraphIsValid(state: TUseDirectedGraph): boolean {
+function checkIfGraphIsValid(state: TUseDirectedGraph): 
+state is Omit<TUseDirectedGraph, 'getStartNode'> & { getStartNode: () => NonNullable<ReturnType<typeof state.getStartNode>> } {
   // Is there a starting Node
   if (state.startNodeId === "") return false;
 
