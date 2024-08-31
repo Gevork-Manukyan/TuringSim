@@ -16,7 +16,7 @@ export type TNode = {
 
 export type Edge = {
   id: EdgeId;
-  value: string | number;
+  value: string;
   fromId: NodeId;
   toId: NodeId;
 };

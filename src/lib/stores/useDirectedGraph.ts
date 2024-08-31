@@ -13,6 +13,7 @@ type TUseDirectedGraph = {
   incomingEdges: Map<NodeId, MapEdge[]>;
   outgoingEdges: Map<NodeId, MapEdge[]>;
   startNodeId: NodeId;
+  endNodeIds: EdgeId[];
   addNode: (value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
@@ -38,6 +39,7 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   incomingEdges: new Map<NodeId, MapEdge[]>(),
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
   startNodeId: "",
+  endNodeIds: [],
   addNode: (value, isStartNode = false, isEndNode = false) => {
     const nodeId = generateRandomNodeId(get().nodes);
     set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode));
@@ -98,7 +100,7 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
     return get().nodes.size === 0;
   },
   evaluate: (input: string[]) => {
-    
+    evaluate(get(), input)
   }
 }));
 
@@ -181,11 +183,18 @@ function removeNode(
   }
   newIncomingEdges.delete(nodeId);
 
+  let newStartNodeId = state.startNodeId
+  if (newStartNodeId === nodeId) newStartNodeId = ""
+
+  const newEndNodeIds = state.endNodeIds.filter(id => id != nodeId)
+
   return {
     nodes: newNodes,
     incomingEdges: newIncomingEdges,
     outgoingEdges: newOutgoingEdges,
-    edges: newEdges
+    edges: newEdges,
+    startNodeId: newStartNodeId,
+    endNodeIds: newEndNodeIds,
   };
 }
 
@@ -332,7 +341,8 @@ function setIsEndNode(state: TUseDirectedGraph, nodeId: NodeId, value: TNode['is
   const node = newNodes.get(nodeId)
   if (!node) return state;
   newNodes.set(nodeId, { ...node, isEndNode: value })
-  return { nodes: newNodes }
+  const newEndNodeIds = value ? [...state.endNodeIds, nodeId] : state.endNodeIds.filter(id => id != nodeId)
+  return { nodes: newNodes, endNodeIds: newEndNodeIds }
 }
 
 function doesEdgeExist(
@@ -364,5 +374,29 @@ function doNodesExist(
   nodes: TUseDirectedGraph["nodes"]
 ): boolean {
   if (!nodes.has(from) || !nodes.has(to)) return false;
+  return true;
+}
+
+function evaluate(state: TUseDirectedGraph, input: string[]) {
+  if (!checkIfGraphIsValid(state)) return;
+  
+  let currNode = state.getStartNode()
+  for (let index = 0; index < input.length; index++) {
+    const currNodeId = currNode!.id
+  }
+}
+
+function checkIfGraphIsValid(state: TUseDirectedGraph): boolean {
+  // Is there a starting Node
+  if (state.startNodeId === "") return false;
+
+  // Is there an end Node
+  if (state.endNodeIds.length === 0) return false;
+
+  // Do all edges have a value
+  for (const edge of state.edges.values()) {
+    if (edge.value.trim() === "") return false;
+  }
+
   return true;
 }
