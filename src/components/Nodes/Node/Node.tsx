@@ -11,7 +11,7 @@ import StartNodeIcon from '../../Icons/StartNodeIcon';
 import EndNodeIcon from '../../Icons/EndNodeIcon';
 import Arrow from '../../Arrow/Arrow';
 import { calcEdgeCoords, calcNodeCenter } from '../../../lib/util';
-import { NODE_RADIUS } from '../../../lib/constants';
+import { ARROW_CONFIG, NODE_RADIUS } from '../../../lib/constants';
 
 
 type NodeProps = {
@@ -72,7 +72,7 @@ export default function Node({ className, node }: NodeProps) {
     <>
     {/* Starting Node Arrow */}
     {node.isStartNode && 
-      <Arrow className='Node__startArrow' edgeId={null} startPoint={startCoords} endPoint={endCoords} isDisabled isLocked />
+      <Arrow className='Node__startArrow' edgeId={null} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} isDisabled isLocked />
     }
     <div 
       className={classNameString}
