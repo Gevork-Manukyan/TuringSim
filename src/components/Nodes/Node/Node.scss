@@ -4,7 +4,7 @@ $radius: 100%;
 $plusButtonSize: 50px;
 $transition-distance: calc($nodeSize / 1.2);
 $hover-shift: $nodeSize - $transition-distance;
-$subNode-Transition: transform 0.5s ease;;
+$subNode-Transition: transform 0.5s ease;
 $hover-transition: transform 0.3s ease;
 
 
@@ -55,9 +55,14 @@ $hover-transition: transform 0.3s ease;
     letter-spacing: 1px;
 }
 
+@mixin nodeSize {
+    width: $nodeSize;
+    height: $nodeSize;
+}
 
 // ===== STYLES =====
 .Node {
+    @include nodeSize();
     position: absolute;
     user-select: none;
     border-radius: $radius;
@@ -74,35 +79,37 @@ $hover-transition: transform 0.3s ease;
         transition: box-shadow 300ms ease;
     }
 
-    &--clicked {
-        
-    }
-
     .Canvas--addingEdge &__addEdgeOverlay {
+        @include nodeSize();
         display: inline-block;
         position: absolute;
         border-radius: $radius;
-        height: $nodeSize;
-        width: $nodeSize;
         cursor: pointer;
         z-index: 1000;
     }
 
     &__content {
-        width: $nodeSize;
-        height: $nodeSize;
+        @include nodeSize();
         position: relative;
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        background-color: white;
-        border: solid 1px black;
+
+        background-color: var(--light-blue);
         border-radius: $radius;
         border-width: 3px;
         cursor: pointer;
         z-index: 10;
         box-sizing: border-box;
+
+        transition: box-shadow 0.5s ease;
         @include text();
+    }
+
+    &--clicked &__content {
+        -webkit-box-shadow: inset 0px 0px 18px 10px var(--dark-blue);
+        -moz-box-shadow: inset 0px 0px 18px 10px var(--dark-blue);
+        box-shadow: inset 0px 0px 18px 6px var(--dark-blue);
     }
 
     &--endNode &__content {
