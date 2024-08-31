@@ -79,14 +79,14 @@ const Arrow = ({
 }: ArrowProps) => {
   const defaultConfig = {
     arrowColor: "#bcc4cc",
-    arrowHighlightedColor: "#4da6ff",
+    arrowHighlightedColor: "#f87171",
     controlPointsColor: "#ff4747",
     boundingBoxColor: "#ffcccc",
     dotEndingBackground: "#fff",
-    dotEndingRadius: 3,
-    arrowHeadEndingSize: 9,
-    hoverableLineWidth: 15,
-    strokeWidth: 1,
+    dotEndingRadius: 0,
+    arrowHeadEndingSize: 10,
+    hoverableLineWidth: 20,
+    strokeWidth: 3,
   };
 
   const currentConfig = { ...defaultConfig, ...config };

@@ -86,7 +86,6 @@ export default function Canvas() {
               startPoint={startCoords}
               endPoint={endCoords}
               label={getEdge(edgeCoords.id).value}
-              config={ARROW_CONFIG}
               type={selfPointing ? "circle" : "line"}
             />
           );
@@ -127,7 +126,6 @@ function AddEdgeArrow() {
       {addingEdgeStartNode && mouseCoords ? (
         <Arrow
           edgeId={null}
-          config={ARROW_CONFIG}
           key={addingEdgeStartNode.id}
           startPoint={addingEdgeStartNode.coords}
           endPoint={addingEdgeEndNode ? addingEdgeEndNode.coords : mouseCoords}

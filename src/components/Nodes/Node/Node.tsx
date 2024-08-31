@@ -72,7 +72,7 @@ export default function Node({ className, node }: NodeProps) {
     <>
     {/* Starting Node Arrow */}
     {node.isStartNode && 
-      <Arrow className='Node__startArrow' edgeId={null} startPoint={startCoords} endPoint={endCoords} config={ARROW_CONFIG} isDisabled isLocked />
+      <Arrow className='Node__startArrow' edgeId={null} startPoint={startCoords} endPoint={endCoords} isDisabled isLocked />
     }
     <div 
       className={classNameString}
