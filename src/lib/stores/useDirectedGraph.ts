@@ -388,30 +388,39 @@ function evaluate(state: TUseDirectedGraph, input: string[]) {
     const currInput = input[index]
     const currNodeId = currNode.id
     const currNodeOutgoingEdges = state.getOutgoingEdges(currNodeId).map(mapEdge => state.edges.get(mapEdge.edgeId)!)
-    const result = checkForInput(currInput, currNodeOutgoingEdges)
+    const result = checkEdgesForInput(currInput, currNodeOutgoingEdges)
     if (!result) return false;
     currNode = state.nodes.get(result.toId)!
   }
+  console.log("done")
   return true;
 }
 
 function checkIfGraphIsValid(state: TUseDirectedGraph): 
 state is Omit<TUseDirectedGraph, 'getStartNode'> & { getStartNode: () => NonNullable<ReturnType<typeof state.getStartNode>> } {
   // Is there a starting Node
-  if (state.startNodeId === "") return false;
+  if (state.startNodeId === "") {
+    console.error("missing start node")
+    return false;
+  }
 
   // Is there an end Node
-  if (state.endNodeIds.length === 0) return false;
+  if (state.endNodeIds.length === 0) {
+    console.error("missing end node")
+    return false;
+  }
 
   // Do all edges have a value
   for (const edge of state.edges.values()) {
-    if (edge.value.trim() === "") return false;
+    if (edge.value.trim() === "") {
+      console.error("all nodes require a value")
+      return false;
+    }
   }
-
   return true;
 }
 
-function checkForInput(input: string, edges: Edge[]) {
+function checkEdgesForInput(input: string, edges: Edge[]) {
   for (const edge of edges) {
     if (edge.value === input) return edge;
   }
