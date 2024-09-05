@@ -69,7 +69,7 @@ export function useNode({ node, isDragging }: useNodeProps) {
   )
 
   const handleAddNode = () => {
-    const newNodeId = addNode("");
+    const newNodeId = addNode({ value: "" });
     addEdge({fromId: node.id, toId: newNodeId, value: "" })
     setIsClicked(false)
   }

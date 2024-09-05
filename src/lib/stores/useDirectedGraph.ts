@@ -14,7 +14,7 @@ type TUseDirectedGraph = {
   outgoingEdges: Map<NodeId, MapEdge[]>;
   startNodeId: NodeId;
   endNodeIds: EdgeId[];
-  addNode: (value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean) => NodeId;
+  addNode: ({ value, isStartNode, isEndNode, startCoord }: { value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean, startCoord?: Coord }) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
   addEdge: (edge: Omit<Edge, 'id'>) => void;
@@ -40,9 +40,9 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
   startNodeId: "",
   endNodeIds: [],
-  addNode: (value, isStartNode = false, isEndNode = false) => {
+  addNode: ({ value, isStartNode = false, isEndNode = false, startCoord = { x: 0, y: 0 } }) => {
     const nodeId = generateRandomNodeId(get().nodes);
-    set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode));
+    set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode, startCoord));
     return nodeId;
   },
   removeNode: (nodeId) => {
@@ -125,15 +125,16 @@ function addNode(
   nodeValue: TNode["value"],
   nodeId: string,
   isStartNode: boolean,
-  isEndNode: boolean
+  isEndNode: boolean,
+  startCoord: Coord,
 ): Partial<TUseDirectedGraph> {
   const newNodes = new Map(state.nodes);
   newNodes.set(nodeId, {
     id: nodeId,
     value: nodeValue,
-    coords: { x: 0, y: 0 },
-    isStartNode: isStartNode,
-    isEndNode: isEndNode,
+    coords: startCoord,
+    isStartNode,
+    isEndNode,
   });
 
   const newIncomingEdges = new Map(state.incomingEdges);
@@ -410,7 +411,7 @@ state is Omit<TUseDirectedGraph, 'getStartNode'> & { getStartNode: () => NonNull
   // Do all edges have a value
   for (const edge of state.edges.values()) {
     if (edge.value.trim() === "") {
-      console.error("all nodes require a value")
+      console.error("all edges require a value")
       return false;
     }
   }
