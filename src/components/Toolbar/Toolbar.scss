@@ -1,3 +1,14 @@
 .Toolbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     border: solid black 1px;
+
+    &__label {
+
+    }
+
+    &__checkbox {
+
+    }
 }
