@@ -17,6 +17,7 @@ import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import Arrow from "../Arrow/Arrow";
 import NewNodeIcon from "../Icons/NewNodeIcon";
 import { calcEdgeCoords, calcNodeCenter } from "../../lib/util";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 export default function Canvas() {
   const [startCoords, setStartCoords] = useState<Coord | null>(null);
@@ -53,6 +54,8 @@ export default function Canvas() {
       sensors={sensors}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
+      modifiers={[restrictToWindowEdges]}
+      autoScroll={false}
     >
       <section
         id="Canvas"
