@@ -2,11 +2,11 @@ import "./Toolbar.scss"
 import { useDirectedGraph } from "../../lib/stores/useDirectedGraph"
 import { useEffect, useState } from "react"
 import { Coord } from "../../lib/types"
-import NewNodeIcon from "../Icons/NewNodeIcon"
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton"
 import { NODE_RADIUS } from "../../lib/constants"
 
 export default function Toolbar({ canvasRef }: { canvasRef: React.RefObject<HTMLElement> }) {
+    const resetGraph = useDirectedGraph(state => state.clear)
     const [inputString, setInputString] = useState("")
     const [options, setOptions] = useState({
         commaSeparated: false,
@@ -35,6 +35,10 @@ export default function Toolbar({ canvasRef }: { canvasRef: React.RefObject<HTML
         setOptions(prev => ({ ...prev, [name]: checked }))
     }
 
+    const handleClear = () => {
+        resetGraph()
+    }
+
     const getNodeCoords = () => {
         if (!canvasCoord) return undefined;
         return { x: canvasCoord.x - NODE_RADIUS, y: canvasCoord.y - NODE_RADIUS}
@@ -48,12 +52,8 @@ export default function Toolbar({ canvasRef }: { canvasRef: React.RefObject<HTML
                 Comma Separated
                 <input className="Toolbar__checkbox" name="commaSeparated" type="checkbox" onChange={handleOptionChange}></input>
             </label>
-            <label htmlFor="" className="Toolbar__label">
-                New Node
-                <AddNodeButton nodeCoord={getNodeCoords()}>
-                    <NewNodeIcon />
-                </AddNodeButton>
-            </label>
+            <AddNodeButton nodeCoord={getNodeCoords()}>New Node</AddNodeButton>
+            <button onClick={handleClear}>Clear</button>
         </section>
     )
 }

@@ -30,6 +30,7 @@ type TUseDirectedGraph = {
   setIsStartNode: (nodeId: NodeId, value: TNode['isStartNode']) => void;
   setIsEndNode: (nodeId: NodeId, value: TNode['isEndNode']) => void;
   isEmpty: () => boolean;
+  clear: () => void;
   evaluate: (input: string[]) => void;
 };
 
@@ -98,6 +99,17 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   isEmpty: () => {
     return get().nodes.size === 0;
+  },
+  clear: () => {
+    set(() => {
+      const newNodes = new Map<NodeId, TNode>()
+      const newEdges = new Map<EdgeId, Edge>()
+      const newIncomingEdges = new Map<NodeId, MapEdge[]>()
+      const newOutgoingEdges = new Map<NodeId, MapEdge[]>()
+      const newStartNodeId = ""
+      const newEndNodeIds: NodeId[] = []
+      return { nodes: newNodes, edges: newEdges, incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, startNodeId: newStartNodeId, endNodeIds: newEndNodeIds }
+    })
   },
   evaluate: (input: string[]) => {
     evaluate(get(), input)
