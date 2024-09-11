@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useDirectedGraph } from "../../../lib/stores/useDirectedGraph";
 import { useConnectNodes } from "../../../lib/stores/useConnectNodes";
 import { TNode } from "../../../lib/types";
+import { NODE_DIAMETER } from "../../../lib/constants";
 
 type useNodeProps = {
     node: TNode;
@@ -69,7 +70,10 @@ export function useNode({ node, isDragging }: useNodeProps) {
   )
 
   const handleAddNode = () => {
-    const newNodeId = addNode({ value: "" });
+    const currNodeCoords = node.coords
+    const startX = currNodeCoords.x
+    const startY = currNodeCoords.y - NODE_DIAMETER - 20 
+    const newNodeId = addNode({ value: "", startCoord: { x: startX, y: startY } });
     addEdge({fromId: node.id, toId: newNodeId, value: "" })
     setIsClicked(false)
   }
