@@ -1,5 +1,5 @@
 import "./Canvas.scss";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { DragMoveEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 import {
   DndContext,
@@ -19,7 +19,7 @@ import NewNodeIcon from "../Icons/NewNodeIcon";
 import { calcEdgeCoords, calcNodeCenter } from "../../lib/util";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 
-export default function Canvas() {
+const Canvas = forwardRef<HTMLElement>((_, ref) => {
   const [startCoords, setStartCoords] = useState<Coord | null>(null);
 
   const mouseSensor = useSensor(MouseSensor);
@@ -59,6 +59,7 @@ export default function Canvas() {
       <section
         id="Canvas"
         className={`${isAddingEdge ? "Canvas--addingEdge" : ""}`}
+        ref={ref}
       >
         {isGraphEmpty() && (
           <AddNodeButton>
@@ -97,7 +98,10 @@ export default function Canvas() {
       </section>
     </DndContext>
   );
-}
+})
+
+export default Canvas;
+
 
 function AddEdgeArrow() {
   const isAddingEdge = useConnectNodes((state) => state.isAddingEdge);
@@ -136,3 +140,4 @@ function AddEdgeArrow() {
     </>
   );
 }
+

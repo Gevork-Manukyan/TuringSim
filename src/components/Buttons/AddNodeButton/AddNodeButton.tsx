@@ -11,6 +11,7 @@ type AddNodeButtonProps = {
 
 export default function AddNodeButton({ children, value="", nodeCoord }: AddNodeButtonProps) {
     const addNode = useDirectedGraph(state => state.addNode)
+    console.log("ADD: ", nodeCoord)
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const x = event.clientX - NODE_RADIUS
