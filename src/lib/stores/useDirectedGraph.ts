@@ -14,6 +14,8 @@ type TUseDirectedGraph = {
   outgoingEdges: Map<NodeId, MapEdge[]>;
   startNodeId: NodeId;
   endNodeIds: EdgeId[];
+  inputString: string[];
+  currentInputIndex: number;
   addNode: ({ value, isStartNode, isEndNode, startCoord }: { value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean, startCoord?: Coord }) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
@@ -32,6 +34,8 @@ type TUseDirectedGraph = {
   isEmpty: () => boolean;
   clear: () => void;
   evaluate: (input: string[]) => void;
+  step: () => void;
+  continueEval: () => void;
 };
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
@@ -41,6 +45,8 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
   startNodeId: "",
   endNodeIds: [],
+  inputString: [],
+  currentInputIndex: 0,
   addNode: ({ value, isStartNode = false, isEndNode = false, startCoord = { x: 0, y: 0 } }) => {
     const nodeId = generateRandomNodeId(get().nodes);
     set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode, startCoord));
@@ -113,6 +119,12 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   },
   evaluate: (input: string[]) => {
     evaluate(get(), input)
+  },
+  step: () => {
+    step(get())
+  },
+  continueEval: () => {
+    continueEval(get())
   }
 }));
 
@@ -404,6 +416,14 @@ function evaluate(state: TUseDirectedGraph, input: string[]) {
   }
   console.log("done")
   return true;
+}
+
+function step(state: TUseDirectedGraph) {
+
+}
+
+function continueEval(state: TUseDirectedGraph) {
+
 }
 
 function checkIfGraphIsValid(state: TUseDirectedGraph): 
