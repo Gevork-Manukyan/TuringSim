@@ -3,4 +3,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    // opacity: 0.4;
+    background-image: radial-gradient(#000 0.8px, var(--bg-white) 0.8px);
+    background-size: 16px 16px;
 }
+

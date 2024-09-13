@@ -9,13 +9,15 @@ function App() {
   const canvasRef = useRef<HTMLElement>(null)
 
   return <>
-  <header id="header"><Navbar /></header>
+  <header id="header">
+    <Navbar />
+  </header>
   <main id="main">
     <Toolbar canvasRef={canvasRef} />
     <Canvas ref={canvasRef} />
   </main>
   <footer id="footer">footer</footer>
-  </>;
+  </>
 }
 
 export default App;

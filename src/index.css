@@ -1,11 +1,20 @@
 :root {
+  /* === VARIABLES === */
+  /* Colors */
   --bg-white: #f8fafc;
   --light-blue: #bae6fd;
   --dark-blue: #0369a1;
 
+  /* Heights */
+  --bar-height: 65px;
+
+  /* Fonts */
+  --font-families: "Roboto", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  /* === GLOBAL STYLES === */
   background-color: var(--bg-white);
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-families);
   line-height: 1.5;
   font-weight: 400;
 
@@ -32,8 +41,8 @@ body {
 
 button {
   all: unset;
-  display: inline-block; 
-  cursor: pointer; 
+  display: inline-block;
+  cursor: pointer;
 }
 button:hover {
   /* border-color: #646cff; */
