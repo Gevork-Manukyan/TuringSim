@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import './Arrow.scss'
+import "./Arrow.scss";
 import styled from "styled-components";
 import { ArrowConfig, Coord, Edge, EdgeId } from "../../lib/types";
 import {
@@ -8,15 +8,15 @@ import {
   calculateCanvasDimensions,
   calculateArrowheadPoints,
 } from "./util";
-import useArrowLabel from './useArrowLabel';
-import { useState } from 'react';
+import useArrowLabel from "./useArrowLabel";
+import { useState } from "react";
 
 type ArrowProps = {
   className?: string;
   edgeId: EdgeId | null;
   startPoint: Coord;
   endPoint: Coord;
-  label?: Edge['value'];
+  label?: Edge["value"];
   type?: "line" | "circle";
   isHighlighted?: boolean;
   isDisabled?: boolean;
@@ -60,10 +60,9 @@ const HoverableLine = styled.path`
   cursor: default;
 `;
 
-
 const Arrow = ({
   className,
-  edgeId, 
+  edgeId,
   startPoint,
   endPoint,
   label = "",
@@ -78,7 +77,7 @@ const Arrow = ({
   tooltip,
 }: ArrowProps) => {
   const defaultConfig = {
-    arrowColor: "#bcc4cc",
+    arrowColor: "#374548",
     arrowHighlightedColor: "#f87171",
     controlPointsColor: "#ff4747",
     boundingBoxColor: "#ffcccc",
@@ -133,7 +132,16 @@ const Arrow = ({
     handleOnClick,
     handleOnBlur,
     handleLabelChange,
-  } = useArrowLabel({ type, label, startPoint, endPoint, CIRCLE_RADIUS, arrowAngle, onClick, edgeId })
+  } = useArrowLabel({
+    type,
+    label,
+    startPoint,
+    endPoint,
+    CIRCLE_RADIUS,
+    arrowAngle,
+    onClick,
+    edgeId,
+  });
 
   const canvasXOffset =
     Math.min(startPoint.x, endPoint.x) - boundingBoxBuffer.horizontal;
@@ -164,27 +172,30 @@ const Arrow = ({
     a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
   `;
 
-  const [isHighlightedState, useIsHighlightedState] = useState(false)
+  const [isHighlightedState, useIsHighlightedState] = useState(false);
   const handleOnHighlight = () => {
-    useIsHighlightedState(true)
-  }
+    useIsHighlightedState(true);
+  };
 
   const handleOnUnhighlight = () => {
-    useIsHighlightedState(false)
-  }
+    useIsHighlightedState(false);
+  };
 
-  const isDisabledOrLocked = () => isDisabled || isLocked
+  const isDisabledOrLocked = () => isDisabled || isLocked;
 
-  const strokeColor = (isHighlighted || isHighlightedState) && !isDisabledOrLocked()
-    ? arrowHighlightedColor 
-    : arrowColor;
+  const strokeColor =
+    (isHighlighted || isHighlightedState) && !isDisabledOrLocked()
+      ? arrowHighlightedColor
+      : arrowColor;
 
   return (
-    <div className={`Arrow${className ? ` ${className}` : ''}`}>
+    <div className={`Arrow${className ? ` ${className}` : ""}`}>
       <StraightLine
         width={canvasWidth}
         height={canvasHeight}
-        $isHighlighted={isHighlighted !== undefined ? isHighlighted : isHighlightedState}
+        $isHighlighted={
+          isHighlighted !== undefined ? isHighlighted : isHighlightedState
+        }
         $boundingBoxColor={boundingBoxColor}
         // $xTranslate={!isLocked ? canvasXOffset : 0}
         // $yTranslate={!isLocked ? canvasYOffset : 0}
@@ -203,17 +214,44 @@ const Arrow = ({
           stroke="transparent"
           pointerEvents="all"
           fill="none"
-          onMouseEnter={onMouseEnter && !isDisabledOrLocked() ? onMouseEnter : handleOnHighlight}
-          onMouseLeave={onMouseLeave && !isDisabledOrLocked() ? onMouseLeave : handleOnUnhighlight}
+          onMouseEnter={
+            onMouseEnter && !isDisabledOrLocked()
+              ? onMouseEnter
+              : handleOnHighlight
+          }
+          onMouseLeave={
+            onMouseLeave && !isDisabledOrLocked()
+              ? onMouseLeave
+              : handleOnUnhighlight
+          }
           onClick={!isDisabledOrLocked() ? handleOnClick : () => {}}
         >
           {tooltip && <title>{tooltip}</title>}
         </HoverableLine>
       </StraightLine>
-      <div className={`Arrow__label${type === 'circle' ? " Arrow__label--circle" : ""}`} style={labelStyle} onClick={handleOnClick}>
-        {isEditingLabel 
-         ? <input autoFocus type='text' className='Arrow__input' value={arrowLabel} onChange={handleLabelChange} onBlur={handleOnBlur} />
-         : arrowLabel}
+      <div
+        className={`Arrow__label${
+          type === "circle" ? " Arrow__label--circle" : ""
+        }${
+          arrowLabel.trim() === "" && !isEditingLabel
+            ? " Arrow__label--hidden"
+            : ""
+        }`}
+        style={labelStyle}
+        onClick={handleOnClick}
+      >
+        {isEditingLabel ? (
+          <input
+            autoFocus
+            type="text"
+            className="Arrow__input"
+            value={arrowLabel}
+            onChange={handleLabelChange}
+            onBlur={handleOnBlur}
+          />
+        ) : (
+          arrowLabel
+        )}
       </div>
     </div>
   );

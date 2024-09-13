@@ -7,212 +7,213 @@ $hover-shift: $nodeSize - $transition-distance;
 $subNode-Transition: transform 0.5s ease;
 $hover-transition: transform 0.3s ease;
 
-
 // ===== MIXINS =====
 @mixin subNodeDirection($direction) {
-    @if $direction == "up" {
-        transform: translate(-50%, -$transition-distance);
+  @if $direction == "up" {
+    transform: translate(-50%, -$transition-distance);
 
-        &:hover {
-            transform: translate(-50%, -$transition-distance - $hover-shift);
-        }
+    &:hover {
+      transform: translate(-50%, -$transition-distance - $hover-shift);
     }
-    @else if $direction == "right" {
-        transform: translate(calc($transition-distance - $plusButtonSize), -50%);
-            
-        &:hover {
-            transform: translate(calc($transition-distance - $plusButtonSize) + $hover-shift, -50%);
-        }
+  } @else if $direction == "right" {
+    transform: translate(calc($transition-distance - $plusButtonSize), -50%);
+
+    &:hover {
+      transform: translate(
+        calc($transition-distance - $plusButtonSize) + $hover-shift,
+        -50%
+      );
     }
-    @else if $direction == "down" {
-        transform: translate(-50%, calc($transition-distance - $plusButtonSize));
-            
-        &:hover {
-            transform: translate(-50%, calc($transition-distance - $plusButtonSize) + $hover-shift);
-        }
+  } @else if $direction == "down" {
+    transform: translate(-50%, calc($transition-distance - $plusButtonSize));
+
+    &:hover {
+      transform: translate(
+        -50%,
+        calc($transition-distance - $plusButtonSize) + $hover-shift
+      );
     }
-    @else if $direction == "left" {
-        transform: translate(-$transition-distance, -50%);
-            
-        &:hover {
-            transform: translate(-$transition-distance - $hover-shift, -50%);
-        }
+  } @else if $direction == "left" {
+    transform: translate(-$transition-distance, -50%);
+
+    &:hover {
+      transform: translate(-$transition-distance - $hover-shift, -50%);
     }
+  }
 }
 
 @mixin subNodeTransition {
-    transition: $subNode-Transition;
+  transition: $subNode-Transition;
 
-    &:hover {
-        transition: $hover-transition;
-    }
+  &:hover {
+    transition: $hover-transition;
+  }
 }
 
 @mixin text {
-    font-size: 16px;
-    font-family: var(--font-families);
-    line-height: 16px;
-    letter-spacing: 1px;
+  font-size: 16px;
+  font-family: var(--font-families);
+  line-height: 16px;
+  letter-spacing: 1px;
 }
 
 @mixin nodeSize {
-    width: $nodeSize;
-    height: $nodeSize;
+  width: $nodeSize;
+  height: $nodeSize;
 }
 
 // ===== STYLES =====
 .Node {
+  @include nodeSize();
+  position: absolute;
+  user-select: none;
+  border-radius: $radius;
+  z-index: 100;
+  @include text();
+
+  &:hover {
+  }
+
+  &--dragging {
+    box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+      0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+    transition: box-shadow 300ms ease;
+  }
+
+  .Canvas--addingEdge &__addEdgeOverlay {
     @include nodeSize();
+    display: inline-block;
     position: absolute;
-    user-select: none;
     border-radius: $radius;
+    cursor: pointer;
+    z-index: 1000;
+  }
+
+  &__content {
+    @include nodeSize();
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--grey-blue);
+    border-radius: $radius;
+    border-width: 3px;
+    cursor: pointer;
+    z-index: 10;
+    box-sizing: border-box;
+
+    transition: box-shadow 0.2s ease;
+    @include text();
+  }
+
+  &--clicked &__content {
+    -webkit-box-shadow: inset 0px 0px 18px 10px var(--cyan);
+    -moz-box-shadow: inset 0px 0px 18px 10px var(--cyan);
+    box-shadow: inset 0px 0px 18px 6px var(--cyan);
+  }
+
+  &--endNode &__content {
+    border-style: double;
+    border-width: 6px;
+  }
+
+  &__renameInput {
+    width: $nodeSize;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
     z-index: 100;
     @include text();
 
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__subNodeBtn {
+    $position: calc($nodeSize / 2);
+
+    position: absolute;
+    left: $position;
+    top: $position;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 0px;
+    height: $plusButtonSize;
+    width: $plusButtonSize;
+    border: solid black 1px;
+    border-radius: 100%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    transition: $subNode-Transition;
+    box-sizing: border-box;
+    cursor: pointer;
+    z-index: 0;
+
     &:hover {
-        
+      background-color: rgb(231, 231, 231);
+      border: solid 2px;
+    }
+  }
+
+  &--clicked &__subNodeBtn {
+    @include subNodeTransition();
+
+    &--1 {
+      @include subNodeDirection("up");
     }
 
-    &--dragging {
-        box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-        transition: box-shadow 300ms ease;
+    &--2 {
+      @include subNodeDirection("right");
     }
 
-    .Canvas--addingEdge &__addEdgeOverlay {
-        @include nodeSize();
-        display: inline-block;
-        position: absolute;
-        border-radius: $radius;
-        cursor: pointer;
-        z-index: 1000;
+    &--3 {
+      @include subNodeDirection("down");
     }
 
-    &__content {
-        @include nodeSize();
-        position: relative;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
+    &--4 {
+      @include subNodeDirection("left");
+    }
+  }
 
-        background-color: var(--light-blue);
-        border-radius: $radius;
-        border-width: 3px;
-        cursor: pointer;
-        z-index: 10;
-        box-sizing: border-box;
+  &--settings &__subNodeBtn {
+    @include subNodeTransition();
 
-        transition: box-shadow 0.2s ease;
-        @include text();
+    &--5 {
+      @include subNodeDirection("up");
     }
 
-    &--clicked &__content {
-        -webkit-box-shadow: inset 0px 0px 18px 10px var(--dark-blue);
-        -moz-box-shadow: inset 0px 0px 18px 10px var(--dark-blue);
-        box-shadow: inset 0px 0px 18px 6px var(--dark-blue);
+    &--6 {
+      @include subNodeDirection("right");
     }
 
-    &--endNode &__content {
-        border-style: double;
-        border-width: 6px;
+    &--7 {
+      @include subNodeDirection("down");
     }
 
-    &__renameInput {
-        width: $nodeSize;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        z-index: 100;
-        @include text();
+    &--8 {
+      @include subNodeDirection("left");
+    }
+  }
 
-        &:focus-visible {
-            outline: none;
-        }
+  &--confirmation &__subNodeBtn {
+    @include subNodeTransition();
+
+    &--confirm {
+      @include subNodeDirection("right");
     }
 
-    &__subNodeBtn {
-        $position: calc($nodeSize / 2);
-        
-        position: absolute;
-        left: $position;
-        top: $position;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        line-height: 0px;
-        height: $plusButtonSize;
-        width: $plusButtonSize;
-        border: solid black 1px;
-        border-radius: 100%;
-        background-color: white;
-        transform: translate(-50%, -50%);
-        transition: $subNode-Transition;
-        box-sizing: border-box;
-        cursor: pointer;    
-        z-index: 0;
-
-        &:hover {
-            background-color: rgb(231, 231, 231);
-            border: solid 2px;
-        }
+    &--cancel {
+      @include subNodeDirection("left");
     }
+  }
 
-    &--clicked &__subNodeBtn {
-        @include subNodeTransition();
-
-        &--1 {
-            @include subNodeDirection("up")
-        }
-
-        &--2 {
-            @include subNodeDirection("right")
-        }
-
-        &--3 {
-            @include subNodeDirection("down")
-        }
-
-        &--4 {
-            @include subNodeDirection("left")
-        }
-    }  
-
-    &--settings &__subNodeBtn {
-        @include subNodeTransition();
-
-        &--5 {
-            @include subNodeDirection("up")
-        }
-
-        &--6 {
-            @include subNodeDirection("right")
-        }
-
-        &--7 {
-            @include subNodeDirection("down")
-        }
-
-        &--8 {
-            @include subNodeDirection("left")
-        }
-    }
-
-    &--confirmation &__subNodeBtn {
-        @include subNodeTransition();
-
-        &--confirm {
-            @include subNodeDirection("right")
-        }
-
-        &--cancel {
-            @include subNodeDirection("left")
-        }
-    }
-
-    .Canvas--addingEdge &--addingEdge &__subNodeBtn--cancel {
-        @include subNodeDirection("down")
-    }
+  .Canvas--addingEdge &--addingEdge &__subNodeBtn--cancel {
+    @include subNodeDirection("down");
+  }
 }

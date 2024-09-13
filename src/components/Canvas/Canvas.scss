@@ -1,5 +1,5 @@
 #Canvas {
-    height: 100vh;
+    height: calc(100vh - var(--bar-height) - 3px);
     display: flex;
     justify-content: center;
     align-items: center;

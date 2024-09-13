@@ -1,15 +1,21 @@
 :root {
   /* === VARIABLES === */
   /* Colors */
-  --bg-white: #f8fafc;
-  --light-blue: #bae6fd;
-  --dark-blue: #0369a1;
+  --bg-white: #f6f1f1;
+  --bg-blue: #ebeff1;
+  --grey: #374548;
+  --grey-blue: #afd3e2;
+  --cyan: #19a7ce;
+  --sky-blue: #5A9EC3;
+  --light-blue: #069AE323;
+  --dark-blue: #146c94;
 
   /* Heights */
   --bar-height: 65px;
 
   /* Fonts */
-  --font-families: "Roboto", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-families: "Roboto", Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
 
   /* === GLOBAL STYLES === */
   background-color: var(--bg-white);
@@ -53,14 +59,14 @@ button:focus-visible {
 }
 
 input[type="text"] {
-  padding: 0;
+  /* padding: 0;
   background: none;
   border: none;
   border-radius: 0;
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
+  appearance: none; */
 }
 
 input[type="text"]:focus-visible {

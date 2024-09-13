@@ -16,7 +16,7 @@ function App() {
     <Toolbar canvasRef={canvasRef} />
     <Canvas ref={canvasRef} />
   </main>
-  <footer id="footer">footer</footer>
+  {/* <footer id="footer">footer</footer> */}
   </>
 }
 
