@@ -1,4 +1,4 @@
-
+import "../Canvas.scss";
 import Arrow from "../../Arrow/Arrow";
 import useAddEdgeArrow from "./useAddEdgeArrow";
 

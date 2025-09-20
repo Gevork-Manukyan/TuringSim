@@ -20,6 +20,6 @@ export default function AddNodeButton({ children, value="", nodeCoord }: AddNode
     }
     
     return (
-        <button className="AddNodeButton" onClick={handleClick}>{children}</button>
+            <button className="AddNodeButton" onClick={handleClick}>{children}</button>
     )
 }
