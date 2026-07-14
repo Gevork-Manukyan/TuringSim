@@ -1,5 +1,9 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { generateRandomString } from "../util";
+import { createSafeStorage } from "./persistStorage";
+
+const INPUT_STORAGE_KEY = "turing-sim-input:v1";
 
 export type SeqSymbol = {
   id: string;
@@ -19,7 +23,11 @@ type InputSequenceStore = {
   clear: () => void;
 };
 
-export const useInputSequence = create<InputSequenceStore>((set) => ({
+type InputSequencePersisted = Pick<InputSequenceStore, "symbols">;
+
+export const useInputSequence = create<InputSequenceStore>()(
+  persist(
+    (set) => ({
   symbols: [],
   add: (value) =>
     set((state) => ({
@@ -44,4 +52,14 @@ export const useInputSequence = create<InputSequenceStore>((set) => ({
       return { symbols: next };
     }),
   clear: () => set({ symbols: [] }),
-}));
+    }),
+    {
+      name: INPUT_STORAGE_KEY,
+      version: 1,
+      storage: createSafeStorage<InputSequencePersisted>(),
+      partialize: (state): InputSequencePersisted => ({
+        symbols: state.symbols,
+      }),
+    }
+  )
+);

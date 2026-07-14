@@ -1,8 +1,12 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Coord, EdgeId, NodeId, TNode, Edge, EdgeCoords } from "../types";
 import { generateRandomString } from "../util";
 import { dfaEngine } from "../engine/dfa";
 import { GraphSnapshot, SimState } from "../engine/types";
+import { createSafeStorage } from "./persistStorage";
+
+const GRAPH_STORAGE_KEY = "turing-sim-graph:v1";
 
 type MapEdge = {
   nodeId: NodeId;
@@ -40,7 +44,24 @@ type TUseDirectedGraph = {
   resetSimulation: () => void;
 };
 
-export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
+/**
+ * The subset of graph state that is persisted to localStorage. The transient
+ * `simulation` field and all action methods are intentionally excluded, so a
+ * reloaded page restores the graph but never a mid-run simulation cursor.
+ */
+type GraphPersisted = Pick<
+  TUseDirectedGraph,
+  | "nodes"
+  | "edges"
+  | "incomingEdges"
+  | "outgoingEdges"
+  | "startNodeId"
+  | "endNodeIds"
+>;
+
+export const useDirectedGraph = create<TUseDirectedGraph>()(
+  persist(
+    (set, get) => ({
   nodes: new Map<NodeId, TNode>(),
   edges: new Map<EdgeId, Edge>(),
   incomingEdges: new Map<NodeId, MapEdge[]>(),
@@ -141,7 +162,30 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   resetSimulation: () => {
     set({ simulation: null });
   }
-}));
+    }),
+    {
+      name: GRAPH_STORAGE_KEY,
+      version: 1,
+      // Custom storage rebuilds the four `Map` fields on read; see persistStorage.
+      storage: createSafeStorage<GraphPersisted>(true),
+      // Persist only serializable graph data — never the transient simulation
+      // cursor or the action functions.
+      partialize: (state): GraphPersisted => ({
+        nodes: state.nodes,
+        edges: state.edges,
+        incomingEdges: state.incomingEdges,
+        outgoingEdges: state.outgoingEdges,
+        startNodeId: state.startNodeId,
+        endNodeIds: state.endNodeIds,
+      }),
+      // Belt-and-suspenders: guarantee a fresh page never restores a mid-run
+      // simulation, even if a legacy payload somehow contained one.
+      onRehydrateStorage: () => (state) => {
+        if (state) state.simulation = null;
+      },
+    }
+  )
+);
 
 function toSnapshot(state: TUseDirectedGraph): GraphSnapshot {
   return {
