@@ -1,9 +1,22 @@
 import './Navbar.scss'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from '../../lib/stores/useTheme'
 
 export default function Navbar() {
+  const theme = useTheme(state => state.theme)
+  const toggle = useTheme(state => state.toggle)
+
   return (
     <nav className='Navbar'>
-      <span id="title">TuringSim</span>
+      <span className="Navbar__brand">Turing Sim</span>
+      <button
+        className="Navbar__themeToggle"
+        onClick={toggle}
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      >
+        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
     </nav>
   )
 }

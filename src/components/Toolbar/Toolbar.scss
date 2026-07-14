@@ -1,33 +1,76 @@
 .Toolbar {
   height: var(--bar-height);
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  border: solid black 1px;
-  color: var(--dark-blue);
-  font-size: 18px;
-  letter-spacing: 1px;
-  z-index: 1;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
 
-  &__label {
+  background-color: var(--surface);
+  border-bottom: solid 1px var(--border);
+  color: var(--text);
+
+  &__group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
 
-  &__checkbox {
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-muted);
+    user-select: none;
+    cursor: pointer;
+
+    input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  &__result {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+    &--running {
+      color: var(--accent);
+      background-color: var(--accent-soft);
+    }
+
+    &--accepted {
+      color: var(--accent-contrast);
+      background-color: var(--success);
+      box-shadow: 0 0 16px var(--success-soft);
+    }
+
+    &--rejected {
+      color: var(--accent-contrast);
+      background-color: var(--danger);
+      box-shadow: 0 0 16px var(--danger-soft);
+    }
   }
 }
 
 #Toolbar__stringInput {
-  margin: 0 5px;
-}
-
-.ToolbarButton {
-  height: var(--bar-height);
-  line-height: var(--bar-height);
-  padding: 0 15px;
-  cursor: pointer;
-  transition: all 0.1s ease;
-
-  &:hover {
-    // color: var(--dark-blue);
-    background-color: var(--light-blue);
-  }
+  width: 180px;
 }

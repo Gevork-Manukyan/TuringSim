@@ -1,219 +1,245 @@
-// ===== VARIABLES =====
 $nodeSize: 100px;
-$radius: 100%;
-$plusButtonSize: 50px;
-$transition-distance: calc($nodeSize / 1.2);
-$hover-shift: $nodeSize - $transition-distance;
-$subNode-Transition: transform 0.5s ease;
-$hover-transition: transform 0.3s ease;
 
-// ===== MIXINS =====
-@mixin subNodeDirection($direction) {
-  @if $direction == "up" {
-    transform: translate(-50%, -$transition-distance);
-
-    &:hover {
-      transform: translate(-50%, -$transition-distance - $hover-shift);
-    }
-  } @else if $direction == "right" {
-    transform: translate(calc($transition-distance - $plusButtonSize), -50%);
-
-    &:hover {
-      transform: translate(
-        calc($transition-distance - $plusButtonSize) + $hover-shift,
-        -50%
-      );
-    }
-  } @else if $direction == "down" {
-    transform: translate(-50%, calc($transition-distance - $plusButtonSize));
-
-    &:hover {
-      transform: translate(
-        -50%,
-        calc($transition-distance - $plusButtonSize) + $hover-shift
-      );
-    }
-  } @else if $direction == "left" {
-    transform: translate(-$transition-distance, -50%);
-
-    &:hover {
-      transform: translate(-$transition-distance - $hover-shift, -50%);
-    }
-  }
-}
-
-@mixin subNodeTransition {
-  transition: $subNode-Transition;
-
-  &:hover {
-    transition: $hover-transition;
-  }
-}
-
-@mixin text {
-  font-size: 16px;
-  font-family: var(--font-families);
-  line-height: 16px;
-  letter-spacing: 1px;
-}
-
-@mixin nodeSize {
+.Node {
   width: $nodeSize;
   height: $nodeSize;
-}
-
-// ===== STYLES =====
-.Node {
-  @include nodeSize();
   position: absolute;
   user-select: none;
-  border-radius: $radius;
-  z-index: 100;
-  @include text();
+  z-index: var(--z-nodes);
+  font-family: var(--font-display);
 
-  &:hover {
-  }
-
-  &--dragging {
-    box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-      0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-    transition: box-shadow 300ms ease;
-  }
-
-  .Canvas--addingEdge &__addEdgeOverlay {
-    @include nodeSize();
-    display: inline-block;
-    position: absolute;
-    border-radius: $radius;
-    cursor: pointer;
-    z-index: 1000;
-  }
-
+  // ===== Node body =====
   &__content {
-    @include nodeSize();
+    width: 100%;
+    height: 100%;
     position: relative;
     display: inline-flex;
     justify-content: center;
     align-items: center;
 
-    background-color: var(--grey-blue);
-    border-radius: $radius;
-    border-width: 3px;
-    cursor: pointer;
-    z-index: 10;
+    background-color: var(--node-bg);
+    color: var(--node-text);
+    border: solid 3px var(--node-ring);
+    border-radius: 50%;
     box-sizing: border-box;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
 
-    transition: box-shadow 0.2s ease;
-    @include text();
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 600;
+
+    transition: border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-spring);
   }
 
-  &--clicked &__content {
-    -webkit-box-shadow: inset 0px 0px 18px 10px var(--cyan);
-    -moz-box-shadow: inset 0px 0px 18px 10px var(--cyan);
-    box-shadow: inset 0px 0px 18px 6px var(--cyan);
+  // Discoverability: hovering an idle node hints it is interactive.
+  &:hover &__content {
+    border-color: var(--accent);
+    transform: scale(1.03);
   }
 
+  &--menu &__content,
+  &--renaming &__content {
+    border-color: var(--accent);
+    box-shadow: var(--glow), var(--shadow-md);
+  }
+
+  // Accept state: double ring.
   &--endNode &__content {
     border-style: double;
-    border-width: 6px;
+    border-width: 7px;
   }
 
+  &--dragging &__content {
+    box-shadow: var(--shadow-lg);
+    cursor: grabbing;
+  }
+
+  // ===== Add-edge overlay (captures the endpoint click, enables self-loops) =====
+  &__addEdgeOverlay {
+    display: none;
+  }
+
+  .Canvas--addingEdge &__addEdgeOverlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: var(--z-overlay);
+  }
+
+  // ===== Rename =====
   &__renameInput {
-    width: $nodeSize;
+    width: calc($nodeSize - 20px);
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    z-index: 100;
-    @include text();
+    z-index: calc(var(--z-menu) + 1);
+
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    color: var(--text);
+    background-color: var(--surface);
+    border: none;
+    border-radius: var(--radius-md);
 
     &:focus-visible {
       outline: none;
     }
   }
 
-  &__subNodeBtn {
-    $position: calc($nodeSize / 2);
-
+  &__renameActions {
     position: absolute;
-    left: $position;
-    top: $position;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, 12px);
+    display: flex;
+    gap: var(--space-2);
+    z-index: var(--z-menu);
+  }
+
+  &__renameBtn {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    line-height: 0px;
-    height: $plusButtonSize;
-    width: $plusButtonSize;
-    border: solid black 1px;
-    border-radius: 100%;
-    background-color: white;
-    transform: translate(-50%, -50%);
-    transition: $subNode-Transition;
-    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
     cursor: pointer;
-    z-index: 0;
+    transition: transform var(--dur-fast) var(--ease-spring),
+      background-color var(--dur-fast) var(--ease-out);
 
     &:hover {
-      background-color: rgb(231, 231, 231);
-      border: solid 2px;
+      transform: scale(1.1);
     }
-  }
-
-  &--clicked &__subNodeBtn {
-    @include subNodeTransition();
-
-    &--1 {
-      @include subNodeDirection("up");
-    }
-
-    &--2 {
-      @include subNodeDirection("right");
-    }
-
-    &--3 {
-      @include subNodeDirection("down");
-    }
-
-    &--4 {
-      @include subNodeDirection("left");
-    }
-  }
-
-  &--settings &__subNodeBtn {
-    @include subNodeTransition();
-
-    &--5 {
-      @include subNodeDirection("up");
-    }
-
-    &--6 {
-      @include subNodeDirection("right");
-    }
-
-    &--7 {
-      @include subNodeDirection("down");
-    }
-
-    &--8 {
-      @include subNodeDirection("left");
-    }
-  }
-
-  &--confirmation &__subNodeBtn {
-    @include subNodeTransition();
 
     &--confirm {
-      @include subNodeDirection("right");
+      background-color: var(--success);
+      color: #fff;
     }
 
     &--cancel {
-      @include subNodeDirection("left");
+      background-color: var(--surface-2);
+      color: var(--text-muted);
     }
   }
 
-  .Canvas--addingEdge &--addingEdge &__subNodeBtn--cancel {
-    @include subNodeDirection("down");
+  // ===== Radial action ring =====
+  &__subNodeBtn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+
+    color: var(--text-muted);
+    background-color: var(--surface);
+    border: solid 1px var(--border);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.3);
+    z-index: var(--z-menu);
+
+    transition: transform var(--dur-base) var(--ease-spring),
+      opacity var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &--menu &__subNodeBtn {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1);
+    transition-delay: calc(var(--i) * 18ms);
+  }
+
+  &--menu &__subNodeBtn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background-color: var(--accent-soft);
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.14);
+    transition-delay: 0ms;
+  }
+
+  &--menu &__subNodeBtn--danger:hover {
+    color: var(--accent-contrast);
+    border-color: var(--danger);
+    background-color: var(--danger);
+  }
+
+  // ===== Simulation states =====
+  &--active &__content {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent-hover);
+    animation: node-pulse 1.2s ease-in-out infinite;
+  }
+
+  &--accepted &__content {
+    background-color: var(--success);
+    color: #fff;
+    border-color: var(--success);
+    animation: node-pop 0.4s var(--ease-spring);
+  }
+
+  &--rejected &__content {
+    background-color: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+    animation: node-shake 0.4s ease-out;
+  }
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+@keyframes node-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes node-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
   }
 }

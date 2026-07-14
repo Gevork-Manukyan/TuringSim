@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { Coord, EdgeId, NodeId, TNode, Edge, EdgeCoords } from "../types";
 import { generateRandomString } from "../util";
+import { dfaEngine } from "../engine/dfa";
+import { GraphSnapshot, SimState } from "../engine/types";
 
 type MapEdge = {
   nodeId: NodeId;
@@ -13,9 +15,8 @@ type TUseDirectedGraph = {
   incomingEdges: Map<NodeId, MapEdge[]>;
   outgoingEdges: Map<NodeId, MapEdge[]>;
   startNodeId: NodeId;
-  endNodeIds: EdgeId[];
-  inputString: string[];
-  currentInputIndex: number;
+  endNodeIds: NodeId[];
+  simulation: SimState | null;
   addNode: ({ value, isStartNode, isEndNode, startCoord }: { value: TNode["value"], isStartNode?: boolean, isEndNode?: boolean, startCoord?: Coord }) => NodeId;
   removeNode: (nodeId: NodeId) => void;
   renameNode: (nodeId: NodeId, newValue: TNode["value"]) => void;
@@ -33,9 +34,10 @@ type TUseDirectedGraph = {
   setIsEndNode: (nodeId: NodeId, value: TNode['isEndNode']) => void;
   isEmpty: () => boolean;
   clear: () => void;
-  evaluate: (input: string[]) => void;
+  startSimulation: (input: string[]) => void;
   step: () => void;
   continueEval: () => void;
+  resetSimulation: () => void;
 };
 
 export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
@@ -45,8 +47,7 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
   outgoingEdges: new Map<NodeId, MapEdge[]>(),
   startNodeId: "",
   endNodeIds: [],
-  inputString: [],
-  currentInputIndex: 0,
+  simulation: null,
   addNode: ({ value, isStartNode = false, isEndNode = false, startCoord = { x: 0, y: 0 } }) => {
     const nodeId = generateRandomNodeId(get().nodes);
     set((state: TUseDirectedGraph) => addNode(state, value, nodeId, isStartNode, isEndNode, startCoord));
@@ -114,19 +115,43 @@ export const useDirectedGraph = create<TUseDirectedGraph>((set, get) => ({
       const newOutgoingEdges = new Map<NodeId, MapEdge[]>()
       const newStartNodeId = ""
       const newEndNodeIds: NodeId[] = []
-      return { nodes: newNodes, edges: newEdges, incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, startNodeId: newStartNodeId, endNodeIds: newEndNodeIds }
+      return { nodes: newNodes, edges: newEdges, incomingEdges: newIncomingEdges, outgoingEdges: newOutgoingEdges, startNodeId: newStartNodeId, endNodeIds: newEndNodeIds, simulation: null }
     })
   },
-  evaluate: (input: string[]) => {
-    evaluate(get(), input)
+  startSimulation: (input: string[]) => {
+    set({ simulation: dfaEngine.init(toSnapshot(get()), input) });
   },
   step: () => {
-    step(get())
+    const { simulation } = get();
+    if (!simulation) return;
+    set({ simulation: dfaEngine.step(toSnapshot(get()), simulation) });
   },
   continueEval: () => {
-    continueEval(get())
+    const state = get();
+    if (!state.simulation) return;
+    const graph = toSnapshot(state);
+    let sim = state.simulation;
+    // Bounded loop: each step consumes a symbol or terminates, so this always
+    // finishes; the guard is a safety net against a malformed engine.
+    for (let guard = sim.input.length + 2; sim.status === "running" && guard > 0; guard--) {
+      sim = dfaEngine.step(graph, sim);
+    }
+    set({ simulation: sim });
+  },
+  resetSimulation: () => {
+    set({ simulation: null });
   }
 }));
+
+function toSnapshot(state: TUseDirectedGraph): GraphSnapshot {
+  return {
+    nodes: state.nodes,
+    edges: state.edges,
+    outgoingEdges: state.outgoingEdges,
+    startNodeId: state.startNodeId,
+    endNodeIds: state.endNodeIds,
+  };
+}
 
 function generateRandomNodeId(nodes: TUseDirectedGraph["nodes"]) {
   return generateRandomId(nodes);
@@ -398,61 +423,3 @@ function doNodesExist(
   if (!nodes.has(from) || !nodes.has(to)) return false;
   return true;
 }
-
-
-// ----- EVALUATING -----
-
-function evaluate(state: TUseDirectedGraph, input: string[]) {
-  if (!checkIfGraphIsValid(state)) return;
-  
-  let currNode = state.getStartNode()
-  for (let index = 0; index < input.length; index++) {
-    const currInput = input[index]
-    const currNodeId = currNode.id
-    const currNodeOutgoingEdges = state.getOutgoingEdges(currNodeId).map(mapEdge => state.edges.get(mapEdge.edgeId)!)
-    const result = checkEdgesForInput(currInput, currNodeOutgoingEdges)
-    if (!result) return false;
-    currNode = state.nodes.get(result.toId)!
-  }
-  console.log("done")
-  return true;
-}
-
-function step(state: TUseDirectedGraph) {
-
-}
-
-function continueEval(state: TUseDirectedGraph) {
-
-}
-
-function checkIfGraphIsValid(state: TUseDirectedGraph): 
-state is Omit<TUseDirectedGraph, 'getStartNode'> & { getStartNode: () => NonNullable<ReturnType<typeof state.getStartNode>> } {
-  // Is there a starting Node
-  if (state.startNodeId === "") {
-    console.error("missing start node")
-    return false;
-  }
-
-  // Is there an end Node
-  if (state.endNodeIds.length === 0) {
-    console.error("missing end node")
-    return false;
-  }
-
-  // Do all edges have a value
-  for (const edge of state.edges.values()) {
-    if (edge.value.trim() === "") {
-      console.error("all edges require a value")
-      return false;
-    }
-  }
-  return true;
-}
-
-function checkEdgesForInput(input: string, edges: Edge[]) {
-  for (const edge of edges) {
-    if (edge.value === input) return edge;
-  }
-  return null;
-} 

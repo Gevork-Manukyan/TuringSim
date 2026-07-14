@@ -1,15 +1,18 @@
 #Canvas {
-    height: calc(100vh - var(--bar-height) - 3px);
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
-    // opacity: 0.4;
-    background-image: radial-gradient(#000 0.8px, var(--bg-white) 0.8px);
-    background-size: 16px 16px;
-
-    & .AddNodeButton {
-        background-color: var(--bg-white);
-    }
+    background-color: var(--bg);
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
+#Canvas.Canvas--addingEdge {
+    cursor: crosshair;
+}

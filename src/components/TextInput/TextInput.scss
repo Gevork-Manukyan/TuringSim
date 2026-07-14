@@ -1,8 +1,10 @@
+@use '../../styles/mixins' as *;
+
 .TextInput {
-    padding: 5px;
-    font-family: var(--font-families);
-    border-radius: 7px;
-    border: solid 2px var(--sky-blue);
-    background-color: var(--bg-blue);
-    color: var(--grey);
+    font-size: var(--fs-sm);
+    @include input-field;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
 }

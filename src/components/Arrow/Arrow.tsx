@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import "./Arrow.scss";
 import styled from "styled-components";
 import { ArrowConfig, Coord, Edge, EdgeId } from "../../lib/types";
@@ -52,7 +51,9 @@ const StraightLine = styled(Line)`
   border: 0;
 `;
 
-const RenderedLine = styled.path`
+const RenderedLine = styled.path<{ $highlighted: boolean }>`
+  stroke: ${({ $highlighted }) =>
+    $highlighted ? "var(--accent)" : "var(--edge)"};
   transition: stroke 300ms;
 `;
 
@@ -91,8 +92,6 @@ const Arrow = ({
   const currentConfig = { ...defaultConfig, ...config };
 
   const {
-    arrowColor,
-    arrowHighlightedColor,
     boundingBoxColor,
     arrowHeadEndingSize,
     strokeWidth,
@@ -172,30 +171,22 @@ const Arrow = ({
     a ${CIRCLE_RADIUS} ${CIRCLE_RADIUS} 0 1 1 ${p2.x - 30} ${p2.y}
   `;
 
-  const [isHighlightedState, useIsHighlightedState] = useState(false);
-  const handleOnHighlight = () => {
-    useIsHighlightedState(true);
-  };
-
-  const handleOnUnhighlight = () => {
-    useIsHighlightedState(false);
-  };
+  const [isHovered, setIsHovered] = useState(false);
+  const handleOnHighlight = () => setIsHovered(true);
+  const handleOnUnhighlight = () => setIsHovered(false);
 
   const isDisabledOrLocked = () => isDisabled || isLocked;
+  const highlighted = (isHighlighted || isHovered) && !isDisabledOrLocked();
 
-  const strokeColor =
-    (isHighlighted || isHighlightedState) && !isDisabledOrLocked()
-      ? arrowHighlightedColor
-      : arrowColor;
+  const isEmptyLabel = arrowLabel.trim() === "" && !isEditingLabel;
+  const showEmptyChip = isEmptyLabel && edgeId !== null && !isDisabledOrLocked();
 
   return (
     <div className={`Arrow${className ? ` ${className}` : ""}`}>
       <StraightLine
         width={canvasWidth}
         height={canvasHeight}
-        $isHighlighted={
-          isHighlighted !== undefined ? isHighlighted : isHighlightedState
-        }
+        $isHighlighted={highlighted}
         $boundingBoxColor={boundingBoxColor}
         // $xTranslate={!isLocked ? canvasXOffset : 0}
         // $yTranslate={!isLocked ? canvasYOffset : 0}
@@ -205,7 +196,7 @@ const Arrow = ({
         <RenderedLine
           d={linePath}
           strokeWidth={strokeWidth}
-          stroke={strokeColor}
+          $highlighted={highlighted}
           fill="none"
         />
         <HoverableLine
@@ -230,13 +221,11 @@ const Arrow = ({
         </HoverableLine>
       </StraightLine>
       <div
-        className={`Arrow__label${
-          type === "circle" ? " Arrow__label--circle" : ""
-        }${
-          arrowLabel.trim() === "" && !isEditingLabel
-            ? " Arrow__label--hidden"
-            : ""
-        }`}
+        className={
+          "Arrow__label" +
+          (showEmptyChip ? " Arrow__label--empty" : "") +
+          (isEmptyLabel && !showEmptyChip ? " Arrow__label--hidden" : "")
+        }
         style={labelStyle}
         onClick={handleOnClick}
       >
@@ -249,6 +238,8 @@ const Arrow = ({
             onChange={handleLabelChange}
             onBlur={handleOnBlur}
           />
+        ) : isEmptyLabel ? (
+          showEmptyChip ? "+" : ""
         ) : (
           arrowLabel
         )}

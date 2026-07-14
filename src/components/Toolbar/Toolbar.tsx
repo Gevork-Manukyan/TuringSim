@@ -2,6 +2,9 @@ import "./Toolbar.scss";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import useToolbar from "./useToolbar";
 import TextInput from "../TextInput/TextInput";
+import Button from "../Button/Button";
+import Tape from "../Tape/Tape";
+import { Play, StepForward, FastForward, RotateCcw, Plus, Trash2 } from "lucide-react";
 
 export default function Toolbar({
   canvasRef,
@@ -11,49 +14,83 @@ export default function Toolbar({
   const {
     inputString,
     setInputString,
-    handleEvaluateClick,
+    handleStart,
     handleStep,
     handleContinue,
+    handleReset,
     handleOptionChange,
     handleClear,
     getNodeCoords,
+    simulation,
+    isRunning,
   } = useToolbar({ canvasRef });
 
   return (
     <section className="Toolbar">
-      <ToolbarButton>
-        <button onClick={handleEvaluateClick}>Start</button>
-      </ToolbarButton>
-      <TextInput 
-        id="Toolbar__stringInput"
-        value={inputString}
-        onChange={(e) => setInputString(e.target.value)}
-      />
-      <ToolbarButton>
-        <button onClick={handleStep}>Step</button>
-      </ToolbarButton>
-      <ToolbarButton>
-        <button onClick={handleContinue}>Continue</button>
-      </ToolbarButton>
-      <label htmlFor="commaSeparated" className="Toolbar__label">
-        Comma Separated
+      <div className="Toolbar__group">
+        <Button variant="primary" onClick={handleStart}>
+          <Play size={16} /> Start
+        </Button>
+        <TextInput
+          id="Toolbar__stringInput"
+          value={inputString}
+          placeholder="input string…"
+          onChange={(e) => setInputString(e.target.value)}
+        />
+        <Button onClick={handleStep} disabled={!isRunning}>
+          <StepForward size={16} /> Step
+        </Button>
+        <Button onClick={handleContinue} disabled={!isRunning}>
+          <FastForward size={16} /> Continue
+        </Button>
+        {simulation && (
+          <Button onClick={handleReset}>
+            <RotateCcw size={16} /> Reset
+          </Button>
+        )}
+      </div>
+
+      <label className="Toolbar__option">
         <input
-          className="Toolbar__checkbox"
-          name="commaSeparated"
           type="checkbox"
+          name="commaSeparated"
           onChange={handleOptionChange}
         />
+        Comma separated
       </label>
-      <ToolbarButton>
-        <AddNodeButton nodeCoord={getNodeCoords()}>New Node</AddNodeButton>
-      </ToolbarButton>
-      <ToolbarButton>
-        <button onClick={handleClear}>Clear</button>
-      </ToolbarButton>
+
+      <div className="Toolbar__status">
+        <Tape />
+        {simulation && <ResultBadge simulation={simulation} />}
+      </div>
+
+      <div className="Toolbar__spacer" />
+
+      <div className="Toolbar__group">
+        <AddNodeButton nodeCoord={getNodeCoords()}>
+          <Plus size={16} /> New Node
+        </AddNodeButton>
+        <Button variant="danger" onClick={handleClear}>
+          <Trash2 size={16} /> Clear
+        </Button>
+      </div>
     </section>
   );
-} 
+}
 
-function ToolbarButton({ children }: { children: React.ReactNode }) {
-  return <div className="ToolbarButton">{children}</div>;
+function ResultBadge({
+  simulation,
+}: {
+  simulation: NonNullable<ReturnType<typeof useToolbar>["simulation"]>;
+}) {
+  const { status, errorMessage, index, input } = simulation;
+
+  let text: string;
+  if (status === "accepted") text = "ACCEPTED";
+  else if (status === "rejected") text = errorMessage ?? "REJECTED";
+  else text = `Reading ${index}/${input.length}`;
+
+  return (
+    <div className={`Toolbar__result Toolbar__result--${status}`}>{text}</div>
+  );
 }

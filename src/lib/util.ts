@@ -6,13 +6,26 @@ type CalcEdgeCoordsR = {
   endCoords: Coord;
 };
 
+/**
+ * Node coordinates are stored relative to the #Canvas element, but pointer
+ * events report viewport coordinates. Convert a viewport point into the
+ * canvas-local space nodes/edges live in. Returns the point unchanged if the
+ * canvas isn't mounted yet.
+ */
+export function toCanvasCoords(clientX: number, clientY: number): Coord {
+  const canvas = typeof document !== "undefined" && document.getElementById("Canvas");
+  if (!canvas) return { x: clientX, y: clientY };
+  const rect = canvas.getBoundingClientRect();
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
+
 export function calcEdgeCoords(
   startNodeCenter: Coord,
   endNodeCenter: Coord
 ): CalcEdgeCoordsR {
   const dx = endNodeCenter.x - startNodeCenter.x;
   const dy = endNodeCenter.y - startNodeCenter.y;
-  let distance = Math.sqrt(dx * dx + dy * dy);
+  const distance = Math.sqrt(dx * dx + dy * dy);
 
   // Node pointing to itself
   if (distance === 0) {

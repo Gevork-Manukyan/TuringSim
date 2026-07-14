@@ -8,7 +8,7 @@ function App() {
 
   const canvasRef = useRef<HTMLElement>(null)
 
-  return <>
+  return <div id="app-shell">
   <header id="header">
     <Navbar />
   </header>
@@ -16,8 +16,7 @@ function App() {
     <Toolbar canvasRef={canvasRef} />
     <Canvas ref={canvasRef} />
   </main>
-  {/* <footer id="footer">footer</footer> */}
-  </>
+  </div>
 }
 
 export default App;

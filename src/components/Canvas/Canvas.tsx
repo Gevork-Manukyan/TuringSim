@@ -18,7 +18,9 @@ const Canvas = forwardRef<HTMLElement>((_, ref) => {
     getAllEdgeCoords,
     isGraphEmpty,
     getEdge,
+    lastEdgeId,
     isAddingEdge,
+    handleCanvasClick,
     handleDragStart,
     handleDragMove
   } = useCanvas()
@@ -34,10 +36,12 @@ const Canvas = forwardRef<HTMLElement>((_, ref) => {
         id="Canvas"
         className={`${isAddingEdge ? "Canvas--addingEdge" : ""}`}
         ref={ref}
+        onClick={handleCanvasClick}
       >
         {isGraphEmpty() && (
-          <AddNodeButton>
+          <AddNodeButton className="AddNodeButton--hero">
             <NewNodeIcon />
+            Add a state
           </AddNodeButton>
         )}
 
@@ -63,6 +67,7 @@ const Canvas = forwardRef<HTMLElement>((_, ref) => {
               endPoint={endCoords}
               label={getEdge(edgeCoords.id).value}
               type={selfPointing ? "circle" : "line"}
+              isHighlighted={edgeCoords.id === lastEdgeId}
             />
           );
         })}

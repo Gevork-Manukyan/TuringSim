@@ -1,3 +1,18 @@
-.AddNodeButton {
-    
+// The big, inviting "add your first node" button shown on an empty canvas.
+.Button.AddNodeButton--hero {
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 132px;
+  height: 132px;
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border);
+  color: var(--accent);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-md);
+  font-size: var(--fs-md);
+
+  &:hover {
+    border-color: var(--accent);
+    background-color: var(--accent-soft);
+  }
 }

@@ -4,18 +4,21 @@ type NodeSettingButtonProps = {
   children?: React.ReactNode;
   className: string;
   style?: React.CSSProperties;
-  onClick?: React.MouseEventHandler<HTMLSpanElement> | undefined;
+  title?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
-  
-export default function SubNodeButton({ children, className, style, onClick }: NodeSettingButtonProps) {
+
+export default function SubNodeButton({ children, className, style, title, onClick }: NodeSettingButtonProps) {
 
   return (
-    <div 
-      className={`Node__subNodeBtn${className ? ` ${className}`: ''}`}
+    <button
+      className={`Node__subNodeBtn${className ? ` ${className}` : ''}`}
       style={style}
+      title={title}
+      aria-label={title}
       onClick={onClick}
-      >
+    >
       {children}
-    </div>
+    </button>
   )
 }
