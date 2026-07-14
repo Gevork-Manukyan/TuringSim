@@ -1,9 +1,8 @@
 import "./Toolbar.scss";
 import AddNodeButton from "../Buttons/AddNodeButton/AddNodeButton";
 import useToolbar from "./useToolbar";
-import TextInput from "../TextInput/TextInput";
 import Button from "../Button/Button";
-import Tape from "../Tape/Tape";
+import InputSequence from "../InputSequence/InputSequence";
 import { Play, StepForward, FastForward, RotateCcw, Plus, Trash2 } from "lucide-react";
 
 export default function Toolbar({
@@ -12,13 +11,10 @@ export default function Toolbar({
   canvasRef: React.RefObject<HTMLElement>;
 }) {
   const {
-    inputString,
-    setInputString,
     handleStart,
     handleStep,
     handleContinue,
     handleReset,
-    handleOptionChange,
     handleClear,
     getNodeCoords,
     simulation,
@@ -31,12 +27,11 @@ export default function Toolbar({
         <Button variant="primary" onClick={handleStart}>
           <Play size={16} /> Start
         </Button>
-        <TextInput
-          id="Toolbar__stringInput"
-          value={inputString}
-          placeholder="input string…"
-          onChange={(e) => setInputString(e.target.value)}
-        />
+      </div>
+
+      <InputSequence />
+
+      <div className="Toolbar__group">
         <Button onClick={handleStep} disabled={!isRunning}>
           <StepForward size={16} /> Step
         </Button>
@@ -48,23 +43,10 @@ export default function Toolbar({
             <RotateCcw size={16} /> Reset
           </Button>
         )}
-      </div>
-
-      <label className="Toolbar__option">
-        <input
-          type="checkbox"
-          name="commaSeparated"
-          onChange={handleOptionChange}
-        />
-        Comma separated
-      </label>
-
-      <div className="Toolbar__status">
-        <Tape />
         {simulation && <ResultBadge simulation={simulation} />}
       </div>
 
-      <div className="Toolbar__spacer" />
+      <div className="Toolbar__divider" />
 
       <div className="Toolbar__group">
         <AddNodeButton nodeCoord={getNodeCoords()}>

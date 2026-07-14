@@ -1,4 +1,5 @@
 import { useDirectedGraph } from "../../lib/stores/useDirectedGraph"
+import { useInputSequence } from "../../lib/stores/useInputSequence"
 import { useEffect, useState } from "react"
 import { Coord } from "../../lib/types"
 import { NODE_RADIUS } from "../../lib/constants"
@@ -11,10 +12,9 @@ export default function useToolbar ({ canvasRef }: { canvasRef: React.RefObject<
     const resetSimulation = useDirectedGraph(state => state.resetSimulation)
     const simulation = useDirectedGraph(state => state.simulation)
 
-    const [inputString, setInputString] = useState("")
-    const [options, setOptions] = useState({
-        commaSeparated: false,
-    })
+    const symbols = useInputSequence(state => state.symbols)
+    const clearSequence = useInputSequence(state => state.clear)
+
     const [canvasCoord, setCanvasCoord] = useState<Coord>()
 
     useEffect(() => {
@@ -29,12 +29,8 @@ export default function useToolbar ({ canvasRef }: { canvasRef: React.RefObject<
     }, [canvasRef])
 
     const handleStart = () => {
-        const evaluateString = options.commaSeparated
-            ? inputString.split(', ')
-            : inputString.split('');
-        // An empty text field means the empty string (ε), i.e. no symbols.
-        const parsed = inputString === "" ? [] : evaluateString;
-        startSimulation(parsed)
+        // Zero chips means the empty string (ε).
+        startSimulation(symbols.map(s => s.value))
     }
 
     const handleStep = () => {
@@ -51,14 +47,10 @@ export default function useToolbar ({ canvasRef }: { canvasRef: React.RefObject<
 
     const isRunning = simulation?.status === "running"
 
-    const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = event.target
-        setOptions(prev => ({ ...prev, [name]: checked }))
-    }
-
     const handleClear = () => {
         resetGraph()
         resetSimulation()
+        clearSequence()
     }
 
     const getNodeCoords = () => {
@@ -67,13 +59,10 @@ export default function useToolbar ({ canvasRef }: { canvasRef: React.RefObject<
     }
 
     return {
-        inputString,
-        setInputString,
         handleStart,
         handleStep,
         handleContinue,
         handleReset,
-        handleOptionChange,
         handleClear,
         getNodeCoords,
         simulation,

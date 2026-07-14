@@ -14,34 +14,14 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
+    flex: 0 0 auto;
   }
 
-  &__spacer {
-    flex: 1 1 auto;
-  }
-
-  &__option {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--text-muted);
-    user-select: none;
-    cursor: pointer;
-
-    input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-  }
-
-  &__status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+  &__divider {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 32px;
+    background-color: var(--border);
   }
 
   &__result {
@@ -69,8 +49,4 @@
       box-shadow: 0 0 16px var(--danger-soft);
     }
   }
-}
-
-#Toolbar__stringInput {
-  width: 180px;
 }
