@@ -22,6 +22,11 @@
 
     /* CSS Modules */
     "esModuleInterop": true,
+
+    /* Only auto-include these global type packages. Without this, TS pulls in
+       every @types/* folder — including @types/react-native (a transitive dep
+       of @types/styled-components) — which fails the build with TS2688. */
+    "types": ["react", "react-dom", "node", "styled-components"],
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
