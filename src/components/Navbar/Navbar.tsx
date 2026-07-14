@@ -1,6 +1,7 @@
 import './Navbar.scss'
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from '../../lib/stores/useTheme'
+import Logo from './Logo'
 
 export default function Navbar() {
   const theme = useTheme(state => state.theme)
@@ -8,7 +9,10 @@ export default function Navbar() {
 
   return (
     <nav className='Navbar'>
-      <span className="Navbar__brand">Turing Sim</span>
+      <span className="Navbar__brand">
+        <Logo />
+        <span className="Navbar__wordmark">Turing Sim</span>
+      </span>
       <button
         className="Navbar__themeToggle"
         onClick={toggle}

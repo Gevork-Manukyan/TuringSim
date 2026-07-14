@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Turing Sim">
+  <title>Turing Sim</title>
+  <rect width="32" height="32" rx="8" fill="#7c5cff"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- start state -->
+    <circle cx="9" cy="16" r="3.4" fill="#ffffff" stroke="none"/>
+    <!-- transition arrow -->
+    <path d="M12.8 14.4C15.4 12.4 18.6 12.4 21.2 14.4"/>
+    <path d="M21.6 11.4l0.3 3.2-3 -1"/>
+    <!-- accept state (double ring) -->
+    <circle cx="24" cy="16" r="4.6"/>
+    <circle cx="24" cy="16" r="1.7" fill="#ffffff" stroke="none"/>
+  </g>
+</svg>

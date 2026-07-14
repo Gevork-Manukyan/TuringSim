@@ -10,14 +10,26 @@
   border-bottom: solid 1px var(--border);
 
   &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
     color: var(--accent);
+    user-select: none;
+    cursor: default;
+  }
+
+  &__logo {
+    flex: none;
+    display: block;
+    color: var(--accent);
+  }
+
+  &__wordmark {
     font-family: var(--font-display);
     font-weight: 600;
     font-size: var(--fs-2xl);
     line-height: 1;
     letter-spacing: 0.5px;
-    user-select: none;
-    cursor: default;
   }
 
   &__themeToggle {
