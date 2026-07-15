@@ -90,6 +90,7 @@ export default function InputSequence() {
           className="InputSequence__add"
           value={draft}
           placeholder="Type a symbol, press Enter"
+          aria-label="Add an input symbol"
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleAddKeyDown}
         />
