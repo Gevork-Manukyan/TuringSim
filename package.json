@@ -27,16 +27,10 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
-    "classnames": "^2.5.1",
-    "css-loader": "^7.1.2",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.1.10",
-    "postcss-loader": "^4.1.0",
-    "postcss-nested": "^5.0.1",
-    "postcss-simple-vars": "^6.0.1",
-    "style-loader": "^4.0.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
